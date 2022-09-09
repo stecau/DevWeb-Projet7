@@ -4,8 +4,6 @@
 
 /* Importation du module (package) 'express' de node */
 const express = require('express');
-// /* Importation du module (package) 'mongoose' */
-// const mongoose = require('mongoose');
 /* Importation du module (package) 'path' */
 const path = require('path');
 
@@ -17,12 +15,8 @@ const messageRoutes = require('./routes/message');
 /* Création de notre application express 'app' */
 const app = express();
 
-// /* Connexion à la database mongodb Atlas */
-// const MONGOOSE_PWD = process.env.MONGOOSE_PWD;
-// mongoose.connect(`mongodb+srv://Stecau:${MONGOOSE_PWD}@clusterstecau.rlrnod6.mongodb.net/Piiquante?retryWrites=true&w=majority`,
-//     { useNewUrlParser: true, useUnifiedTopology: true })
-//     .then(() => console.log('Connexion à MongoDB réussie !'))
-//     .catch(() => console.log('Connexion à MongoDB échouée !'));
+/* Connexion à la database GROUPOMANIA */
+const sql = require("./models/db");
 
 /* Extraction corps JSON de la requête POST venant de l'application front-end avec le middleware Express */
 app.use(express.json());
