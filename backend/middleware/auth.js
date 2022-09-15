@@ -15,11 +15,11 @@ module.exports = (req, res, next) => {
             // Récupération de la chaine d'encodage
         const RANDOM_TOKEN_SECRET = process.env.RANDOM_TOKEN_SECRET;
         const decodedToken = jwt.verify(token, RANDOM_TOKEN_SECRET);
-        // récupération du userId de l'objet decodedToken avec la key de l'objet 'userId'
-        const userId = decodedToken.userId; 
+        // récupération du utilisateur_id de l'objet decodedToken avec la key de l'objet 'utilisateur_Id'
+        const utilisateur_id = decodedToken.utilisateur_Id; 
         // Rajout d'un objet d'authentification dans l'entête de la requête
         req.auth = {
-            userId: userId
+            utilisateur_Id: utilisateur_id
         };
         next(); // pour continuer la route (routage)
     } catch(error) {

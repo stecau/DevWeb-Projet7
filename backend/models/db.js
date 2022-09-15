@@ -1,20 +1,10 @@
 /* Importation du module (package) 'mysql' */
 const mysql = require("mysql");
 
-/* Importation de notre module de configuration pour la connection a la DB */
-const dbConfig = require("../config/db.config");
+// Creation de la connexion à la base de données avec la variable d'environnement DB_CONFIG
+const connection = mysql.createConnection(JSON.parse(process.env.DB_CONFIG));
 
-// Create a connection to the database
-// const connection = mysql.createConnection({
-//   host: dbConfig.HOST,
-//   user: dbConfig.USER,
-//   password: dbConfig.PASSWORD,
-//   database: dbConfig.DB
-// });
-var connString = `mysql://${dbConfig.USER}:${dbConfig.PASSWORD}@${dbConfig.HOST}/${dbConfig.DB}?charset=utf8_general_ci&timezone=-0700`;
-var connection = mysql.createConnection(connString);
-
-// open the MySQL connection
+// Ouverture de la connexion MySQL
 connection.connect(error => {
   if (error) throw error;
   console.log("Successfully connected to the database.");

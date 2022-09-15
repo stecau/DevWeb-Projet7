@@ -1,20 +1,77 @@
-/*------------------------------------------------------------------------------------*/
-/* Création de notre module (package) 'User' modèle d'utilisateur de la db mongoose : */
-/*------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------*/
+/* Création de notre module (package) 'Utilisateur' modèle d'utilisateur de la db MySQL : */
+/*---------------------------------------------------------------------------------*/
 
-/* Importation du module (package) 'mongoose' */
-const mongoose = require('mongoose');
-/* Importation du module (package) 'mongoose-unique-validator' */
-const uniqueValidator = require('mongoose-unique-validator');
+/* Importation du module (package) 'db' connexion à la base de données MySQL */
+const sql = require("./db.js");
 
-/* Définition du schéma mongoose pour les users qui utilise des objets {} */
-const userSchema = mongoose.Schema({
-    email: { type: String, required: true, unique: true }, // unique (mot clé) permet de ne pas avoir deux fois le même Email
-    password: { type: String, required: true }
-});
+// constructeur d'un utilisateur
+const Utilisateur = function(utilisateur) {
+    this.email = utilisateur.email;
+    this.nom = utilisateur.nom;
+    this.prenom = utilisateur.prenom;
+    this.poste = utilisateur.poste;
+    this.motDePasse = utilisateur.motDePasse;
+};
 
-/* Appel du plugin 'mongoose-unique-validator' pour ne pas avoir deux utilisateurs avec le même Email */
-userSchema.plugin(uniqueValidator); 
+/* Creation d'un utilisateur */
+Utilisateur.create = (nouvelUtilisateur, result) => {
+    sql.query("INSERT INTO utilisateurs SET ?", nouvelUtilisateur, (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        };
+        result(null, { message: "Nouvel utilisateur enregistré", data: { _id: res.insertId, ...nouvelUtilisateur } });
+    });
+};
+
+/* Modification d'un utilisateur */
+Utilisateur.modify = (id, nouvelUtilisateur, result) => {
+    // Changement de la date de modification
+    nouvelUtilisateur.modificationDate = new Date(Date.now());
+    sql.query(`UPDATE utilisateurs SET ? WHERE _id = ${id}`, nouvelUtilisateur, (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        };
+        if (res.affectedRows == 0) { // Utilisateur avec l'id pas trouvé
+            result({ erreurType: "Utilisateur absent" }, null);
+            return;
+        };
+        result(null, { message: "Utilisateur modifié", data: { _id: id, ...nouvelUtilisateur } });
+    });
+};
+
+/* Recherche d'un utilisateur avec l'id */
+Utilisateur.findBy = ( {"key": type, "value": value} , result) => {
+    sql.query(`SELECT * FROM utilisateurs WHERE ${type} = "${value}"`, (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        };
+        if (res.length) {
+            result(null, { message: "Utilisateur présent", data: res[0] } ); // id unique donc index de la liste 0
+            return;
+        };
+        // Utilisateur avec l'id pas trouvé
+        result({ erreurType: "Utilisateur absent" }, null);
+    });
+};
+
+/* Suppression d'un utilisateur */
+Utilisateur.remove = (id, result) => {
+    sql.query("DELETE FROM utilisateurs WHERE _id = ?", id, (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        };
+        if (res.affectedRows == 0) { // Utilisateur avec l'id pas trouvé
+            result({ erreurType: "Utilisateur absent" }, null);
+            return;
+        };
+        result(null, { message: "Utilisateur supprimé", data: id });
+    });
+};
   
-/* Exportation du modèle de User basé sur le schéma mongoose */
-module.exports = mongoose.model('User', userSchema);
+/* Exportation du modèle de 'Utilisateur' pour les utilisateurs */
+module.exports = Utilisateur;
