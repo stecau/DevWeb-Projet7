@@ -33,7 +33,7 @@ router.get('/:type&:value', auth, postCtrl.getPostsBy);
 /* Création de la requête Get sur un objet message avec son id */
 router.get('/:id', auth, postCtrl.getOnePostById);
 
-/* Création de la requête Get sur la totalité des objets 'message' */
+/* Création de la requête Get sur la totalité des objets 'message' voir avec des queries */
 router.get('/', auth, postCtrl.getAllPosts);
 
 /* Exportation de notre router express */
