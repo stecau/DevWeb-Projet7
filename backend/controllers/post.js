@@ -89,7 +89,7 @@ exports.likePost = (req, res) => {
                                         if(likeObject.flag === -1) {
                                             post.data[0].dislikes -= likeObject.flag;
                                         }; 
-                                        Post.modify(req.params.id, post.data[0], true, (err, post) => {
+                                        Post.modify(req.params.id, post.data[0], (err, post) => {
                                             if (err) {
                                                 if (!err.hasOwnProperty('erreurType')) {
                                                     res.status(500).json({
@@ -102,7 +102,7 @@ exports.likePost = (req, res) => {
                                                 console.log(post.message, post.data);
                                                 res.status(201).json({ message: post.message});
                                             };
-                                        });
+                                        }, true);
                                     };
                                 });
                             } else {
@@ -131,7 +131,7 @@ exports.likePost = (req, res) => {
                                     if(flag.data === -1) {
                                         post.data[0].dislikes += flag.data;
                                     }; 
-                                    Post.modify(req.params.id, post.data[0], true, (err, post) => {
+                                    Post.modify(req.params.id, post.data[0], (err, post) => {
                                         if (err) {
                                             if (!err.hasOwnProperty('erreurType')) {
                                                 res.status(500).json({
@@ -144,7 +144,7 @@ exports.likePost = (req, res) => {
                                             console.log(post.message, post.data);
                                             res.status(200).json({ message: post.message});
                                         };
-                                    });
+                                    }, true);
                                 };
                             });
                         } else {
@@ -174,7 +174,6 @@ exports.modifyPost = (req, res) => {
         // Utilisation de la méthode Post 'findBy' de notre object Post
         Post.findBy( {"key": "_id", "value": req.params.id} , (err, post) => {
             if (err) {
-                console.log(err);
                 if (!err.hasOwnProperty('erreurType')) {
                     res.status(500).json({
                         message: err.code || "Une erreur a eu lieu au moment de la modification du post"
@@ -192,7 +191,6 @@ exports.modifyPost = (req, res) => {
                     // utilisation de la méthode Post 'modify' de notre objet Post
                     Post.modify(req.params.id, postObject, (err, post) => {
                         if (err) {
-                            console.log(err);
                             if (!err.hasOwnProperty('erreurType')) {
                                 res.status(500).json({
                                     message: err.code || "Une erreur a eu lieu au moment de la modification du post"
@@ -303,7 +301,6 @@ exports.getAllPosts = (req, res) => {
         Post.findBy( query , (err, post) => {
             if (err) {
                 if (!err.hasOwnProperty('erreurType')) {
-                    console.log(err);
                     res.status(500).json({
                         message: err.code || "Une erreur a eu lieu au moment de la consultation des posts"
                     });
