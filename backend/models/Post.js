@@ -25,7 +25,7 @@ Post.create = (newPost, result) => {
 };
 
 /* Modification d'un message */
-Post.modify = (id, newPost, likeBoolean = false, result) => {
+Post.modify = (id, newPost, result, likeBoolean = false) => {
     if (!likeBoolean) { // Changement de la date de modification si pas un changement due à un like
         // Changement de la date de modification
         newPost.modificationDate = new Date(Date.now());
