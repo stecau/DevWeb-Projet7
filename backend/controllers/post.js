@@ -280,44 +280,74 @@ exports.getOnePostById = (req, res) => {
 
 // Rajout d'une requête Get sur la totalité des objets 'Post' ou de recherche par des paramètres
 exports.getAllPosts = (req, res) => {
-    if (!Object.keys(req.query).length) {
-        // Utilisation de la méthode Post 'findAll' de notre object Post
-        Post.findAll((err, post) => {
-            if (err) {
-                if (!err.hasOwnProperty('erreurType')) {
-                    res.status(500).json({
-                        message: err.code || "Une erreur a eu lieu au moment de la consultation des posts"
-                    });
-                } else {
-                    res.status(401).json({ message: "Erreur d'url"});
-                };
+    // Utilisation de la méthode Post 'findAll' de notre object Post
+    Post.findAll((err, post) => {
+        if (err) {
+            if (!err.hasOwnProperty('erreurType')) {
+                res.status(500).json({
+                    message: err.code || "Une erreur a eu lieu au moment de la consultation des posts"
+                });
             } else {
-                res.status(200).json(post.data);
+                res.status(401).json({ message: "Erreur d'url"});
             };
-        });
-    } else { // Présence de query
-        // Utilisation de la méthode Post 'findAll' de notre object Post
-        const query = {"key": Object.keys(req.query)[0], "value": Object.values(req.query)[0]}
-        Post.findBy( query , (err, post) => {
-            if (err) {
-                if (!err.hasOwnProperty('erreurType')) {
-                    res.status(500).json({
-                        message: err.code || "Une erreur a eu lieu au moment de la consultation des posts"
-                    });
-                } else {
-                    res.status(401).json({ message: "Erreur d'url"});
+        } else {
+            if (Object.keys(req.query).length) { // Requête avec un ou des params query
+                let postList = post.data;
+                // console.log("postList", postList);
+                // console.log("req.query", req.query);
+                for (let [key, valueInitial] of Object.entries(req.query)) {
+                    let valueList = valueInitial;
+                    if (typeof(valueInitial) === "number" || typeof(valueInitial) === "string") {
+                        valueList = [valueInitial];
+                    };
+                    let typeComparaison = "egal";
+                    for (let value of valueList) {
+                        if (isNaN(value)) {
+                            if (value.indexOf('>') != -1) {
+                                typeComparaison = "superieur";
+                                value = value.replace('>', '');
+                                if (value.indexOf('=') != -1) {
+                                    typeComparaison = "superieurOuEgal";
+                                    value = value.replace('=', '');
+                                };
+                            };
+                            if (value.indexOf('<') != -1) {
+                                typeComparaison = "inferieur";
+                                value = value.replace('<', '');
+                                if (value.indexOf('=') != -1) {
+                                    typeComparaison = "inferieurOuEgal";
+                                    value = value.replace('=', '');
+                                };
+                            };
+                        };
+                        if (key.indexOf('Date') != -1) {
+                            value = new Date(value);
+                        };
+                        // console.log("typeComparaison :", typeComparaison, value);
+                        // console.log("key", key);
+                        // console.log("value", value);
+                        // console.log("postList", postList);
+                        postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
+                        // console.log("postList final", postList);
+                    };
                 };
-            } else {
-                res.status(200).json(post.data);
             };
-        });
-    };
+            res.status(200).json(post.data);
+        };
+    });
 };
 
 // Rajout d'une requête Get sur la totalité des objets 'Post' ou de recherche par des paramètres
 exports.getPostsBy = (req, res) => {
+    // Mise au format Objet des paramètres de la requête
+    let query = {"key": req.params.type, "value": req.params.value};
+    // Mise au format de date (MySQL) si la clé concerne une date
+    if (query.key.indexOf('Date') != -1) {
+        let value = new Date(req.params.value);
+        value = `${value.getFullYear()}-${('0' + (value.getMonth() + 1)).slice(-2)}-${('0' + value.getDate()).slice(-2)} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`;
+        query = {"key": req.params.type, "value": value};
+    };
     // Utilisation de la méthode Post 'findBy' de notre object Post
-    const query = {"key": req.params.type, "value": req.params.value};
     Post.findBy( query , (err, post) => {
         if (err) {
             if (!err.hasOwnProperty('erreurType')) {
@@ -375,4 +405,90 @@ const bodyValide = (bodyObject, reqType) => {
         };
     };
     return [false, "Le contenu de la requête est incorrect !"];
+};
+
+const supressionPostFromAllPost = (key, value, postList, typeComparaison) => {
+    let lastIndex = 0;
+    for (let index = 0; index < postList.length; index++) {
+        lastIndex = index;
+        let referenceValue = postList[index][key];
+        let searchValue = value;
+        if (key.indexOf('Date') != -1) {
+            referenceValue = postList[index][key].getTime();
+            searchValue = value.getTime();
+        };
+        switch (typeComparaison) {
+            case "egal":
+                // console.log("if egal");
+                // console.log("postList[index][key] != value", postList[index][key] != value);
+                if (referenceValue != searchValue) {
+                    // console.log("Supprime : ", postList[index]);
+                    // console.log(`postList[index][key] : ${postList[index][key]} / req.query[key] : ${value}`);
+                    postList.splice(index, 1);
+                    // console.log("lastIndex", lastIndex);
+                    // console.log("postList.length", postList.length);
+                    if (lastIndex < postList.length) {
+                        postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
+                    };
+                };
+                break;
+            case "superieur":
+                // console.log("if superieur");
+                // console.log("postList[index][key] <= value", postList[index][key] <= value);
+                if (referenceValue <= searchValue) {
+                    // console.log("Supprime : ", postList[index]);
+                    // console.log(`postList[index][key] : ${postList[index][key]} / req.query[key] : ${value}`);
+                    postList.splice(index, 1);
+                    // console.log("lastIndex", lastIndex);
+                    // console.log("postList.length", postList.length);
+                    if (lastIndex < postList.length) {
+                        postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
+                    };
+                };
+                break;
+            case "superieurOuEgal":
+                // console.log("if superieurOuEgal");
+                // console.log("postList[index][key] < value", postList[index][key] < value);
+                if (referenceValue < searchValue) {
+                    // console.log("Supprime : ", postList[index]);
+                    // console.log(`postList[index][key] : ${postList[index][key]} / req.query[key] : ${value}`);
+                    postList.splice(index, 1);
+                    // console.log("lastIndex", lastIndex);
+                    // console.log("postList.length", postList.length);
+                    if (lastIndex < postList.length) {
+                        postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
+                    };
+                };
+                break;
+            case "inferieur":
+                // console.log("if inferieur");
+                // console.log("postList[index][key] >= value", postList[index][key] >= value);
+                if (referenceValue >= searchValue) {
+                    // console.log("Supprime : ", postList[index]);
+                    // console.log(`postList[index][key] : ${postList[index][key]} / req.query[key] : ${value}`);
+                    postList.splice(index, 1);
+                    // console.log("lastIndex", lastIndex);
+                    // console.log("postList.length", postList.length);
+                    if (lastIndex < postList.length) {
+                        postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
+                    };
+                };
+                break;
+            case "inferieurOuEgal":
+                // console.log("if inferieurOuEgal");
+                // console.log("postList[index][key] > value", postList[index][key] > value);
+                if (referenceValue > searchValue) {
+                    // console.log("Supprime : ", postList[index]);
+                    // console.log(`postList[index][key] : ${postList[index][key]} / req.query[key] : ${value}`);
+                    postList.splice(index, 1);
+                    // console.log("lastIndex", lastIndex);
+                    // console.log("postList.length", postList.length);
+                    if (lastIndex < postList.length) {
+                        postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
+                    };
+                };
+                break;
+        };
+    };
+    return postList;
 };
