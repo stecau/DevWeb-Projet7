@@ -21,6 +21,14 @@ body {
         props.isDarkMode ? colors.dark : colors.light};
     margin: 0;  
 }
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
 `;
 /* Info :
     background-color: ${(props) => props.isDarkMode ? '#2F2E41' : 'white'};

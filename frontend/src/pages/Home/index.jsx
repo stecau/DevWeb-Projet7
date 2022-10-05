@@ -6,21 +6,26 @@
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import colors from "../../utils/style/colors";
-/* Importation de notre style spécifique de lien */
-import { StyledLink } from "../../utils/style/Atoms";
+import { Loader } from "../../utils/style/Atoms";
+
+/* importation du hook 'useContext' de React */
+import { useState, useContext, useEffect } from "react";
 
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
 
-/* Importation de l'image jpeg pour la page d'accueil */
-import HomeIllustration from "../../assets/home-illustration.jpeg";
+/* Importation de notre connexion context */
+import { ConnexionContext } from "../../utils/context";
 
-const HomeWrapper = styled.div`
+/* Importation de notre composant 'Card' */
+import Card from "../../components/Card";
+
+const HomeWrapper = styled.article`
     display: flex;
     justify-content: center;
 `;
 
-const HomeContainer = styled.div`
+const HomeContainer = styled.section`
     margin: 30px;
     background-color: ${({ theme }) =>
         theme === "light" ? colors.backgroundLight : colors.backgroundDark};
@@ -30,57 +35,68 @@ const HomeContainer = styled.div`
     max-width: 1200px;
 `;
 
-const LeftCol = styled.div`
+const LoaderWrapper = styled.div`
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    flex: 1;
-    ${StyledLink} {
-        max-width: 250px;
+`;
+
+const getMessagesFromDatabase = async (setLoading) => {
+    setLoading(true);
+    const token = JSON.parse(window.localStorage.getItem("groupomania")).token;
+    const allMessages = await getAllMessagesFromDatabase(token);
+    setLoading(false);
+    return allMessages;
+};
+
+const getAllMessagesFromDatabase = async (token) => {
+    try {
+        const response = await fetch("http://localhost:4000/api/posts", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        if (!data.error) {
+            // Consultation des messages réussie
+            return data;
+        } else {
+            alert(`Consultation des messages : ${data.error.message}`);
+        }
+    } catch (err) {
+        // An error occured
+        alert(`Erreur pour la consultation des messages : [ ${err} ]`);
     }
-`;
-
-const StyledTitleH1 = styled.h1`
-    max-width: 280px;
-    line-height: 50px;
-    color: ${({ theme }) =>
-        theme === "light" ? colors.primary : colors.secondary};
-`;
-
-const StyledTitleH2 = styled.h2`
-    padding-bottom: 30px;
-    max-width: 280px;
-    line-height: 50px;
-    color: ${({ theme }) =>
-        theme === "light" ? colors.fontLight : colors.fontDark};
-`;
-
-const Illustration = styled.img`
-    flex: 1;
-    max-height: 500px;
-    width: 50%;
-    object-fit: contain;
-`;
+};
 
 const Home = () => {
     const { theme } = useTheme();
+    const { identificationType } = useContext(ConnexionContext);
+    // Déclaration du status du 'loader' en attendant la fin de la requête avec le 'state'
+    const [isLoading, setLoading] = useState(false);
+    const [appAllMessages, setAppAllMessages] = useState([]);
+
+    useEffect(() => {
+        const getMessages = async () => {
+            if (identificationType.type === "connecté") {
+                const allMessages = await getMessagesFromDatabase(setLoading);
+                setAppAllMessages(allMessages);
+            }
+        };
+        getMessages();
+    }, [identificationType]);
 
     return (
         <HomeWrapper>
             <HomeContainer theme={theme}>
-                <LeftCol>
-                    <StyledTitleH1 theme={theme}>
-                        Bienvenue sur le réseau social interne du groupe !
-                    </StyledTitleH1>
-                    <StyledTitleH2 theme={theme}>
-                        Rencontrez vos collègues de manières conviviales et
-                        apprennez à mieux les connaitre.
-                    </StyledTitleH2>
-                    <StyledLink to="/connexion" $isActivated theme={theme}>
-                        Connectez-vous !
-                    </StyledLink>
-                </LeftCol>
-                <Illustration src={HomeIllustration} alt="Home illustration" />
+                {isLoading ? (
+                    <LoaderWrapper>
+                        <Loader />
+                    </LoaderWrapper>
+                ) : (
+                    <Card appAllMessages={appAllMessages} />
+                )}
             </HomeContainer>
         </HomeWrapper>
     );

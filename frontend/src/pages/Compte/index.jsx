@@ -97,7 +97,7 @@ const Compte = () => {
                 <StyledTitleH1 theme={theme}>
                     Mon compte Groupomania
                 </StyledTitleH1>
-                {identificationType !== "connected" ? (
+                {identificationType.type !== "connecté" ? (
                     <CompteSection>
                         <StyledTitleH2 theme={theme}>
                             Aucune information disponible
@@ -111,7 +111,10 @@ const Compte = () => {
                             $isCreation
                             theme={theme}
                             onClick={() => {
-                                setIdentificationType("connexion");
+                                setIdentificationType({
+                                    type: "connexion",
+                                    email: "Inconnu",
+                                });
                             }}
                         >
                             Connexion
@@ -121,7 +124,10 @@ const Compte = () => {
                             $isCreation
                             theme={theme}
                             onClick={() => {
-                                setIdentificationType("creation");
+                                setIdentificationType({
+                                    type: "creation",
+                                    email: "Inconnu",
+                                });
                             }}
                         >
                             Créer un compte
@@ -142,7 +148,10 @@ const Compte = () => {
                                 $isCreation
                                 theme={theme}
                                 onClick={() => {
-                                    setIdentificationType("creation");
+                                    setIdentificationType({
+                                        type: "connecté",
+                                        email: identificationType.email,
+                                    });
                                 }}
                             >
                                 Supprimer mon compte
@@ -152,7 +161,10 @@ const Compte = () => {
                                 $isCreation
                                 theme={theme}
                                 onClick={() => {
-                                    setIdentificationType("creation");
+                                    setIdentificationType({
+                                        type: "connecté",
+                                        email: identificationType.email,
+                                    });
                                 }}
                             >
                                 Sauvegarder mes modifications

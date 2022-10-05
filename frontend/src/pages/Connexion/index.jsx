@@ -4,6 +4,8 @@
 
 /* importation du hook 'useState' et 'useContext' de React */
 import { useState, useContext } from "react";
+/* importation du hook 'useNavigate' de 'react-router-dom' */
+import { useNavigate } from "react-router-dom";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
@@ -17,12 +19,12 @@ import { useTheme } from "../../utils/hooks";
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../utils/context";
 
-const ConnexionWrapper = styled.div`
+const ConnexionWrapper = styled.article`
     display: flex;
     justify-content: center;
 `;
 
-const ConnexionArticle = styled.article`
+const ConnexionArticle = styled.section`
     margin: 30px;
     background-color: ${({ theme }) =>
         theme === "light" ? colors.backgroundLight : colors.backgroundDark};
@@ -71,7 +73,7 @@ const MotDePasseAlertText = styled.p`
     display: ${({ motDePasseValide }) => (motDePasseValide ? "none" : "block")};
 `;
 
-const CreationContainer = styled.section`
+const CreationContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -90,8 +92,59 @@ const isEmailValid = (inputEmail, regexpEmail) => {
     return false;
 };
 
+const connexionUtilisateur = async (type, email, motDePasse) => {
+    let url = "";
+    let body = "";
+    let dataMessage = "";
+    let alertMessage = "";
+    let erreurMessage = "";
+    if (type === "creation") {
+        url = "http://localhost:4000/api/auth/signup";
+        body = JSON.stringify({
+            email: email,
+            motDePasse: motDePasse,
+            nom: "Ici votre nom",
+            prenom: "Ici votre prénom",
+        });
+        dataMessage = "Nouvel utilisateur enregistré";
+        alertMessage = "Création d'un compte échouée : ";
+        erreurMessage = "Erreur de création d'un compte : ";
+    }
+    if (type === "connexion") {
+        url = "http://localhost:4000/api/auth/login";
+        body = JSON.stringify({
+            email: email,
+            motDePasse: motDePasse,
+        });
+        dataMessage = "Utilisateur connecté : ";
+        alertMessage = "Connexion échouée : ";
+        erreurMessage = "Erreur de connexion : ";
+    }
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: body,
+        });
+        const data = await response.json();
+        if (data.message.indexOf(dataMessage) !== -1) {
+            // Connexion ou Creation réussie
+            return data;
+        } else {
+            alert(`${alertMessage}${data.message}`);
+        }
+    } catch (err) {
+        // An error occured
+        alert(`${erreurMessage}[ ${err} ]`);
+    }
+};
+
 const Connexion = () => {
     const { theme } = useTheme();
+    const navigate = useNavigate();
     const [emailValue, setEmailValue] = useState("");
     const [emailValide, setEmailValide] = useState(true);
     const [motDePasseValue, setMotDePasseValue] = useState("");
@@ -101,44 +154,41 @@ const Connexion = () => {
         useContext(ConnexionContext);
 
     // Déclaration de la fonction faire la requête de connexion (avec création de compte)
-    const identification = (e, type, email, motDePasse) => {
+    const identification = async (e, type, email, motDePasse) => {
         e.preventDefault();
-        console.log(type, email, motDePasse);
-        if (type === "creation") {
-            console.log("CREATION");
-        }
+        let utilisateur = {};
         if (email && motDePasse) {
-            fetch("http://localhost:4000/api/auth/login", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: email,
-                    motDePasse: motDePasse,
-                }),
-            })
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {
-                    if (
-                        data.message.indexOf("Utilisateur connecté : ") !== -1
-                    ) {
-                        alert(
-                            `Connexion réussie : 
-                            ${data.message} (ID=${data.utilisateur_Id}, token=${data.token})`
+            if (type === "creation") {
+                utilisateur = await connexionUtilisateur(
+                    "creation",
+                    email,
+                    motDePasse
+                );
+            }
+            if (
+                type === "connexion" ||
+                utilisateur.message === "Nouvel utilisateur enregistré"
+            ) {
+                utilisateur = await connexionUtilisateur(
+                    "connexion",
+                    email,
+                    motDePasse
+                );
+                if (utilisateur) {
+                    setIdentificationType({
+                        type: "connecté",
+                        email: email,
+                    });
+                    if (typeof window !== "undefined") {
+                        window.localStorage.setItem(
+                            "groupomania",
+                            JSON.stringify(utilisateur)
                         );
-                        return data; // utilisation du state pour stocker le token
-                    } else {
-                        alert(`Connexion échouée : ${data.message}`);
                     }
-                })
-                .catch((err) => {
-                    // An error occured
-                    alert(`Erreur de connexion : [ ${err} ]`);
-                });
+                    document.title = `Groupomania / Utilisateur ${email}`;
+                    navigate("/");
+                }
+            }
         } else {
             if (emailValue.length === 0) {
                 setEmailValide(false);
@@ -169,7 +219,7 @@ const Connexion = () => {
         <ConnexionWrapper>
             <ConnexionArticle theme={theme}>
                 <StyledTitleH1 theme={theme}>
-                    {identificationType === "connexion"
+                    {identificationType.type === "connexion"
                         ? "Connectez-vous !"
                         : "Créez votre compte !"}
                 </StyledTitleH1>
@@ -215,7 +265,7 @@ const Connexion = () => {
                     </MotDePasseAlertText>
                     <StyledButton
                         onClick={(e) =>
-                            identificationType === "connexion"
+                            identificationType.type === "connexion"
                                 ? identification(
                                       e,
                                       "connexion",
@@ -232,28 +282,36 @@ const Connexion = () => {
                         $isActivated
                         theme={theme}
                     >
-                        {identificationType === "connexion"
+                        {identificationType.type === "connexion"
                             ? "Connexion"
                             : "Création"}
                     </StyledButton>
                 </ConnexionFrom>
-                {identificationType === "connexion" && (
-                    <CreationContainer>
-                        <StyledTitleH2 theme={theme}>
-                            Ou créez votre compte
-                        </StyledTitleH2>
-                        <StyledLink
-                            to="/connexion"
-                            $isCreation
-                            theme={theme}
-                            onClick={() => {
-                                setIdentificationType("creation");
-                            }}
-                        >
-                            Créer un compte
-                        </StyledLink>
-                    </CreationContainer>
-                )}
+                <CreationContainer>
+                    <StyledTitleH2 theme={theme}>
+                        {identificationType.type === "connexion"
+                            ? "Ou créez votre compte"
+                            : ""}
+                    </StyledTitleH2>
+                    <StyledLink
+                        to="/connexion"
+                        $isCreation
+                        theme={theme}
+                        onClick={() => {
+                            let type = "creation";
+                            if (identificationType.type !== "connexion") {
+                                type = "connexion";
+                            }
+                            setIdentificationType({
+                                type: type,
+                            });
+                        }}
+                    >
+                        {identificationType.type === "connexion"
+                            ? "Créer un compte"
+                            : "J'ai déjà un compte"}
+                    </StyledLink>
+                </CreationContainer>
             </ConnexionArticle>
         </ConnexionWrapper>
     );

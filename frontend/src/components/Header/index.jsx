@@ -37,7 +37,19 @@ const HeaderContainer = styled.header`
 const Header = () => {
     const { theme } = useTheme();
     const location = useLocation();
-    const { identificationType } = useContext(ConnexionContext);
+    const { identificationType, setIdentificationType } =
+        useContext(ConnexionContext);
+
+    const deconnection = () => {
+        if (window.localStorage.getItem("groupomania")) {
+            window.localStorage.removeItem("groupomania");
+        }
+        setIdentificationType({
+            type: "connexion",
+            email: "Inconnu",
+        });
+        document.title = `Groupomania / Utilisateur ${identificationType.email}`;
+    };
 
     return (
         <HeaderContainer>
@@ -55,7 +67,7 @@ const Header = () => {
                 >
                     Acceuil
                 </StyledLink>
-                {identificationType !== "connected" ? (
+                {identificationType.type !== "connecté" ? (
                     <StyledLink
                         to="/connexion"
                         $isActivated={location.pathname === "/connexion" && 1}
@@ -65,19 +77,19 @@ const Header = () => {
                     </StyledLink>
                 ) : (
                     <StyledLink
-                        to="/deconnexion"
+                        to="/connexion"
                         $isActivated={location.pathname === "/deconnexion" && 1}
                         theme={theme}
-                        onClick={() => console.log("déconnexion")}
+                        onClick={deconnection}
                     >
                         Déconnexion
                     </StyledLink>
                 )}
                 <StyledLink
                     to={
-                        identificationType !== "connected"
+                        identificationType.type !== "connecté"
                             ? "/compte"
-                            : `/compte/${"id"}`
+                            : `/compte/${""}`
                     }
                     $isActivated={
                         location.pathname.indexOf("/compte") !== -1 && 1

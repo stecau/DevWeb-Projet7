@@ -37,8 +37,8 @@ root.render(
                         <Route path="/compte" element={<Compte />} />
                         <Route path="*" element={<Error />} />
                     </Routes>
+                    <Footer />
                 </ConnexionProvider>
-                <Footer />
             </ThemeProvider>
         </Router>
     </React.StrictMode>

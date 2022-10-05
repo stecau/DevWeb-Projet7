@@ -42,6 +42,13 @@ export const StyledLink = styled(Link)`
         background-color: ${
             props.theme === "light" ? colors.tertiary : colors.secondary
         };`};
+    ${(props) =>
+        props.$isCard &&
+        `color: ${props.theme === "light" ? colors.fontLight : colors.fontDark};
+            padding: 0px;
+            background-color: ${
+                props.theme === "light" ? colors.secondary : colors.tertiary
+            };`};
 `;
 
 export const StyledButton = styled.button`
