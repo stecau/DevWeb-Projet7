@@ -30,9 +30,12 @@ export const ConnexionContext = createContext();
 
 // Déclaration du composant Provider ConnexionProvider utilisant le composant 'ConnexionContext'
 export const ConnexionProvider = ({ children }) => {
-    // Fournit aux enfants le contexte (ici le type d'identification)
+    // Fournit aux enfants le contexte (ici le type d'identification et l'object de connexion)
     // Utilisation du useState pour sauvegarder l'état de 'identificationType' avec sa fonction de mise à jour 'setIdentificationType'
-    const [identificationType, setIdentificationType] = useState("connexion");
+    const [identificationType, setIdentificationType] = useState({
+        type: "connexion",
+        email: "Inconnu",
+    });
 
     return (
         <ConnexionContext.Provider
