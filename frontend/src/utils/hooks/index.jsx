@@ -58,3 +58,15 @@ export function useTheme() {
     // Retourne la valeur de theme et la fonction basculement d'état du thème contenu dans l'objet 'ThemeContext'
     return { theme, toggleTheme };
 }
+
+// Déclaration de notre Hook pour permettre ou non la modification du mot de passe
+export function useChangeMDP() {
+    // Déclaration du boolean 'changeMDP' avec le 'state' pour les conserver
+    const [changeMDP, setChangeMDP] = useState(false);
+    // Déclaration d'une fonction pour changer d'état le 'changeMDP' (interrupteur on/off)
+    const toggleChangeMDP = () => {
+        setChangeMDP(changeMDP ? false : true);
+    };
+    // Retourne la valeur de changeMDP et la fonction basculement d'état du toggleChangeMDP
+    return { changeMDP, toggleChangeMDP };
+}

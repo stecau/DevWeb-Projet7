@@ -89,6 +89,30 @@ exports.login = (req, res) => {
     };
 };
 
+// Rajout d'une requête Get sur un utilisateur avec son id
+exports.getOneUserById = (req, res) => {
+    // Utilisation de la méthode Utilisateur 'findBy' de notre object utilisateur
+    Utilisateur.findBy( {"key": "_id", "value": req.params.id} , (err, utilisateur) => {
+        if (err) {
+            if (!err.hasOwnProperty('erreurType')) {
+                res.status(500).json({
+                    message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
+                });
+            } else {
+                res.status(400).json({ message: "Erreur d'url"});
+            };
+        } else {
+            // Utilisateur dans la base, on compare les id (token vs utilisateur à effacer)
+            if (utilisateur.data._id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
+                res.status(403).json({ message: 'Requête non autorisée !' });
+            } else {
+                utilisateur.data.motDePasse = "";
+                res.status(200).json(utilisateur.data); // Recherche avec l'id qui est unique
+            };
+        }
+    });
+};
+
 /* Création de la requête PUT (modification) d'un 'utilisateur' */
 exports.modify = (req, res) => {
     // Vérification si la requête a bien un body correct et un param id au format numérique
@@ -116,28 +140,45 @@ exports.modify = (req, res) => {
                     // Gestion du cas particulier si modification du mot de passe
                     const modifiedUtilisateur = {...req.body};
                     if (modifiedUtilisateur.hasOwnProperty('motDePasse')) {
-                        // Hashage du mot de passe
-                        bcrypt.hash(req.body.motDePasse, 10) // Bouclage 10 fois sur l'algo de cryptage
-                            .then(hash => {
-                                modifiedUtilisateur.motDePasse = hash;
-                                // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
-                                Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
-                                    if (err) {
-                                        if (!err.hasOwnProperty('erreurType')) {
-                                            res.status(500).json({
-                                                message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
-                                            });
-                                        } else {
-                                            res.status(400).json({ message: "Erreur d'url" });
-                                        }
-                                    } else {
-                                        console.log(utilisateur.message, utilisateur.data)
-                                        res.status(200).json({ message: utilisateur.message});
-                                    };
-                                });
-                            })
-                            .catch(error => res.status(500).json({ error })); // erreur code 500 pour une erreur serveur
+                        // Vérification de l'ancien mot de passe
+                        bcrypt.compare(modifiedUtilisateur.motDePasse, utilisateur.data.motDePasse)
+                            .then(valid => {
+                                if (!valid) { // Mot de passe incorrect
+                                    // code erreur 401 Unauthorized : manque des informations d'authentification valides pour la ressource
+                                    res.status(401).json({ message: 'Mot de passe actuel incorrect' }); // Message flou car pas de divulgation si utilisateur ou pas dans la base
+                                } else { // Mot de passe valid
+                                    // remplacement du mot de passe avec le nouveau
+                                    modifiedUtilisateur.motDePasse = modifiedUtilisateur.newMotDePasse
+                                    // suppression du champs 'newMotDePasse
+                                    delete modifiedUtilisateur.newMotDePasse
+                                    // Hashage du mot de passe
+                                    bcrypt.hash(modifiedUtilisateur.motDePasse, 10) // Bouclage 10 fois sur l'algo de cryptage
+                                    .then(hash => {
+                                        modifiedUtilisateur.motDePasse = hash;
+                                        // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
+                                        Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
+                                            if (err) {
+                                                if (!err.hasOwnProperty('erreurType')) {
+                                                    res.status(500).json({
+                                                        message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
+                                                    });
+                                                } else {
+                                                    res.status(400).json({ message: "Erreur d'url" });
+                                                }
+                                            } else {
+                                                console.log(utilisateur.message, utilisateur.data);
+                                                // delete utilisateur.data.motDePasse;
+                                                utilisateur.data.motDePasse = "";
+                                                res.status(200).json({ message: utilisateur.message, utilisateur: utilisateur.data});
+                                            };
+                                        });
+                                    })
+                                    .catch(error => res.status(500).json({ error })); // erreur code 500 pour une erreur serveur
+                                }})
+                            .catch(error => res.status(500).json({ error }));
                     } else {
+                        // On conserve l'ancien mot de passe
+                        modifiedUtilisateur.motDePasse = utilisateur.data.motDePasse;
                         // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
                         Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
                             if (err) {
@@ -150,7 +191,9 @@ exports.modify = (req, res) => {
                                 }
                             } else {
                                 console.log(utilisateur.message, utilisateur.data)
-                                res.status(200).json({ message: utilisateur.message});
+                                // delete utilisateur.data.motDePasse;
+                                utilisateur.data.motDePasse = "";
+                                res.status(200).json({ message: utilisateur.message, utilisateur: utilisateur.data});
                             };
                         });
                     };
@@ -215,9 +258,8 @@ const bodyValide = (bodyObject, reqType) => {
                 };
                 break;
             case 'modifyUtilisateur':
-                if (bodyObject.hasOwnProperty('email') && bodyObject.hasOwnProperty('motDePasse') &&
-                bodyObject.hasOwnProperty('nom') && bodyObject.hasOwnProperty('prenom') &&
-                bodyObject.hasOwnProperty('poste')) {
+                if (bodyObject.hasOwnProperty('email') && bodyObject.hasOwnProperty('nom') && 
+                bodyObject.hasOwnProperty('prenom') && bodyObject.hasOwnProperty('poste')) {
                     return [true, null];
                 };
                 break;
