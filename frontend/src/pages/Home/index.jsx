@@ -42,7 +42,7 @@ const LoaderWrapper = styled.div`
 
 const getMessagesFromDatabase = async (setLoading) => {
     setLoading(true);
-    const token = JSON.parse(window.localStorage.getItem("groupomania")).token;
+    const token = JSON.parse(window.localStorage.getItem("groupomania"));
     const allMessages = await getAllMessagesFromDatabase(token);
     setLoading(false);
     return allMessages;

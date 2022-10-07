@@ -22,6 +22,7 @@ export const Loader = styled.div`
 `;
 
 export const StyledLink = styled(Link)`
+    margin: 5px;
     padding: 10px 15px;
     color: ${({ theme }) =>
         theme === "light" ? colors.fontLight : colors.fontDark};
@@ -52,12 +53,15 @@ export const StyledLink = styled(Link)`
 `;
 
 export const StyledButton = styled.button`
+    margin: 5px;
     padding: 10px 15px;
     color: ${({ theme }) =>
         theme === "light" ? colors.fontLight : colors.fontDark};
     text-decoration: none;
     font-size: 18px;
     text-align: center;
+    border: none;
+    cursor: pointer;
     ${(props) =>
         props.$isActivated &&
         `color: ${colors.fontDark}; 

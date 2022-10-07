@@ -24,7 +24,7 @@ const ConnexionWrapper = styled.article`
     justify-content: center;
 `;
 
-const ConnexionArticle = styled.section`
+const ConnexionContainer = styled.section`
     margin: 30px;
     background-color: ${({ theme }) =>
         theme === "light" ? colors.backgroundLight : colors.backgroundDark};
@@ -178,11 +178,12 @@ const Connexion = () => {
                     setIdentificationType({
                         type: "connecté",
                         email: email,
+                        id: utilisateur.utilisateur_Id,
                     });
                     if (typeof window !== "undefined") {
                         window.localStorage.setItem(
                             "groupomania",
-                            JSON.stringify(utilisateur)
+                            JSON.stringify(utilisateur.token)
                         );
                     }
                     document.title = `Groupomania / Utilisateur ${email}`;
@@ -217,7 +218,7 @@ const Connexion = () => {
 
     return (
         <ConnexionWrapper>
-            <ConnexionArticle theme={theme}>
+            <ConnexionContainer theme={theme}>
                 <StyledTitleH1 theme={theme}>
                     {identificationType.type === "connexion"
                         ? "Connectez-vous !"
@@ -312,7 +313,7 @@ const Connexion = () => {
                             : "J'ai déjà un compte"}
                     </StyledLink>
                 </CreationContainer>
-            </ConnexionArticle>
+            </ConnexionContainer>
         </ConnexionWrapper>
     );
 };
