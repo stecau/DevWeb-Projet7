@@ -13,6 +13,8 @@ import colors from "../../utils/style/colors";
 /* Importation de notre style spécifique de lien */
 import { StyledLink, StyledButton } from "../../utils/style/Atoms";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
 
