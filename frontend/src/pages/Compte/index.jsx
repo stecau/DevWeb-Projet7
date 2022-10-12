@@ -95,6 +95,7 @@ const Compte = () => {
                 setUtilisateur(utilisateur);
             }
         };
+        console.log("toto");
         getUtilisateur();
     }, [identificationType]);
 

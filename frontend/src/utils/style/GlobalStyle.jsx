@@ -29,7 +29,78 @@ h1 {
 h2 {
     font-size: 1.5em;
 }
+
+p {
+    margin: 0;
+}
+
+.normalIcon {
+    color: ${(props) =>
+        props.isDarkMode ? colors.secondary : colors.tertiary};
+    font-size: 20px;
+    padding: 5px 5px 5px 5px;
+}
+
+.normalIconRed {
+    font-size: 20px;
+    padding: 5px 5px 5px 5px;
+    color: ${colors.primary};
+}
+
+.normalIconReverse {
+    color: ${(props) =>
+        props.isDarkMode ? colors.tertiary : colors.secondary};
+    font-size: 20px;
+    padding: 5px 5px 5px 5px;
+}
+
+.normalLike {
+    color: ${(props) =>
+        props.isDarkMode ? colors.secondary : colors.tertiary};
+    font-size: 20px;
+    padding: 5px 5px 7px 7px;
+}
+
+.normalDislike {
+    color: ${(props) =>
+        props.isDarkMode ? colors.secondary : colors.tertiary};
+    font-size: 20px;
+    padding: 7px 7px 5px 5px;
+}
+
+.liked {
+    color: ${(props) => (props.isDarkMode ? "#00FF00" : "#0000FF")};
+    font-size: 20px;
+    padding: 5px 5px 7px 7px;
+}
+
+.disliked {
+    color: ${(props) => (props.isDarkMode ? "#FF0000" : "#FF0000")};
+    font-size: 20px;
+    padding: 7px 7px 5px 5px;
+}
+
+legend {
+    font-size: 12px;
+}
+
+label {
+    padding: 5px;
+    font-size: 15px;
+}
+
+input {
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+textarea {
+    padding: 5px;
+    margin-bottom: 5px;
+    height: 150px;
+}
 `;
+
 /* Info :
     background-color: ${(props) => props.isDarkMode ? '#2F2E41' : 'white'};
         est équivalent ici à :

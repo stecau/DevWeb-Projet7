@@ -60,98 +60,48 @@ exports.likePost = (req, res) => {
                     res.status(400).json({ message: "Erreur d'url"});
                 };
             } else {
-                // Récupération du flag pour un like/dislike avec message_id et utilisateur_id
-                Post.flagUtilisateurLikeMessage(req.params.id, utilisateur_id, (err, flag) => {
-                    if (err) {
-                        if (!err.hasOwnProperty('erreurType')) {
+                const listeUtilisateursLike = post.data[0].listeLikesData;
+                const listeUtilisateursDislike = post.data[0].listeDislikesData;
+                // Vérification qu'il n'y a pas de like ou dislike de l'utilisateur pour le message
+                if ((like === 1 || like === -1) && 
+                     listeUtilisateursLike.indexOf(utilisateur_id) === -1 &&
+                     listeUtilisateursDislike.indexOf(utilisateur_id) === -1) {
+                    // Rajout de la ligne pour message_id et utilisateur_id avec valeur 1
+                    const likeObject = {
+                        "flag": like,
+                        "message_id": req.params.id,
+                        "utilisateur_id": utilisateur_id
+                    };
+                    Post.rajoutUtilisateurLikeMessage(likeObject, (err, likeData) => {
+                        if (err) {
                             res.status(500).json({
                                 message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
                             });
                         } else {
-                            if (like === 1 || like === -1) {
-                                // Rajout de la ligne pour message_id et utilisateur_id avec valeur 1
-                                const likeObject = {
-                                    "flag": like,
-                                    "message_id": req.params.id,
-                                    "utilisateur_id": utilisateur_id
-                                };
-                                Post.rajoutUtilisateurLikeMessage(likeObject, (err, like) => {
-                                    if (err) {
-                                        res.status(500).json({
-                                            message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
-                                        });
-                                    } else {
-                                        console.log(like.message, like.data);
-                                        // Update du nombre de like ou dislike pour le post
-                                        if (likeObject.flag === 1) {
-                                            post.data[0].likes += likeObject.flag;
-                                        };
-                                        if(likeObject.flag === -1) {
-                                            post.data[0].dislikes -= likeObject.flag;
-                                        }; 
-                                        Post.modify(req.params.id, post.data[0], (err, post) => {
-                                            if (err) {
-                                                if (!err.hasOwnProperty('erreurType')) {
-                                                    res.status(500).json({
-                                                        message: err.code || "Une erreur a eu lieu au moment de la modification du post"
-                                                    });
-                                                } else {
-                                                    res.status(400).json({ message: "Erreur d'url" });
-                                                }
-                                            } else {
-                                                console.log(post.message, post.data);
-                                                res.status(201).json({ message: post.message});
-                                            };
-                                        }, true);
-                                    };
+                            console.log(likeData.message, likeData.data);
+                            res.status(201).json({ message: likeData.message});
+                        };
+                    });
+                } else if (like === 0 && (listeUtilisateursLike.indexOf(utilisateur_id) != -1 ||
+                           listeUtilisateursDislike.indexOf(utilisateur_id) != -1)) {
+                    // Suppression de la ligne pour message_id et utilisateur_id
+                    Post.suppressionUtilisateurLikeMessage(req.params.id, utilisateur_id, (err, likeData) => {
+                        if (err) {
+                            if (!err.hasOwnProperty('erreurType')) {
+                                res.status(500).json({
+                                    message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
                                 });
                             } else {
                                 res.status(400).json({ message: "Like absent"});
                             };
-                        };
-                    } else {
-                        if (like === 0) {
-                            console.log(flag.message);
-                            // Suppression de la ligne pour message_id et utilisateur_id
-                            Post.suppressionUtilisateurLikeMessage(req.params.id, utilisateur_id, (err, like) => {
-                                if (err) {
-                                    if (!err.hasOwnProperty('erreurType')) {
-                                        res.status(500).json({
-                                            message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
-                                        });
-                                    } else {
-                                        res.status(400).json({ message: "Like absent"});
-                                    };
-                                } else {
-                                    console.log(like.message);
-                                    // Update du nombre de like ou dislike pour le post
-                                    if (flag.data === 1) {
-                                        post.data[0].likes -= flag.data;
-                                    };
-                                    if(flag.data === -1) {
-                                        post.data[0].dislikes += flag.data;
-                                    }; 
-                                    Post.modify(req.params.id, post.data[0], (err, post) => {
-                                        if (err) {
-                                            if (!err.hasOwnProperty('erreurType')) {
-                                                res.status(500).json({
-                                                    message: err.code || "Une erreur a eu lieu au moment de la modification du post"
-                                                });
-                                            } else {
-                                                res.status(400).json({ message: "Erreur d'url" });
-                                            }
-                                        } else {
-                                            console.log(post.message, post.data);
-                                            res.status(200).json({ message: post.message});
-                                        };
-                                    }, true);
-                                };
-                            });
                         } else {
-                            res.status(400).json({ message: "Like déjà présent"});
+                            console.log(likeData.message);
+                            res.status(200).json({ message: likeData.message});
                         };
-                    };
-                });
+                    });
+                } else {
+                    res.status(400).json({ message: "Condition de changement de like inadéquate"});
+                };
             };
         });
     };
@@ -187,7 +137,7 @@ exports.modifyPost = (req, res) => {
                     res.status(403).json({ message: 'Requête non autorisée !' });
                 } else {
                     // Si changement d'image, alors on supprime l'ancienne image du serveur
-                    suppressionServeurAncienneImage(post.data, postObject);
+                    suppressionServeurAncienneImage(post.data[0], postObject);
                     // utilisation de la méthode Post 'modify' de notre objet Post
                     Post.modify(req.params.id, postObject, (err, post) => {
                         if (err) {
@@ -273,6 +223,7 @@ exports.getOnePostById = (req, res) => {
                 res.status(401).json({ message: "Erreur d'url"});
             };
         } else {
+            console.log(post.message, post.data);
             res.status(200).json(post.data[0]); // Recherche avec l'id qui est unique => liste avec 1 seul post
         };
     });
@@ -285,16 +236,14 @@ exports.getAllPosts = (req, res) => {
         if (err) {
             if (!err.hasOwnProperty('erreurType')) {
                 res.status(500).json({
-                    message: err.code || "Une erreur a eu lieu au moment de la consultation des posts"
+                    message: err.code || "Une erreur a eu lieu au moment de la consultation des likes des posts"
                 });
             } else {
-                res.status(401).json({ message: "Erreur d'url"});
-            };
+                res.status(401).json({ message: "Erreur sur la consultation des likes, dislikes et liste d'utilisateurs likant ou dislikant des posts"});
+            }
         } else {
             if (Object.keys(req.query).length) { // Requête avec un ou des params query
                 let postList = post.data;
-                // console.log("postList", postList);
-                // console.log("req.query", req.query);
                 for (let [key, valueInitial] of Object.entries(req.query)) {
                     let valueList = valueInitial;
                     if (typeof(valueInitial) === "number" || typeof(valueInitial) === "string") {
@@ -323,12 +272,7 @@ exports.getAllPosts = (req, res) => {
                         if (key.indexOf('Date') != -1) {
                             value = new Date(value);
                         };
-                        // console.log("typeComparaison :", typeComparaison, value);
-                        // console.log("key", key);
-                        // console.log("value", value);
-                        // console.log("postList", postList);
                         postList = supressionPostFromAllPost(key, value, postList, typeComparaison);
-                        // console.log("postList final", postList);
                     };
                 };
             };
@@ -358,6 +302,7 @@ exports.getPostsBy = (req, res) => {
                 res.status(401).json({ message: "Erreur d'url"});
             };
         } else {
+            console.log(post.message, post.data);
             res.status(200).json(post.data);
         };
     });
@@ -365,7 +310,7 @@ exports.getPostsBy = (req, res) => {
 
 // Fonction de supression de l'ancienne image du serveur si modification de l'image d'une sauce
 const suppressionServeurAncienneImage = (post, postObjet) => {
-    if ('imageUrl' in postObjet) { // Si la requête (modification de l'objet Post) contient une image
+    if ('imageUrl' in post && post.imageUrl != null) { // Si la requête (modification de l'objet Post) contient une image
         if (postObjet.imageUrl != post.imageUrl) { // Si les url entre la requête et l'image (sauce en base de données) sur le serveur sont différentes
             // Suppression du fichier sur le serveur
             const filename = post.imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'

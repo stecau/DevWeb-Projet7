@@ -6,10 +6,10 @@
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import colors from "../../utils/style/colors";
-import { Loader } from "../../utils/style/Atoms";
+import { StyledLink } from "../../utils/style/Atoms";
 
 /* importation du hook 'useContext' de React */
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
@@ -17,8 +17,11 @@ import { useTheme } from "../../utils/hooks";
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../utils/context";
 
-/* Importation de notre composant 'Card' */
-import Card from "../../components/Card";
+/* Importation de notre composant 'Cards' */
+import Cards from "../../components/Cards";
+
+/* Importation de l'image jpeg pour la page d'accueil */
+import HomeIllustration from "../../assets/home-illustration.jpeg";
 
 const HomeWrapper = styled.article`
     display: flex;
@@ -35,67 +38,83 @@ const HomeContainer = styled.section`
     max-width: 1200px;
 `;
 
-const LoaderWrapper = styled.div`
+const HomeFigure = styled.figure`
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    margin: 0;
 `;
 
-const getMessagesFromDatabase = async (setLoading) => {
-    setLoading(true);
-    const token = JSON.parse(window.localStorage.getItem("groupomania"));
-    const allMessages = await getAllMessagesFromDatabase(token);
-    setLoading(false);
-    return allMessages;
-};
-
-const getAllMessagesFromDatabase = async (token) => {
-    try {
-        const response = await fetch("http://localhost:4000/api/posts", {
-            method: "GET",
-            headers: {
-                "Content-type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        const data = await response.json();
-        if (!data.error) {
-            // Consultation des messages réussie
-            return data;
-        } else {
-            alert(`Consultation des messages : ${data.error.message}`);
-        }
-    } catch (err) {
-        // An error occured
-        alert(`Erreur pour la consultation des messages : [ ${err} ]`);
+const LeftCol = styled.figcaption`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    ${StyledLink} {
+        max-width: 250px;
     }
-};
+`;
+
+const StyledTitleH1 = styled.h1`
+    padding: 0 5px 0 0;
+    max-width: 280px;
+    line-height: 50px;
+    color: ${({ theme }) =>
+        theme === "light" ? colors.primary : colors.secondary};
+`;
+
+const StyledTitleH2 = styled.h2`
+    padding: 0 5px 30px 0;
+    max-width: 280px;
+    line-height: 50px;
+    color: ${({ theme }) =>
+        theme === "light" ? colors.fontLight : colors.fontDark};
+`;
+
+const Illustration = styled.img`
+    max-height: 500px;
+    width: 100%;
+    object-fit: contain;
+    ${({ isMessage }) =>
+        !isMessage &&
+        `flex: 1;
+        width: 50%;`};
+`;
 
 const Home = () => {
+    // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
+    // Identification pour la gestion du statut de connexion et de l'email + id de l'utilisateur connecté
     const { identificationType } = useContext(ConnexionContext);
-    // Déclaration du status du 'loader' en attendant la fin de la requête avec le 'state'
-    const [isLoading, setLoading] = useState(false);
-    const [appAllMessages, setAppAllMessages] = useState([]);
-
-    useEffect(() => {
-        const getMessages = async () => {
-            if (identificationType.type === "connecté") {
-                const allMessages = await getMessagesFromDatabase(setLoading);
-                setAppAllMessages(allMessages);
-            }
-        };
-        getMessages();
-    }, [identificationType]);
 
     return (
         <HomeWrapper>
             <HomeContainer theme={theme}>
-                {isLoading ? (
-                    <LoaderWrapper>
-                        <Loader />
-                    </LoaderWrapper>
+                {identificationType.type !== "connecté" ? (
+                    <HomeFigure>
+                        <LeftCol>
+                            <StyledTitleH1 theme={theme}>
+                                Bienvenue sur le réseau social interne du groupe
+                                !
+                            </StyledTitleH1>
+                            <StyledTitleH2 theme={theme}>
+                                Rencontrez vos collègues de manières conviviales
+                                et apprennez à mieux les connaitre.
+                            </StyledTitleH2>
+                            <StyledLink
+                                to="/connexion"
+                                $isActivated
+                                theme={theme}
+                            >
+                                Connectez-vous !
+                            </StyledLink>
+                        </LeftCol>
+                        <Illustration
+                            src={HomeIllustration}
+                            alt="Home illustration"
+                        />
+                    </HomeFigure>
                 ) : (
-                    <Card appAllMessages={appAllMessages} />
+                    <Cards />
                 )}
             </HomeContainer>
         </HomeWrapper>

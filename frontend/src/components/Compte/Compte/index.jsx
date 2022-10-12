@@ -13,7 +13,7 @@ import { Loader } from "../../../utils/style/Atoms";
 import { StyledLink, StyledButton } from "../../../utils/style/Atoms";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme, useChangeMDP, useFetch } from "../../../utils/hooks";
+import { useTheme, useChangeMDP } from "../../../utils/hooks";
 
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../../utils/context";

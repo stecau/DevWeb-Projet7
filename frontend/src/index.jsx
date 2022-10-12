@@ -23,6 +23,30 @@ import { ThemeProvider, ConnexionProvider } from "./utils/context";
 // Style Global du site */
 import GlobalStyle from "./utils/style/GlobalStyle";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+    faThumbsUp,
+    faThumbsDown,
+    faTrashCan,
+    faPenToSquare,
+    faEnvelope,
+    faCircleLeft,
+    faCircleXmark,
+} from "@fortawesome/free-regular-svg-icons";
+
+import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+    faThumbsUp,
+    faThumbsDown,
+    faTrashCan,
+    faPenToSquare,
+    faEnvelope,
+    faEnvelopeCircleCheck,
+    faCircleLeft,
+    faCircleXmark
+);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>

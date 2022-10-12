@@ -46,10 +46,10 @@ export const StyledLink = styled(Link)`
     ${(props) =>
         props.$isCard &&
         `color: ${props.theme === "light" ? colors.fontLight : colors.fontDark};
-            padding: 0px;
-            background-color: ${
-                props.theme === "light" ? colors.secondary : colors.tertiary
-            };`};
+        padding: 0px;
+        background-color: ${
+            props.theme === "light" ? colors.secondary : colors.tertiary
+        };`};
 `;
 
 export const StyledButton = styled.button`
@@ -76,4 +76,20 @@ export const StyledButton = styled.button`
         background-color: ${
             props.theme === "light" ? colors.tertiary : colors.secondary
         };`};
+    ${(props) =>
+        props.$isCard &&
+        `color: ${props.theme === "light" ? colors.fontLight : colors.fontDark};
+        padding: 0px;
+        background-color: ${
+            props.theme === "light" ? colors.secondary : colors.tertiary
+        };`};
+    ${(props) =>
+        props.$isLike &&
+        `color: ${
+            props.theme === "light" ? colors.tertiary : colors.secondary
+        };`};
+    ${(props) =>
+        props.$isFlex &&
+        `display: flex;
+        align-items: center;`};
 `;
