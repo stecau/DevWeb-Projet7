@@ -68,14 +68,8 @@ const Header = () => {
                     Acceuil
                 </StyledLink>
                 <StyledLink
-                    to={
-                        identificationType.type !== "connecté"
-                            ? "/compte"
-                            : `/compte/${""}`
-                    }
-                    $isActivated={
-                        location.pathname.indexOf("/compte") !== -1 && 1
-                    }
+                    to="/compte"
+                    $isActivated={location.pathname === "/compte" && 1}
                     theme={theme}
                 >
                     Mon compte

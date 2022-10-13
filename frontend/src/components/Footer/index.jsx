@@ -2,16 +2,12 @@
 /* Définition du composant Footer pour notre application React 'app' pour notre FrontEnd : */
 /*-----------------------------------------------------------------------------------------*/
 
-/* importation du hook 'useState' et 'useContext' de React */
-import { useContext } from "react";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import colors from "../../utils/style/colors";
 /* Importation de notre Hook 'useTheme' */
-import { useTheme } from "../../utils/hooks";
-/* Importation de notre connexion context */
-import { ConnexionContext } from "../../utils/context";
+import { useIdentification, useTheme } from "../../utils/hooks";
 /* Importation des logos 'ligth' et 'dark' */
 import logoLigth from "../../assets/icon-left-font-monochrome-black.svg";
 import logoDark from "../../assets/icon-left-font-monochrome-white.svg";
@@ -53,7 +49,7 @@ const NightModeButton = styled.button`
 
 function Footer() {
     const { toggleTheme, theme } = useTheme();
-    const { identificationType } = useContext(ConnexionContext);
+    const { identificationType } = useIdentification();
 
     return (
         <FooterContainer theme={theme}>

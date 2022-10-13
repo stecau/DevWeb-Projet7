@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme, useFetch } from "../../utils/hooks";
+import { useTheme, useFetch, useIdentification } from "../../utils/hooks";
 
 const MessageForm = styled.form`
     display: flex;
@@ -75,42 +75,10 @@ const AlertText = styled.p`
             : "block"};
 `;
 
-// Fonction pour générer un token falcifier pour le localStorage
-const generateurFalseToken = (data, reverse = false) => {
-    /* Mise dans le local storage d'un string contenant :
-    l'ensemble des informations d'identifacation séparée par @
-    (token)type@(connecté)em(aà-il@(email)id@(id)token
-    {
-        ...identificationType,
-        token: utilisateur.token}
-    } */
-    if (reverse) {
-        // data est un string
-        const stringToParse = `{\"token\":${data.split("ty-pe@q")[0]}\", 
-        \"type\":\"${data.split("ty-pe@q")[1].split("em(aà-il@")[0]}\", 
-        \"email\":\"${
-            data.split("ty-pe@q")[1].split("em(aà-il@")[1].split("id@")[0]
-        }\", 
-            \"id\":\"${data
-                .split("ty-pe@q")[1]
-                .split("em(aà-il@")[1]
-                .split("id@")[1]
-                .replace("toenk", "")}}`;
-        const objectResult = JSON.parse(stringToParse);
-        objectResult.id = parseInt(objectResult.id, 10);
-        return objectResult;
-    } else {
-        // data est un string
-        const stringResult = `${data.token}ty-pe@q${"connecté"}em(aà-il@${
-            data.email
-        }id@${data.id}toenk`;
-        return stringResult;
-    }
-};
-
 const MessageCreation = ({ setIsCreationActive, setAppAllMessages }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
+    const { identificationType } = useIdentification();
 
     // UseState pour récupérer l'image du message
     const [imageValue, setImageValue] = useState(undefined);
@@ -152,10 +120,7 @@ const MessageCreation = ({ setIsCreationActive, setAppAllMessages }) => {
                 dataCreationMessage.content !== ""
             ) {
                 // Récupération du token
-                const token = generateurFalseToken(
-                    window.localStorage.getItem("groupomania"),
-                    "reverse"
-                ).token;
+                const token = identificationType.token;
 
                 setUrl(`http://localhost:4000/api/posts`);
 
@@ -211,10 +176,7 @@ const MessageCreation = ({ setIsCreationActive, setAppAllMessages }) => {
         // Fetch de création
         if (data.hasOwnProperty("message")) {
             // Mise à jour de appAllMessages avec une requête get sur tous les messages
-            const token = generateurFalseToken(
-                window.localStorage.getItem("groupomania"),
-                "reverse"
-            ).token;
+            const token = identificationType.token;
             setUrl(`http://localhost:4000/api/posts`);
             setFetchParamObjet({
                 method: "GET",

@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme, useFetch } from "../../utils/hooks";
+import { useTheme, useFetch, useIdentification } from "../../utils/hooks";
 
 const MessageForm = styled.form`
     display: flex;
@@ -75,39 +75,6 @@ const AlertText = styled.p`
             : "block"};
 `;
 
-// Fonction pour générer un token falcifier pour le localStorage
-const generateurFalseToken = (data, reverse = false) => {
-    /* Mise dans le local storage d'un string contenant :
-    l'ensemble des informations d'identifacation séparée par @
-    (token)type@(connecté)em(aà-il@(email)id@(id)token
-    {
-        ...identificationType,
-        token: utilisateur.token}
-    } */
-    if (reverse) {
-        // data est un string
-        const stringToParse = `{\"token\":${data.split("ty-pe@q")[0]}\", 
-        \"type\":\"${data.split("ty-pe@q")[1].split("em(aà-il@")[0]}\", 
-        \"email\":\"${
-            data.split("ty-pe@q")[1].split("em(aà-il@")[1].split("id@")[0]
-        }\", 
-            \"id\":\"${data
-                .split("ty-pe@q")[1]
-                .split("em(aà-il@")[1]
-                .split("id@")[1]
-                .replace("toenk", "")}}`;
-        const objectResult = JSON.parse(stringToParse);
-        objectResult.id = parseInt(objectResult.id, 10);
-        return objectResult;
-    } else {
-        // data est un string
-        const stringResult = `${data.token}ty-pe@q${"connecté"}em(aà-il@${
-            data.email
-        }id@${data.id}toenk`;
-        return stringResult;
-    }
-};
-
 const MessageModification = ({
     appMessage,
     setAppMessage,
@@ -115,6 +82,7 @@ const MessageModification = ({
 }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
+    const { identificationType } = useIdentification();
 
     // UseState pour récupérer l'image du message
     const [imageValue, setImageValue] = useState(undefined);
@@ -170,10 +138,7 @@ const MessageModification = ({
                 dataModificationMessage.hasOwnProperty("imageUrl")
             ) {
                 // Récupération du token
-                const token = generateurFalseToken(
-                    window.localStorage.getItem("groupomania"),
-                    "reverse"
-                ).token;
+                const token = identificationType.token;
                 // Modification de la valeur de imageUrl si undefined
                 if (dataModificationMessage.imageUrl === undefined) {
                     dataModificationMessage.imageUrl = null;
@@ -239,10 +204,7 @@ const MessageModification = ({
             if (data.message === "Message modifié") {
                 // Fetch pour actualisation du message
                 // Mise à jour de appMessage avec une requête get le message
-                const token = generateurFalseToken(
-                    window.localStorage.getItem("groupomania"),
-                    "reverse"
-                ).token;
+                const token = identificationType.token;
                 setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
                 setFetchParamObjet({
                     method: "GET",

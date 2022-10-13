@@ -6,6 +6,8 @@
 import { useState, useEffect, useContext } from "react";
 /* Importation de notre methode 'ThemeContext' depuis le dossier 'Context' */
 import { ThemeContext } from "../context";
+/* Importation de notre methode 'ConnexionContext' depuis le dossier 'Context' */
+import { ConnexionContext } from "../context";
 
 // Déclaration de notre Hook pour l'utilisation du Thème 'light' ou 'dark'
 export function useTheme() {
@@ -13,6 +15,15 @@ export function useTheme() {
     const { theme, toggleTheme } = useContext(ThemeContext);
     // Retourne la valeur de theme et la fonction basculement d'état du thème contenu dans l'objet 'ThemeContext'
     return { theme, toggleTheme };
+}
+
+// Déclaration de notre Hook pour l'utilisation de l'identification
+export function useIdentification() {
+    // Récupération du contexte de 'ThemeContext'
+    const { identificationType, updateIdentificationType } =
+        useContext(ConnexionContext);
+    // Retourne la valeur de theme et la fonction basculement d'état du thème contenu dans l'objet 'ThemeContext'
+    return { identificationType, updateIdentificationType };
 }
 
 // Déclaration de notre Hook pour permettre ou non la modification du mot de passe

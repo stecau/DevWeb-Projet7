@@ -2,8 +2,6 @@
 /* Définition de la page Compte pour notre application React 'app' pour notre FrontEnd : */
 /*---------------------------------------------------------------------------------------*/
 
-/* importation du hook 'useState' et 'useContext' de React */
-import { useContext } from "react";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
@@ -12,10 +10,7 @@ import colors from "../../../utils/style/colors";
 import { StyledLink } from "../../../utils/style/Atoms";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme } from "../../../utils/hooks";
-
-/* Importation de notre connexion context */
-import { ConnexionContext } from "../../../utils/context";
+import { useTheme, useIdentification } from "../../../utils/hooks";
 
 const CompteSection = styled.section`
     display: flex;
@@ -39,10 +34,9 @@ const StyledText = styled.p`
         theme === "light" ? colors.fontLight : colors.fontDark};
 `;
 
-const CompteDefault = () => {
+const CompteInfo = () => {
     const { theme } = useTheme();
-
-    const { setIdentificationType } = useContext(ConnexionContext);
+    const { updateIdentificationType } = useIdentification();
 
     return (
         <CompteSection>
@@ -58,10 +52,16 @@ const CompteDefault = () => {
                 $isCreation
                 theme={theme}
                 onClick={() => {
-                    setIdentificationType({
-                        type: "connexion",
-                        email: "Inconnu",
-                    });
+                    console.log("<----- COMPTE DEFAULT ----->");
+                    console.log(" => Click bouton pour faire une connexion");
+                    updateIdentificationType(
+                        {
+                            type: "connexion",
+                            email: "Inconnu",
+                        },
+                        true
+                    );
+                    console.log("<----- ----- ----->");
                 }}
             >
                 Connexion
@@ -71,10 +71,16 @@ const CompteDefault = () => {
                 $isCreation
                 theme={theme}
                 onClick={() => {
-                    setIdentificationType({
-                        type: "creation",
-                        email: "Inconnu",
-                    });
+                    console.log("<----- COMPTE DEFAULT ----->");
+                    console.log(" => Click bouton pour faire une création");
+                    updateIdentificationType(
+                        {
+                            type: "creation",
+                            email: "Inconnu",
+                        },
+                        true
+                    );
+                    console.log("<----- ----- ----->");
                 }}
             >
                 Créer un compte
@@ -83,4 +89,4 @@ const CompteDefault = () => {
     );
 };
 
-export default CompteDefault;
+export default CompteInfo;
