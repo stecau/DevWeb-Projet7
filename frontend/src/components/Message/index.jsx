@@ -56,6 +56,7 @@ const Illustration = styled.img`
     max-height: 500px;
     width: 100%;
     object-fit: contain;
+    border-radius: 15px;
     ${({ isMessage }) =>
         !isMessage &&
         `flex: 1;
@@ -130,11 +131,10 @@ const Message = ({
         setAppNbrDislike(message.nbrDislikes);
         setAppListeLikesData(message.listeLikesData);
         setAppListeDislikesData(message.listeDislikesData);
-    }, []);
+    }, [message]);
 
     // Déclenchement de l'affichage du message (après modification)
     useEffect(() => {
-        console.log("ca marche");
         if (appMessage.hasOwnProperty("_id") && !isModificationActive) {
             setAppMessage(appMessage);
             setAppNbrLike(appMessage.nbrLikes);
@@ -147,9 +147,7 @@ const Message = ({
     // Déclanchement de la requête pour un like/dislike ou annulation sur message
     useEffect(() => {
         if (likeForMessage.hasOwnProperty("id")) {
-            const token = JSON.parse(
-                window.localStorage.getItem("groupomania")
-            );
+            const token = identificationType.token;
             setUrl(`http://localhost:4000/api/posts/${likeForMessage.id}/like`);
             setFetchParamObjet({
                 method: "POST",
@@ -178,9 +176,7 @@ const Message = ({
     // Déclanchement de la requête pour une suppression de message
     useEffect(() => {
         if (suppressionMessage) {
-            const token = JSON.parse(
-                window.localStorage.getItem("groupomania")
-            );
+            const token = identificationType.token;
             setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
             setFetchParamObjet({
                 method: "DELETE",
@@ -198,7 +194,7 @@ const Message = ({
                 erreurMessage: "Erreur pour la suppression du message : [ ",
             });
         }
-    }, [suppressionMessage]);
+    }, [suppressionMessage, appMessage]);
 
     // Récupération lors d'une requête Fetch
     useEffect(() => {
@@ -208,15 +204,8 @@ const Message = ({
                 data.message === "Nouveau like enregistré" ||
                 data.message === "Like supprimé"
             ) {
-                console.log("composant Message apres fetch like", data);
-                console.log(
-                    "composant Message réalisation fetch get avec id message",
-                    appMessage._id
-                );
                 // Mise à jour de appMessage avec une requête get sur le message
-                const token = JSON.parse(
-                    window.localStorage.getItem("groupomania")
-                );
+                const token = identificationType.token;
                 setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
                 setFetchParamObjet({
                     method: "GET",
@@ -240,41 +229,22 @@ const Message = ({
         }
         // Fetch sur un message avec son id
         if (data.hasOwnProperty("_id")) {
-            console.log(
-                "composant Message apres fetch get car fetch like",
-                data
-            );
-            console.log(
-                "composant Message actualisation des likes sur le message",
-                data._id
-            );
             if (infoFetch.typeFetch.type === "getMessageWithIdForLike") {
                 if (infoFetch.typeFetch.button === "like") {
                     setAppNbrLike(data.nbrLikes);
                     setAppListeLikesData(data.listeLikesData);
-                    console.log("Mise à jour après Like click");
                 }
                 if (infoFetch.typeFetch.button === "dislike") {
                     setAppNbrDislike(data.nbrDislikes);
                     setAppListeDislikesData(data.listeDislikesData);
-                    console.log("Mise à jour après Dislike click");
                 }
             }
         }
         // Fetch sur la suppression d'un message avec son id
         if (data.hasOwnProperty("message")) {
             if (data.message === "Message supprimé") {
-                console.log(
-                    "composant Message apres fetch suppression d'un message",
-                    data
-                );
-                console.log(
-                    "composant Message réalisation fetch get sur tous les message car suppression d'un message"
-                );
                 // Mise à jour de appAllMessages avec une requête get sur tous les messages
-                const token = JSON.parse(
-                    window.localStorage.getItem("groupomania")
-                );
+                const token = identificationType.token;
                 setUrl(`http://localhost:4000/api/posts`);
                 setFetchParamObjet({
                     method: "GET",
@@ -296,8 +266,6 @@ const Message = ({
         }
         // Fetch sur récupération de tous les messages
         if (data.length) {
-            console.log("Fetch de get apres suppression", data);
-            console.log("Actualisation des messages");
             setAppAllMessages(data);
         }
     }, [data]);

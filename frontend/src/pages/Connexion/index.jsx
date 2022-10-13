@@ -20,6 +20,7 @@ import { useTheme } from "../../utils/hooks";
 
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../utils/context";
+import { useEffect } from "react";
 
 const ConnexionWrapper = styled.article`
     display: flex;
@@ -144,6 +145,39 @@ const connexionUtilisateur = async (type, email, motDePasse) => {
     }
 };
 
+// Fonction pour générer un token falcifier pour le localStorage
+const generateurFalseToken = (data, reverse = false) => {
+    /* Mise dans le local storage d'un string contenant :
+    l'ensemble des informations d'identifacation séparée par @
+    (token)type@(connecté)email@(email)id@(id)token
+    {
+        ...identificationType,
+        token: utilisateur.token}
+    } */
+    if (reverse) {
+        // data est un string
+        const stringToParse = `{\"token\":${data.split("ty-pe@q")[0]}\", 
+        \"type\":\"${data.split("ty-pe@q")[1].split("em(aà-il@")[0]}\", 
+        \"email\":\"${
+            data.split("ty-pe@q")[1].split("em(aà-il@")[1].split("id@")[0]
+        }\", 
+            \"id\":\"${data
+                .split("ty-pe@q")[1]
+                .split("em(aà-il@")[1]
+                .split("id@")[1]
+                .replace("toenk", "")}}`;
+        const objectResult = JSON.parse(stringToParse);
+        objectResult.id = parseInt(objectResult.id, 10);
+        return objectResult;
+    } else {
+        // data est un string
+        const stringResult = `${data.token}ty-pe@q${"connecté"}em(aà-il@${
+            data.email
+        }id@${data.id}toenk`;
+        return stringResult;
+    }
+};
+
 const Connexion = () => {
     const { theme } = useTheme();
     const navigate = useNavigate();
@@ -154,6 +188,21 @@ const Connexion = () => {
 
     const { identificationType, setIdentificationType } =
         useContext(ConnexionContext);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            if (window.localStorage.getItem("groupomania")) {
+                // Generation d'un token falcifié pour le localStorage
+                const tokenObject = generateurFalseToken(
+                    window.localStorage.getItem("groupomania"),
+                    "reverse"
+                );
+                setIdentificationType({ ...tokenObject });
+                document.title = `Groupomania / Utilisateur ${tokenObject.email}`;
+                navigate("/");
+            }
+        }
+    }, []);
 
     // Déclaration de la fonction faire la requête de connexion (avec création de compte)
     const identification = async (e, type, email, motDePasse) => {
@@ -183,9 +232,17 @@ const Connexion = () => {
                         id: utilisateur.utilisateur_Id,
                     });
                     if (typeof window !== "undefined") {
+                        // Generation d'un token falcifié pour le localStorage
                         window.localStorage.setItem(
                             "groupomania",
-                            JSON.stringify(utilisateur.token)
+                            JSON.stringify(
+                                generateurFalseToken({
+                                    type: "connecté",
+                                    email: email,
+                                    id: utilisateur.utilisateur_Id,
+                                    token: utilisateur.token,
+                                })
+                            )
                         );
                     }
                     document.title = `Groupomania / Utilisateur ${email}`;

@@ -107,6 +107,39 @@ const isEmailValid = (inputEmail, regexpEmail) => {
     return false;
 };
 
+// Fonction pour générer un token falcifier pour le localStorage
+const generateurFalseToken = (data, reverse = false) => {
+    /* Mise dans le local storage d'un string contenant :
+    l'ensemble des informations d'identifacation séparée par @
+    (token)type@(connecté)em(aà-il@(email)id@(id)token
+    {
+        ...identificationType,
+        token: utilisateur.token}
+    } */
+    if (reverse) {
+        // data est un string
+        const stringToParse = `{\"token\":${data.split("ty-pe@q")[0]}\", 
+        \"type\":\"${data.split("ty-pe@q")[1].split("em(aà-il@")[0]}\", 
+        \"email\":\"${
+            data.split("ty-pe@q")[1].split("em(aà-il@")[1].split("id@")[0]
+        }\", 
+            \"id\":\"${data
+                .split("ty-pe@q")[1]
+                .split("em(aà-il@")[1]
+                .split("id@")[1]
+                .replace("toenk", "")}}`;
+        const objectResult = JSON.parse(stringToParse);
+        objectResult.id = parseInt(objectResult.id, 10);
+        return objectResult;
+    } else {
+        // data est un string
+        const stringResult = `${data.token}ty-pe@q${"connecté"}em(aà-il@${
+            data.email
+        }id@${data.id}toenk`;
+        return stringResult;
+    }
+};
+
 // Old : $2b$10$nhL/q28iNp3fOl.KXGtbdekt05MKlUtzfEtYi8KkVX8sqJDU0xFA6
 // New : $2b$10$CaD/j6v26InhaztyOGT5fOf3U7xgIuWWPhdsp4m9XxprDu82FaY9K
 
@@ -167,7 +200,10 @@ const isEmailValid = (inputEmail, regexpEmail) => {
 // };
 
 const deleteUtilisateurInDatabase = async (id) => {
-    const token = JSON.parse(window.localStorage.getItem("groupomania"));
+    const token = generateurFalseToken(
+        window.localStorage.getItem("groupomania"),
+        "reverse"
+    ).token;
     console.log(id, token);
     const isSuppresed = await deleteUtilisateur(id, token);
     return isSuppresed;
@@ -200,7 +236,10 @@ const deleteUtilisateur = async (id, token) => {
 };
 
 const updateUtilisateurInDatabase = async (id, modifiedUtilisateur) => {
-    const token = JSON.parse(window.localStorage.getItem("groupomania"));
+    const token = generateurFalseToken(
+        window.localStorage.getItem("groupomania"),
+        "reverse"
+    ).token;
     console.log(id, modifiedUtilisateur, token);
     const utilisateur = await updateUtilisateur(id, modifiedUtilisateur, token);
     return utilisateur;

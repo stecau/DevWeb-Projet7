@@ -67,6 +67,19 @@ const Header = () => {
                 >
                     Acceuil
                 </StyledLink>
+                <StyledLink
+                    to={
+                        identificationType.type !== "connecté"
+                            ? "/compte"
+                            : `/compte/${""}`
+                    }
+                    $isActivated={
+                        location.pathname.indexOf("/compte") !== -1 && 1
+                    }
+                    theme={theme}
+                >
+                    Mon compte
+                </StyledLink>
                 {identificationType.type !== "connecté" ? (
                     <StyledLink
                         to="/connexion"
@@ -85,19 +98,6 @@ const Header = () => {
                         Déconnexion
                     </StyledLink>
                 )}
-                <StyledLink
-                    to={
-                        identificationType.type !== "connecté"
-                            ? "/compte"
-                            : `/compte/${""}`
-                    }
-                    $isActivated={
-                        location.pathname.indexOf("/compte") !== -1 && 1
-                    }
-                    theme={theme}
-                >
-                    Mon compte
-                </StyledLink>
             </nav>
         </HeaderContainer>
     );
