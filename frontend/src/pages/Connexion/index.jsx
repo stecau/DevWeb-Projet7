@@ -3,7 +3,7 @@
 /*------------------------------------------------------------------------------------------*/
 
 /* importation du hook 'useState' et 'useContext' de React */
-import { useState, useContext } from "react";
+import { useState, useEffect } from "react";
 /* importation du hook 'useNavigate' de 'react-router-dom' */
 import { useNavigate } from "react-router-dom";
 /* Importation du module 'styled' de 'styled-components' */
@@ -16,10 +16,7 @@ import { StyledLink, StyledButton } from "../../utils/style/Atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme } from "../../utils/hooks";
-
-/* Importation de notre connexion context */
-import { ConnexionContext } from "../../utils/context";
+import { useTheme, useIdentification } from "../../utils/hooks";
 
 const ConnexionWrapper = styled.article`
     display: flex;
@@ -146,14 +143,31 @@ const connexionUtilisateur = async (type, email, motDePasse) => {
 
 const Connexion = () => {
     const { theme } = useTheme();
+    const { identificationType, updateIdentificationType } =
+        useIdentification();
     const navigate = useNavigate();
     const [emailValue, setEmailValue] = useState("");
     const [emailValide, setEmailValide] = useState(true);
     const [motDePasseValue, setMotDePasseValue] = useState("");
     const [motDePasseValide, setMotDePasseValide] = useState(true);
 
-    const { identificationType, setIdentificationType } =
-        useContext(ConnexionContext);
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            if (window.localStorage.getItem("groupomania")) {
+                // Generation d'un token falcifié pour le localStorage
+                console.log("<----- CONNEXION ----->");
+                console.log(
+                    " => récupération infos depuis localStorage (a rajouter une condition si déjà connecté!)"
+                );
+                updateIdentificationType(
+                    window.localStorage.getItem("groupomania"),
+                    true
+                );
+                document.title = `Groupomania / Utilisateur ${identificationType.email}`;
+                navigate("/");
+            }
+        }
+    }, []);
 
     // Déclaration de la fonction faire la requête de connexion (avec création de compte)
     const identification = async (e, type, email, motDePasse) => {
@@ -177,16 +191,31 @@ const Connexion = () => {
                     motDePasse
                 );
                 if (utilisateur) {
-                    setIdentificationType({
-                        type: "connecté",
-                        email: email,
-                        id: utilisateur.utilisateur_Id,
-                    });
+                    console.log("<----- CONNEXION ----->");
+                    console.log(
+                        " => login effectué : udpade de idantificationType (statut connecté)"
+                    );
+                    updateIdentificationType(
+                        {
+                            type: "connecté",
+                            email: email,
+                            id: utilisateur.utilisateur_Id,
+                            token: utilisateur.token,
+                        },
+                        true
+                    );
                     if (typeof window !== "undefined") {
-                        window.localStorage.setItem(
-                            "groupomania",
-                            JSON.stringify(utilisateur.token)
+                        // Generation d'un token falcifié pour le localStorage
+                        console.log("<----- CONNEXION ----->");
+                        console.log(
+                            " => login effectué : génération du token falcifié pour localStorage"
                         );
+                        updateIdentificationType({
+                            type: "connecté",
+                            email: email,
+                            id: utilisateur.utilisateur_Id,
+                            token: utilisateur.token,
+                        });
                     }
                     document.title = `Groupomania / Utilisateur ${email}`;
                     navigate("/");
@@ -305,9 +334,16 @@ const Connexion = () => {
                             if (identificationType.type !== "connexion") {
                                 type = "connexion";
                             }
-                            setIdentificationType({
-                                type: type,
-                            });
+                            console.log("<----- CONNEXION ----->");
+                            console.log(
+                                " => Click sur bouton pour affichage création commpte ou affichage connexion"
+                            );
+                            updateIdentificationType(
+                                {
+                                    type: type,
+                                },
+                                true
+                            );
                         }}
                     >
                         {identificationType.type === "connexion"

@@ -12,7 +12,7 @@ import { StyledLink } from "../../utils/style/Atoms";
 import { useContext } from "react";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme } from "../../utils/hooks";
+import { useTheme, useIdentification } from "../../utils/hooks";
 
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../utils/context";
@@ -22,6 +22,7 @@ import Cards from "../../components/Cards";
 
 /* Importation de l'image jpeg pour la page d'accueil */
 import HomeIllustration from "../../assets/home-illustration.jpeg";
+import { useEffect } from "react";
 
 const HomeWrapper = styled.article`
     display: flex;
@@ -83,8 +84,29 @@ const Illustration = styled.img`
 const Home = () => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
-    // Identification pour la gestion du statut de connexion et de l'email + id de l'utilisateur connecté
-    const { identificationType } = useContext(ConnexionContext);
+    // Theme pour la gestion du mode jour et nuit
+    const { identificationType, updateIdentificationType } =
+        useIdentification();
+
+    // Récupération du statut de connexion au chargement de la page
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            if (
+                window.localStorage.getItem("groupomania") &&
+                identificationType.type !== "connecté"
+            ) {
+                console.log("<----- HOME ----->");
+                console.log(
+                    " => récupération infos depuis localStorage (pour restaurer la session)"
+                );
+                // Generation d'un token falcifié pour le localStorage et changement valeur identificationType
+                updateIdentificationType(
+                    window.localStorage.getItem("groupomania"),
+                    true
+                );
+            }
+        }
+    }, []);
 
     return (
         <HomeWrapper>

@@ -180,9 +180,9 @@ exports.deletePost = (req, res) => {
                 if (post.data[0].createur_id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
                     res.status(403).json({ message: 'Requête non autorisée !' });
                 } else {
-                    if (post.data.imageUrl != null) { // Il y a une image avec le post
+                    if (post.data[0].imageUrl != null) { // Il y a une image avec le post
                         // Suppression du fichier sur le serveur
-                        const filename = post.data.imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
+                        const filename = post.data[0].imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
                         // méthode de suppression de fichier avec fonction asynchrone
                         fs.unlink(`images/${filename}`, () => {
                             if (err) throw err;

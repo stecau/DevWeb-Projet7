@@ -34,7 +34,10 @@ import {
     faCircleXmark,
 } from "@fortawesome/free-regular-svg-icons";
 
-import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+    faEnvelopeCircleCheck,
+    faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 
 library.add(
     faThumbsUp,
@@ -44,7 +47,8 @@ library.add(
     faEnvelope,
     faEnvelopeCircleCheck,
     faCircleLeft,
-    faCircleXmark
+    faCircleXmark,
+    faArrowRightFromBracket
 );
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

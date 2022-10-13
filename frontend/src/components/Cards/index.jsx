@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme, useFetch } from "../../utils/hooks";
+import { useTheme, useFetch, useIdentification } from "../../utils/hooks";
 
 const CardsContainer = styled.ul`
     display: flex;
@@ -76,6 +76,7 @@ const LoaderWrapper = styled.div`
 const Cards = () => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
+    const { identificationType } = useIdentification();
 
     // UseState pour la creation d'un message
     const [isCreationActive, setIsCreationActive] = useState(false);
@@ -106,9 +107,7 @@ const Cards = () => {
     // Déclanchement initial de la requête pour obtenir les informations de tous les message
     useEffect(() => {
         if (url === "") {
-            const token = JSON.parse(
-                window.localStorage.getItem("groupomania")
-            );
+            const token = identificationType.token;
             setUrl("http://localhost:4000/api/posts");
             setFetchParamObjet({
                 method: "GET",

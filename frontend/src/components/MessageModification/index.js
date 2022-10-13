@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme, useFetch } from "../../utils/hooks";
+import { useTheme, useFetch, useIdentification } from "../../utils/hooks";
 
 const MessageForm = styled.form`
     display: flex;
@@ -63,6 +63,18 @@ const LoaderWrapper = styled.div`
     justify-content: center;
 `;
 
+const AlertText = styled.p`
+    color: red;
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0 0 5px 0;
+    display: ${(props) =>
+        (props.titreValide && props.type === "titre") ||
+        (props.texteValide && props.type) === "texte"
+            ? "none"
+            : "block"};
+`;
+
 const MessageModification = ({
     appMessage,
     setAppMessage,
@@ -70,13 +82,16 @@ const MessageModification = ({
 }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
+    const { identificationType } = useIdentification();
 
     // UseState pour récupérer l'image du message
     const [imageValue, setImageValue] = useState(undefined);
-    // UseState pour récupérer le titre du message
+    // UseState pour récupérer le titre du message et sa validation
     const [titreValue, setTitreValue] = useState("");
-    // UseState pour récupérer le texte du message
+    const [titreValide, setTitreValide] = useState(true);
+    // UseState pour récupérer le texte du message et sa validation
     const [texteValue, setTexteValue] = useState("");
+    const [texteValide, setTexteValide] = useState(true);
 
     // UseState d'affichage du block suppression image
     const [showButtonContainer, setShowButtonContainer] = useState(false);
@@ -107,9 +122,7 @@ const MessageModification = ({
         setTitreValue(appMessage.titre);
         setTexteValue(appMessage.content);
         setImageValue(appMessage.imageUrl);
-        console.log("appMessage.imageUrl", appMessage.imageUrl);
         if (appMessage.imageUrl !== null) {
-            console.log("modif show button container = true");
             setShowButtonContainer(true);
         } else {
             setImageValue(undefined);
@@ -118,66 +131,69 @@ const MessageModification = ({
 
     // Déclanchement de la requête pour la modification d'un message
     useEffect(() => {
-        if (
-            dataModificationMessage.hasOwnProperty("titre") &&
-            dataModificationMessage.hasOwnProperty("content") &&
-            dataModificationMessage.hasOwnProperty("imageUrl")
-        ) {
-            // Récupération du token
-            const token = JSON.parse(
-                window.localStorage.getItem("groupomania")
-            );
-            // Modification de la valeur de imageUrl si undefined
-            if (dataModificationMessage.imageUrl === undefined) {
-                dataModificationMessage.imageUrl = null;
-            }
-            setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
-            // Gestion si creation avec un fichier image ou pas (multiform ou json)
-            console.log(dataModificationMessage.imageUrl);
-            console.log(typeof dataModificationMessage.imageUrl);
+        if (titreValide && texteValide) {
             if (
-                typeof dataModificationMessage.imageUrl === "object" &&
-                dataModificationMessage.imageUrl != null
+                dataModificationMessage.hasOwnProperty("titre") &&
+                dataModificationMessage.hasOwnProperty("content") &&
+                dataModificationMessage.hasOwnProperty("imageUrl")
             ) {
-                console.log("Avec Image");
-                // Creation du 'init' avec multipart/form-data 'formData' pour le Content-type
-                const formData = new FormData();
-                formData.append("image", dataModificationMessage.imageUrl);
-                formData.append(
-                    "post",
-                    JSON.stringify({
-                        titre: dataModificationMessage.titre,
-                        content: dataModificationMessage.content,
-                    })
-                );
-                setFetchParamObjet({
-                    method: "PUT",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+                // Récupération du token
+                const token = identificationType.token;
+                // Modification de la valeur de imageUrl si undefined
+                if (dataModificationMessage.imageUrl === undefined) {
+                    dataModificationMessage.imageUrl = null;
+                }
+                setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
+                // Gestion si creation avec un fichier image ou pas (multiform ou json)
+                console.log(dataModificationMessage.imageUrl);
+                console.log(typeof dataModificationMessage.imageUrl);
+                if (
+                    typeof dataModificationMessage.imageUrl === "object" &&
+                    dataModificationMessage.imageUrl != null
+                ) {
+                    console.log("Avec Image");
+                    // Creation du 'init' avec multipart/form-data 'formData' pour le Content-type
+                    const formData = new FormData();
+                    formData.append("image", dataModificationMessage.imageUrl);
+                    formData.append(
+                        "post",
+                        JSON.stringify({
+                            titre: dataModificationMessage.titre,
+                            content: dataModificationMessage.content,
+                        })
+                    );
+                    setFetchParamObjet({
+                        method: "PUT",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: formData,
+                    });
+                } else {
+                    console.log("Sans Image");
+                    // Création du 'init' avec JSON (Content-Type": "application/json" et body JSON.stringify)
+                    setFetchParamObjet({
+                        method: "PUT",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(dataModificationMessage),
+                    });
+                }
+                setInfoFetch({
+                    typeFetch: {
+                        type: "MessageModification",
                     },
-                    body: formData,
-                });
-            } else {
-                console.log("Sans Image");
-                // Création du 'init' avec JSON (Content-Type": "application/json" et body JSON.stringify)
-                setFetchParamObjet({
-                    method: "PUT",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(dataModificationMessage),
+                    dataMessage: "Modification du message terminée",
+                    alertMessage: "Modification du message : ",
+                    erreurMessage:
+                        "Erreur pour la modification du message : [ ",
                 });
             }
-            setInfoFetch({
-                typeFetch: {
-                    type: "MessageModification",
-                },
-                dataMessage: "Modification du message terminée",
-                alertMessage: "Modification du message : ",
-                erreurMessage: "Erreur pour la modification du message : [ ",
-            });
+        } else {
+            alert("Contenu des champs Titre et/ou Texte inadéquat !");
         }
     }, [dataModificationMessage]);
 
@@ -188,9 +204,7 @@ const MessageModification = ({
             if (data.message === "Message modifié") {
                 // Fetch pour actualisation du message
                 // Mise à jour de appMessage avec une requête get le message
-                const token = JSON.parse(
-                    window.localStorage.getItem("groupomania")
-                );
+                const token = identificationType.token;
                 setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
                 setFetchParamObjet({
                     method: "GET",
@@ -222,6 +236,25 @@ const MessageModification = ({
         return <span>Oups il y a eu un problème</span>;
     }
 
+    // Déclaration de la fonction pour vérifier les inputs (titre et texte)
+    const verifierInput = (value, type, setValide, setValue) => {
+        if (
+            ((type === "titre" && value.length > 0) ||
+                (type === "texte" && value.length > 0)) &&
+            value.indexOf("<script>") === -1 &&
+            value.indexOf("select *") === -1 &&
+            value.indexOf("or 1=1") === -1 &&
+            value.indexOf("or 1=2") === -1 &&
+            value.indexOf("OUTFILE") === -1
+        ) {
+            setValide(true);
+            setValue(value);
+        } else {
+            setValide(false);
+            setValue(value);
+        }
+    };
+
     return isLoading ? (
         <LoaderWrapper>
             <Loader />
@@ -239,9 +272,17 @@ const MessageModification = ({
                     placeholder="Votre titre ici"
                     required
                     onChange={(e) => {
-                        setTitreValue(e.target.value);
+                        verifierInput(
+                            e.target.value,
+                            "titre",
+                            setTitreValide,
+                            setTitreValue
+                        );
                     }}
                 ></input>
+                <AlertText titreValide={titreValide} type="titre">
+                    Veuillez renseigner correctement le champs
+                </AlertText>
                 <label htmlFor="texte">Texte</label>
                 <textarea
                     type="text"
@@ -250,9 +291,17 @@ const MessageModification = ({
                     placeholder="Votre texte ici"
                     required
                     onChange={(e) => {
-                        setTexteValue(e.target.value);
+                        verifierInput(
+                            e.target.value,
+                            "texte",
+                            setTexteValide,
+                            setTexteValue
+                        );
                     }}
                 ></textarea>
+                <AlertText texteValide={texteValide} type="texte">
+                    Veuillez renseigner correctement le champs
+                </AlertText>
             </MessageFieldset>
             <MessageFieldset>
                 <StyledLegend theme={theme}>Illustration :</StyledLegend>
