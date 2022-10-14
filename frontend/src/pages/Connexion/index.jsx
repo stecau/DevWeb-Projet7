@@ -201,6 +201,7 @@ const Connexion = () => {
                             email: email,
                             id: utilisateur.utilisateur_Id,
                             token: utilisateur.token,
+                            isAdmin: utilisateur.isAdmin,
                         },
                         true
                     );
@@ -215,6 +216,7 @@ const Connexion = () => {
                             email: email,
                             id: utilisateur.utilisateur_Id,
                             token: utilisateur.token,
+                            isAdmin: utilisateur.isAdmin,
                         });
                     }
                     document.title = `Groupomania / Utilisateur ${email}`;

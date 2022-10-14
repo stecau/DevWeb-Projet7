@@ -133,9 +133,7 @@ exports.modifyPost = (req, res) => {
                 };
             } else {
                 // Post dans la base, on compare les id (token vs createur_id du Post) [un seul post dans la liste car id unique]
-                if (post.data[0].createur_id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
-                    res.status(403).json({ message: 'Requête non autorisée !' });
-                } else {
+                if (post.data[0].createur_id === req.auth.utilisateur_Id || req.auth.isAdmin === 1) { // c'est le bon utilisateur/créateur ou c'est l'admin
                     // Si changement d'image, alors on supprime l'ancienne image du serveur
                     suppressionServeurAncienneImage(post.data[0], postObject);
                     // utilisation de la méthode Post 'modify' de notre objet Post
@@ -153,6 +151,8 @@ exports.modifyPost = (req, res) => {
                             res.status(200).json({ message: post.message});
                         };
                     });
+                } else { // ce n'est pas le même utilisateur et ce n'est pas un administrateur
+                    res.status(403).json({ message: 'Requête non autorisée !' });
                 };
             };
         });
@@ -177,9 +177,7 @@ exports.deletePost = (req, res) => {
                 };
             } else {
                 // Post dans la base, on compare les id (token vs createur_id du Post) [un seul post dans la liste car id unique]
-                if (post.data[0].createur_id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
-                    res.status(403).json({ message: 'Requête non autorisée !' });
-                } else {
+                if (post.data[0].createur_id === req.auth.utilisateur_Id || req.auth.isAdmin === 1) { // c'est le bon utilisateur/créateur ou c'est l'admin
                     if (post.data[0].imageUrl != null) { // Il y a une image avec le post
                         // Suppression du fichier sur le serveur
                         const filename = post.data[0].imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
@@ -204,6 +202,8 @@ exports.deletePost = (req, res) => {
                             res.status(200).json({ message: post.message});
                         };
                     });
+                } else { // ce n'est pas le même utilisateur et ce n'est pas un administrateur
+                    res.status(403).json({ message: 'Requête non autorisée !' });
                 };
             };
         });

@@ -410,7 +410,8 @@ const Message = ({
                             <ButtonTexte>Dislike : {appNbrDislike}</ButtonTexte>
                         </StyledButton>
                     </ButtonContainer>
-                    {isMessage("id", appMessage.createur_id).createur && (
+                    {(isMessage("id", appMessage.createur_id).createur ||
+                        identificationType.isAdmin === 1) && (
                         <ButtonContainer $width="50%">
                             <StyledButton
                                 theme={theme}

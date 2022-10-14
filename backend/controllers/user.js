@@ -75,8 +75,9 @@ exports.login = (req, res) => {
                             res.status(200).json({
                                 message: `Utilisateur connecté : ${utilisateur.data._id}`,
                                 utilisateur_Id: utilisateur.data._id,
+                                isAdmin: utilisateur.data.isAdmin,
                                 token: jwt.sign(
-                                    { utilisateur_Id: utilisateur.data._id }, // 1er arg : Objet avec le utilisateur id
+                                    { utilisateur_Id: utilisateur.data._id, isAdmin: utilisateur.data.isAdmin }, // 1er arg : Objet avec le utilisateur id
                                     RANDOM_TOKEN_SECRET, // 2ème arg : La clé token pour l'encodage
                                     { expiresIn: '24h'} // 3ème arg : Arg de configuration avec une expiration de 24h (il faut se reconnecter au bout de 24h)
                                 )
