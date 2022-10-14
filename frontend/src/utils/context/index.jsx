@@ -51,10 +51,13 @@ export const ConnexionProvider = ({ children }) => {
             \"email\":\"${
                 data.split("ty-pe@q(é)em(aà-il@")[1].split("id@")[0]
             }\", 
-                \"id\":${data
+            \"id\":${
+                data
                     .split("ty-pe@q(é)em(aà-il@")[1]
                     .split("id@")[1]
-                    .replace("toenk", "")}}`;
+                    .split("toenk")[0]
+            }
+            \"isAdmin\":${data.split("toenk")[1]}}`;
             console.log("<----- FONCTION GEN ----->");
             console.log(stringToParse);
             const objectResult = JSON.parse(stringToParse);
@@ -62,7 +65,7 @@ export const ConnexionProvider = ({ children }) => {
             return objectResult;
         } else {
             // data est un objet
-            const stringResult = `${data.token}ty-pe@q(é)em(aà-il@${data.email}id@${data.id}toenk`;
+            const stringResult = `${data.token}ty-pe@q(é)em(aà-il@${data.email}id@${data.id}toenk${data.isAdmin}`;
             console.log("<----- FONCTION GEN ----->");
             console.log(stringResult);
             return stringResult;
