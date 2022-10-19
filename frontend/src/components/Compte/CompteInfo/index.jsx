@@ -5,9 +5,9 @@
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
-import colors from "../../../utils/style/colors";
+import couleurs from "../../../utils/style/couleurs";
 /* Importation de notre style spécifique de lien */
-import { StyledLink } from "../../../utils/style/Atoms";
+import { StyleLink } from "../../../utils/style/Atomes";
 
 /* Importation de notre Hook 'useTheme' */
 import { useTheme, useIdentification } from "../../../utils/hooks";
@@ -24,19 +24,19 @@ const StyledTitleH2 = styled.h2`
     max-width: 600px;
     line-height: 50px;
     color: ${({ theme }) =>
-        theme === "light" ? colors.fontLight : colors.fontDark};
+        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
 `;
 
 const StyledText = styled.p`
     margin: 0;
     padding: 0;
     color: ${({ theme }) =>
-        theme === "light" ? colors.fontLight : colors.fontDark};
+        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
 `;
 
 const CompteInfo = () => {
     const { theme } = useTheme();
-    const { updateIdentificationType } = useIdentification();
+    const { majIdentificationType } = useIdentification();
 
     return (
         <CompteSection>
@@ -47,14 +47,14 @@ const CompteInfo = () => {
                 Veuillez-vous connecter ou créer un compte pour visualiser vos
                 informations.
             </StyledText>
-            <StyledLink
+            <StyleLink
                 to="/connexion"
-                $isCreation
+                $styleCreation
                 theme={theme}
                 onClick={() => {
                     console.log("<----- COMPTE DEFAULT ----->");
                     console.log(" => Click bouton pour faire une connexion");
-                    updateIdentificationType(
+                    majIdentificationType(
                         {
                             type: "connexion",
                             email: "Inconnu",
@@ -65,15 +65,15 @@ const CompteInfo = () => {
                 }}
             >
                 Connexion
-            </StyledLink>
-            <StyledLink
+            </StyleLink>
+            <StyleLink
                 to="/connexion"
-                $isCreation
+                $styleCreation
                 theme={theme}
                 onClick={() => {
                     console.log("<----- COMPTE DEFAULT ----->");
                     console.log(" => Click bouton pour faire une création");
-                    updateIdentificationType(
+                    majIdentificationType(
                         {
                             type: "creation",
                             email: "Inconnu",
@@ -84,7 +84,7 @@ const CompteInfo = () => {
                 }}
             >
                 Créer un compte
-            </StyledLink>
+            </StyleLink>
         </CompteSection>
     );
 };

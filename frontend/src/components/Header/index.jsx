@@ -10,8 +10,8 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
-/* Importation des utilitaires de style (StyledLink) */
-import { StyledLink } from "../../utils/style/Atoms";
+/* Importation des utilitaires de style (StyleLink) */
+import { StyleLink } from "../../utils/style/Atomes";
 
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
@@ -19,9 +19,9 @@ import { useTheme } from "../../utils/hooks";
 /* Importation de notre context 'ConnexionContext' */
 import { ConnexionContext } from "../../utils/context";
 
-/* Importation des logos 'ligth' et 'dark' */
-import logoLigth from "../../assets/icon-left-font-monochrome-black.svg";
-import logoDark from "../../assets/icon-left-font-monochrome-white.svg";
+/* Importation des logos 'Clair' et 'Sombre' */
+import logoNoir from "../../assets/icon-left-font-monochrome-black.svg";
+import logoBlanc from "../../assets/icon-left-font-monochrome-white.svg";
 
 const HomeLogo = styled.img`
     height: 50px;
@@ -55,42 +55,42 @@ const Header = () => {
         <HeaderContainer>
             <Link to="/">
                 <HomeLogo
-                    src={theme === "light" ? logoLigth : logoDark}
+                    src={theme === "clair" ? logoNoir : logoBlanc}
                     alt="Logo Groupomania"
                 />
             </Link>
             <nav>
-                <StyledLink
+                <StyleLink
                     to="/"
-                    $isActivated={location.pathname === "/" && 1}
+                    $estActive={location.pathname === "/" && 1}
                     theme={theme}
                 >
                     Acceuil
-                </StyledLink>
-                <StyledLink
+                </StyleLink>
+                <StyleLink
                     to="/compte"
-                    $isActivated={location.pathname === "/compte" && 1}
+                    $estActive={location.pathname === "/compte" && 1}
                     theme={theme}
                 >
                     Mon compte
-                </StyledLink>
+                </StyleLink>
                 {identificationType.type !== "connecté" ? (
-                    <StyledLink
+                    <StyleLink
                         to="/connexion"
-                        $isActivated={location.pathname === "/connexion" && 1}
+                        $estActive={location.pathname === "/connexion" && 1}
                         theme={theme}
                     >
                         Connexion
-                    </StyledLink>
+                    </StyleLink>
                 ) : (
-                    <StyledLink
+                    <StyleLink
                         to="/connexion"
-                        $isActivated={location.pathname === "/deconnexion" && 1}
+                        $estActive={location.pathname === "/deconnexion" && 1}
                         theme={theme}
                         onClick={deconnection}
                     >
                         Déconnexion
-                    </StyledLink>
+                    </StyleLink>
                 )}
             </nav>
         </HeaderContainer>

@@ -5,7 +5,7 @@
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
-import colors from "../../utils/style/colors";
+import couleurs from "../../utils/style/couleurs";
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
 /* Importation de l'image svg pour l'erreur */
@@ -16,20 +16,22 @@ const ErrorWrapper = styled.div`
     display: flex;
     flex-direction: column;
     background-color: ${({ theme }) =>
-        theme === "light" ? colors.backgroundLight : colors.backgroundDark};
+        theme === "clair"
+            ? couleurs.backgroundClair
+            : couleurs.backgroundSombre};
     align-items: center;
 `;
 
 const ErrorTitle = styled.h1`
     font-weight: 300;
     color: ${({ theme }) =>
-        theme === "light" ? colors.fontLight : colors.fontDark};
+        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
 `;
 
 const ErrorSubtitle = styled.h2`
     font-weight: 300;
     color: ${({ theme }) =>
-        theme === "light" ? colors.tertiary : colors.secondary};
+        theme === "clair" ? couleurs.tertiaire : couleurs.secondaire};
 `;
 
 const Illustration = styled.img`

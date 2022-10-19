@@ -12,14 +12,14 @@ export const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
     // Fournit aux enfants le contexte (ici le thème)
     // Utilisation du useState pour sauvegarder l'état de 'theme' avec sa fonction de mise à jour 'setTheme'
-    const [theme, setTheme] = useState("light");
+    const [theme, setTheme] = useState("clair");
     // Déclaration d'une fonction pour changer d'état le 'theme' (interrupteur jour/nuit)
-    const toggleTheme = () => {
-        setTheme(theme === "light" ? "dark" : "light");
+    const changeTheme = () => {
+        setTheme(theme === "clair" ? "sombre" : "clair");
     };
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ theme, changeTheme }}>
             {children}
         </ThemeContext.Provider>
     );
@@ -37,35 +37,35 @@ export const ConnexionProvider = ({ children }) => {
         email: "Inconnu",
     });
 
-    const generateurFalseToken = (data, reverse = false) => {
+    const generateurFauxToken = (donnees, reverse = false) => {
         /* Fonction pour le lecture du token falcifié du locazlStorage ou
         pour le création et le mise dans le local storage d'un string contenant :
         l'ensemble des informations d'identifacation séparée par des chaines spécifiques
         (token)ty-pe@q(é)em(aà-il@(email)id@(id)toenk */
         if (reverse) {
-            // data est un string
+            // donnees est un string
             const stringToParse = `{\"token\":\"${
-                data.split("ty-pe@q(é)em(aà-il@")[0]
+                donnees.split("ty-pe@q(é)em(aà-il@")[0]
             }\", 
             \"type\":\"${"connecté"}\", 
             \"email\":\"${
-                data.split("ty-pe@q(é)em(aà-il@")[1].split("id@")[0]
+                donnees.split("ty-pe@q(é)em(aà-il@")[1].split("id@")[0]
             }\", 
             \"id\":${
-                data
+                donnees
                     .split("ty-pe@q(é)em(aà-il@")[1]
                     .split("id@")[1]
                     .split("toenk")[0]
-            }
-            \"isAdmin\":${data.split("toenk")[1]}}`;
+            },
+            \"isAdmin\":${donnees.split("toenk")[1]}}`;
             console.log("<----- FONCTION GEN ----->");
             console.log(stringToParse);
             const objectResult = JSON.parse(stringToParse);
             // objectResult.id = parseInt(objectResult.id, 10);
             return objectResult;
         } else {
-            // data est un objet
-            const stringResult = `${data.token}ty-pe@q(é)em(aà-il@${data.email}id@${data.id}toenk${data.isAdmin}`;
+            // donnees est un objet
+            const stringResult = `${donnees.token}ty-pe@q(é)em(aà-il@${donnees.email}id@${donnees.id}toenk${donnees.isAdmin}`;
             console.log("<----- FONCTION GEN ----->");
             console.log(stringResult);
             return stringResult;
@@ -73,37 +73,37 @@ export const ConnexionProvider = ({ children }) => {
     };
 
     // Déclaration d'une fonction pour changer d'état du localStorage ou du useState identificationType
-    const updateIdentificationType = (data, reverse = false) => {
+    const majIdentificationType = (donnees, reverse = false) => {
         console.log("<----- FONCTION UPDATE ----->");
-        console.log("UseIdentification", data);
-        console.log("typeof data", typeof data);
+        console.log("UseIdentification", donnees);
+        console.log("typeof donnees", typeof donnees);
         console.log("reverse", reverse);
-        let response = data; // cas où on fournit déjà l'objet
-        if (typeof data === "string") {
-            console.log("=> data = string");
-            // Fonction pour récupérer un objet  équivalent à un JSON.parse du localStorage (response = objet)
-            response = generateurFalseToken(data, reverse);
+        let reponse = donnees; // cas où on fournit déjà l'objet
+        if (typeof donnees === "string") {
+            console.log("=> donnees = string");
+            // Fonction pour récupérer un objet  équivalent à un JSON.parse du localStorage (reponse = objet)
+            reponse = generateurFauxToken(donnees, reverse);
         }
         if (reverse) {
             console.log("=> reverse = true");
-            console.log("=> response = objet");
-            setIdentificationType(response);
+            console.log("=> reponse = objet");
+            setIdentificationType(reponse);
         } else {
             console.log("=> reverse = false");
             if (typeof window !== "undefined") {
-                // Fonction pour générer un token falcifier pour le localStorage (response = string)
-                console.log("=> response = string");
-                response = generateurFalseToken(data);
-                window.localStorage.setItem("groupomania", response);
+                // Fonction pour générer un token falcifier pour le localStorage (reponse = string)
+                console.log("=> reponse = string");
+                reponse = generateurFauxToken(donnees);
+                window.localStorage.setItem("groupomania", reponse);
             }
         }
-        console.log("UseIdentification => response", response);
+        console.log("UseIdentification => reponse", reponse);
         console.log("<----- ----- ----->");
     };
 
     return (
         <ConnexionContext.Provider
-            value={{ identificationType, updateIdentificationType }}
+            value={{ identificationType, majIdentificationType }}
         >
             {children}
         </ConnexionContext.Provider>

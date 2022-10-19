@@ -7,18 +7,18 @@ import { createGlobalStyle } from "styled-components";
 /* Importation de notre methode 'ThemeContext' depuis le dossier 'Context' */
 import { useTheme } from "../hooks";
 /* Importation des couleurs de notre style */
-import colors from "../../utils/style/colors";
+import couleurs from "./couleurs";
 
 // Définition du style Global avec 'createGlobalStyle'
-const StyledGlobalStyle = createGlobalStyle`
+const ToutLeStyleGlobal = createGlobalStyle`
 * {
     font-family: 'Lato', Helvetica, sans-serif;
 }
 
 body {
-    /* Utilisation du contexte pour le thème du style Golbal (ligth or dark) */
+    /* Utilisation du contexte pour le thème du style Golbal (ligth or Sombre) */
     background-color: ${(props) =>
-        props.isDarkMode ? colors.dark : colors.light};
+        props.estModeSombre ? couleurs.sombre : couleurs.clair};
     margin: 0;  
 }
 
@@ -36,7 +36,7 @@ p {
 
 .normalIcon {
     color: ${(props) =>
-        props.isDarkMode ? colors.secondary : colors.tertiary};
+        props.estModeSombre ? couleurs.secondaire : couleurs.tertiaire};
     font-size: 20px;
     padding: 5px 5px 5px 5px;
 }
@@ -44,38 +44,38 @@ p {
 .normalIconRed {
     font-size: 20px;
     padding: 5px 5px 5px 5px;
-    color: ${colors.primary};
+    color: ${couleurs.primaire};
 }
 
-.normalIconReverse {
+.normalIconInverse {
     color: ${(props) =>
-        props.isDarkMode ? colors.tertiary : colors.secondary};
+        props.estModeSombre ? couleurs.tertiaire : couleurs.secondaire};
     font-size: 20px;
     padding: 5px 5px 5px 5px;
 }
 
-.normalLike {
+.normalJaime {
     color: ${(props) =>
-        props.isDarkMode ? colors.secondary : colors.tertiary};
+        props.estModeSombre ? couleurs.secondaire : couleurs.tertiaire};
     font-size: 20px;
     padding: 5px 5px 7px 7px;
 }
 
-.normalDislike {
+.normalJadore {
     color: ${(props) =>
-        props.isDarkMode ? colors.secondary : colors.tertiary};
+        props.estModeSombre ? couleurs.secondaire : couleurs.tertiaire};
     font-size: 20px;
     padding: 7px 7px 5px 5px;
 }
 
-.liked {
-    color: ${(props) => (props.isDarkMode ? "#00FF00" : "#0000FF")};
+.aimé {
+    color: ${(props) => (props.estModeSombre ? "#00FF00" : "#0000FF")};
     font-size: 20px;
     padding: 5px 5px 7px 7px;
 }
 
-.disliked {
-    color: ${(props) => (props.isDarkMode ? "#FF0000" : "#FF0000")};
+.adoré {
+    color: ${(props) => (props.estModeSombre ? "#FF0000" : "#FF0000")};
     font-size: 20px;
     padding: 7px 7px 5px 5px;
 }
@@ -101,17 +101,11 @@ textarea {
 }
 `;
 
-/* Info :
-    background-color: ${(props) => props.isDarkMode ? '#2F2E41' : 'white'};
-        est équivalent ici à :
-    background-color: ${({ isDarkMode }) => (isDarkMode ? '#2F2E41' : 'white')};
-*/
-
-// GlobalStyle = composant fonction qui va nous permettre d'y utiliser des hooks (useContext ici)
-const GlobalStyle = () => {
+// StyleGlobal = composant fonction qui va nous permettre d'y utiliser des hooks (useContext ici)
+const StyleGlobal = () => {
     const { theme } = useTheme();
 
-    return <StyledGlobalStyle isDarkMode={theme === "dark"} />;
+    return <ToutLeStyleGlobal estModeSombre={theme === "sombre"} />;
 };
 
-export default GlobalStyle;
+export default StyleGlobal;

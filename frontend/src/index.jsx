@@ -8,7 +8,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 /* Importation des différentes 'pages' du site */
-import Home from "./pages/Home";
+import Accueil from "./pages/Accueil";
 import Connexion from "./pages/Connexion";
 import Compte from "./pages/Compte";
 
@@ -21,12 +21,12 @@ import Error from "./components/Error";
 // Provider
 import { ThemeProvider, ConnexionProvider } from "./utils/context";
 // Style Global du site */
-import GlobalStyle from "./utils/style/GlobalStyle";
+import StyleGlobal from "./utils/style/StyleGlobal";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faThumbsUp,
-    faThumbsDown,
+    faHeart,
     faTrashCan,
     faPenToSquare,
     faEnvelope,
@@ -41,7 +41,7 @@ import {
 
 library.add(
     faThumbsUp,
-    faThumbsDown,
+    faHeart,
     faTrashCan,
     faPenToSquare,
     faEnvelope,
@@ -56,11 +56,11 @@ root.render(
     <React.StrictMode>
         <Router>
             <ThemeProvider>
-                <GlobalStyle />
+                <StyleGlobal />
                 <ConnexionProvider>
                     <Header />
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Accueil />} />
                         <Route path="/connexion" element={<Connexion />} />
                         <Route path="/compte" element={<Compte />} />
                         <Route path="*" element={<Error />} />

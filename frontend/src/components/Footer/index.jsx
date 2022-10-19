@@ -5,12 +5,12 @@
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
-import colors from "../../utils/style/colors";
+import couleurs from "../../utils/style/couleurs";
 /* Importation de notre Hook 'useTheme' */
 import { useIdentification, useTheme } from "../../utils/hooks";
-/* Importation des logos 'ligth' et 'dark' */
-import logoLigth from "../../assets/icon-left-font-monochrome-black.svg";
-import logoDark from "../../assets/icon-left-font-monochrome-white.svg";
+/* Importation des logos 'ligth' et 'Sombre' */
+import logoNoir from "../../assets/icon-left-font-monochrome-black.svg";
+import logoBlanc from "../../assets/icon-left-font-monochrome-white.svg";
 
 const FooterContainer = styled.footer`
     display: flex;
@@ -18,7 +18,7 @@ const FooterContainer = styled.footer`
     align-items: center;
     justify-content: space-between;
     color: ${({ theme }) =>
-        theme === "light" ? colors.fontLight : colors.fontDark};
+        theme === "clair" ? couleurs.logoNoir : couleurs.logoBlanc};
     padding: 30px;
 `;
 
@@ -33,39 +33,49 @@ const FooterDescription = styled.div`
 const FooterText = styled.span`
     padding-top: 15px;
     font-size: 20px;
+    color: ${({ theme }) =>
+        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
 `;
 
 const ImgLogo = styled.img`
     height: 50px;
 `;
 
-const NightModeButton = styled.button`
+const ModeNuitButton = styled.button`
     background-color: transparent;
     border: none;
     cursor: pointer;
     color: ${({ theme }) =>
-        theme === "light" ? colors.fontLight : colors.fontDark};
+        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
 `;
 
 function Footer() {
-    const { toggleTheme, theme } = useTheme();
+    const { changeTheme, theme } = useTheme();
     const { identificationType } = useIdentification();
+
+    // Fonction pour l'affichage de l'email dans le texte du pied de page
+    const TextePiedDePage = () => {
+        if (identificationType.hasOwnProperty("email")) {
+            return identificationType.email;
+        }
+        return "inconnu";
+    };
 
     return (
         <FooterContainer theme={theme}>
             <FooterDescription>
                 <ImgLogo
-                    src={theme === "light" ? logoLigth : logoDark}
+                    src={theme === "clair" ? logoNoir : logoBlanc}
                     alt="Logo Groupomania"
                 />
-                <FooterText>
+                <FooterText theme={theme}>
                     Réseau Social d'entreprise / Utilisateur :{" "}
-                    {identificationType.email}
+                    {TextePiedDePage()}
                 </FooterText>
             </FooterDescription>
-            <NightModeButton onClick={() => toggleTheme()} theme={theme}>
-                Changer de mode : {theme === "light" ? "☀️" : "🌙"}
-            </NightModeButton>
+            <ModeNuitButton onClick={changeTheme} theme={theme}>
+                Changer de mode : {theme === "clair" ? "☀️" : "🌙"}
+            </ModeNuitButton>
         </FooterContainer>
     );
 }

@@ -11,10 +11,6 @@ const Post = function(post) {
     this.titre = post.titre; // titre du message
     this.content = post.content; // contenu du message
     this.imageUrl = post.imageUrl; // l'URL de l'image ou des images téléchargée par l'utilisateur
-    //this.likes = post.likes; // le nombre de likes
-    //this.dislikes = post.dislikes; // le nombre de dislikes
-    //this.listUserLikes = post.listUserLikes; // la liste des utilisateurs qui ont liké le message
-    //this.listUserDislikes = post.listUserDislikes; // la liste des utilisateurs qui ont disliké le message
 };
 
 /* Creation d'un post */
@@ -62,14 +58,14 @@ Post.findBy = ( {"key": type, "value": value} , result) => {
                     JOIN likes ON messages._id = likes.message_id
                     JOIN utilisateurs ON utilisateurs._id = likes.utilisateur_id 
                     WHERE ${type} = "${value}"
-                    ORDER BY messages.modificationDate DESC`, (err, resLike) => {
+                    ORDER BY messages.modificationDate DESC`, (err, resAvis) => {
                 if (err) {
                     result(err, null);
                     return;
                 }
-                if (resLike.length || resAll.length) {
-                    // traitement des messages sans like avec mise en jour pour les messages avec like
-                    const listUpdatedMessage = Post.compareMessages(resAll, resLike);
+                if (resAvis.length || resAll.length) {
+                    // traitement des messages sans avis avec mise en jour pour les messages avec avis
+                    const listUpdatedMessage = Post.compareMessages(resAll, resAvis);
                     result(null, { message: "Message présent", data: listUpdatedMessage } );
                     return;
                 }
@@ -91,14 +87,14 @@ Post.findAll = (result) => {
             sql.query(`SELECT message_id, createur_id, titre, content, imageUrl, messages.creationDate, messages.modificationDate, utilisateur_id, flag FROM messages
                     JOIN likes ON messages._id = likes.message_id
                     JOIN utilisateurs ON utilisateurs._id = likes.utilisateur_id
-                    ORDER BY messages.modificationDate DESC`, (err, resLike) => {
+                    ORDER BY messages.modificationDate DESC`, (err, resAvis) => {
                 if (err) {
                     result(err, null);
                     return;
                 };
-                if (resLike.length) {
-                    // traitement des messages sans like avec mise en jour pour les messages avec like
-                    const listUpdatedMessage = Post.compareMessages(resAll, resLike);
+                if (resAvis.length) {
+                    // traitement des messages sans avis avec mise en jour pour les messages avec avis
+                    const listUpdatedMessage = Post.compareMessages(resAll, resAvis);
                     result(null, { message: "Liste de tous les messages", data: listUpdatedMessage } );
                     return;
                 };
@@ -124,113 +120,34 @@ Post.remove = (id, result) => {
     });
 };
 
-// /* Envoi du Flag d'un like pour message_id et utilisateur_id dans la table likes */
-// Post.flagUtilisateurLikeMessage = (message_id, utilisateur_id, result) => {
-//     sql.query(`SELECT flag FROM likes WHERE message_id = ${message_id} AND utilisateur_id = ${utilisateur_id}`, (err, res) => {
-//         if (err) {
-//             result(err, null);
-//             return;
-//         };
-//         if (res.length) {
-//             result(null, { message: `Le flag du like est : ${res[0].flag}`, data: res[0].flag });
-//             return;
-//         };
-//         // Like avec l'id du message et de l'utilisateur pas trouvé
-//         result({ erreurType: "Like absent" }, null);
-//     });
-// };
-
 /* Suppression de la ligne pour message_id et utilisateur_id dans la table likes */
-Post.suppressionUtilisateurLikeMessage = (message_id, utilisateur_id, result) => {
+Post.suppressionUtilisateurAvisMessage = (message_id, utilisateur_id, result) => {
     sql.query(`DELETE FROM likes WHERE message_id = ${message_id} AND utilisateur_id = ${utilisateur_id}`, (err, res) => {
         if (err) {
             result(err, null);
             return;
         };
-        if (res.affectedRows == 0) { // Like avec message_id et utilisateur_id pas trouvé
-            result({ erreurType: "Like absent" }, null);
+        if (res.affectedRows == 0) { // Avis avec message_id et utilisateur_id pas trouvé
+            result({ erreurType: "Avis absent" }, null);
             return;
         };
-        result(null, { message: "Like supprimé", data: (message_id, utilisateur_id) });
+        result(null, { message: "Avis supprimé", data: (message_id, utilisateur_id) });
     });
 };
 
 /* Rajout de la ligne pour message_id et utilisateur_id dans la table likes */
-Post.rajoutUtilisateurLikeMessage = (newLike, result) => {
-    sql.query("INSERT INTO likes SET ?", newLike, (err, res) => {
+Post.rajoutUtilisateurAvisMessage = (newAvis, result) => {
+    sql.query("INSERT INTO likes SET ?", newAvis, (err, res) => {
         if (err) {
             result(err, null);
             return;
         };
-        result(null, { message: "Nouveau like enregistré", data: { _id: res.insertId, ...newLike } });
+        result(null, { message: "Nouveau avis enregistré", data: { _id: res.insertId, ...newAvis } });
     });
 };
 
-// /* Récupération des listes d'id d'utillisateur qui ont liké et disliké pour un message */
-// Post.getLikesMessage = (messageId, result) => {
-//     // Récupération de la liste des utilisateur.id qui ont fait un like pour un message
-//     Post.getListeLikesMessage(messageId, 1, (errListeLikes, dataListeLikes) => {
-//         // Récupération de la liste des utilisateur.id qui ont fait un dislike pour un message
-//         Post.getListeLikesMessage(messageId, -1, (errListeDislikes, dataListeDislikes) => {
-//             result({
-//                 "listeLikesErreur": errListeLikes,
-//                 "listeDislikesErreur": errListeDislikes
-//             },
-//             {
-//                 "listeLikesData": dataListeLikes,
-//                 "listeDislikesData": dataListeDislikes
-//             });
-//         });
-//     });
-// };
-
-// /* Récupération liste id utillisateur like ou dislike pour un message */
-// Post.getListeLikesMessage = (messageId, flag, result) => {
-// // Récupération de la liste des utilisateur.id qui ont fait un dislike pour un message
-//     sql.query(`SELECT utilisateur_id FROM messages
-//                JOIN likes ON messages._id = likes.message_id
-//                JOIN utilisateurs ON utilisateurs._id = likes.utilisateur_id
-//                WHERE messages._id = ${messageId} && flag = ${flag}
-//                ORDER BY messages.modificationDate DESC`, (err, res) => {
-//         if (err) {
-//             result(err, null);
-//             return;
-//         };
-//         if (res.length && flag === 1) {
-//             result(null, { message: `Liste de likes pour message ${messageId}`, data: res });
-//             return;
-//         };
-//         if (res.length && flag === -1) {
-//             result(null, { message: `Liste de dislikes pour message ${messageId}`, data: res });
-//             return;
-//         };
-//         // MessageId ou flag inexsistant pour le post rechercher
-//         result({ erreurType: "Like/Dislike absent ou Message absent" }, null);
-//     });
-// };
-
-// /* Récupération liste id utillisateur like ou dislike pour tous les messages */
-// Post.getListeLikesAllMessage = (result) => {
-//     // Récupération de la liste des utilisateur.id qui ont fait un dislike pour un message
-//     sql.query(`SELECT message_id, createur_id, titre, content, imageUrl, messages.creationDate, messages.modificationDate, utilisateur_id, flag FROM messages
-//                 JOIN likes ON messages._id = likes.message_id
-//                 JOIN utilisateurs ON utilisateurs._id = likes.utilisateur_id
-//                 ORDER BY messages.modificationDate DESC`, (err, res) => {
-//         if (err) {
-//             result(err, null);
-//             return;
-//         } 
-//         if (res.length){
-//             result(null, { message: `Liste des messages avec like-utilisateur_id et like-flag : `, data: res });
-//             return;
-//         };
-//         // Post inexistant
-//         result({ erreurType: "Message absent de la base" }, null);
-//     });
-// };
-
-/* Comparaison et Traitement des datas pour obtention de la liste des messages sans like data */
-Post.compareMessages = (resAll, resLike) => {
+/* Comparaison et Traitement des datas pour obtention de la liste des messages sans avis data */
+Post.compareMessages = (resAll, resAvis) => {
     // Reduction des doublons
     const reducedMessageFromAll = resAll.reduce( (acc, ligneTableSQL, index) => {
         if (!acc.hasOwnProperty(ligneTableSQL._id)) {
@@ -243,10 +160,10 @@ Post.compareMessages = (resAll, resLike) => {
                 imageUrl: ligneTableSQL.imageUrl,
                 creationDate: ligneTableSQL.creationDate,
                 modificationDate: ligneTableSQL.creationDate,
-                nbrLikes: 0,
-                nbrDislikes: 0,
-                listeLikesData: [],
-                listeDislikesData: []
+                nbrJaimes: 0,
+                nbrJadores: 0,
+                listeJaimeData: [],
+                listeJadoreData: []
             }
         };
         return acc;
@@ -256,7 +173,7 @@ Post.compareMessages = (resAll, resLike) => {
         return a.orderMessage - b.orderMessage;
     });
 
-    const reducedMessageFromLike = resLike.reduce( (acc, ligneTableSQL, index) => {
+    const reducedMessageFromAvis = resAvis.reduce( (acc, ligneTableSQL, index) => {
         if (!acc.hasOwnProperty(ligneTableSQL.message_id)) {
             acc[ligneTableSQL.message_id] = {
                 orderMessage: index,
@@ -267,38 +184,38 @@ Post.compareMessages = (resAll, resLike) => {
                 imageUrl: ligneTableSQL.imageUrl,
                 creationDate: ligneTableSQL.creationDate,
                 modificationDate: ligneTableSQL.creationDate,
-                nbrLikes: 0,
-                nbrDislikes: 0,
-                listeLikesData: [],
-                listeDislikesData: []
+                nbrJaimes: 0,
+                nbrJadores: 0,
+                listeJaimeData: [],
+                listeJadoreData: []
             }
         };
         let flag = ligneTableSQL.flag
         if (flag === 1) {
-            acc[ligneTableSQL.message_id]["nbrLikes"] += 1
-            acc[ligneTableSQL.message_id]["listeLikesData"].push(ligneTableSQL.utilisateur_id)
+            acc[ligneTableSQL.message_id]["nbrJaimes"] += 1
+            acc[ligneTableSQL.message_id]["listeJaimeData"].push(ligneTableSQL.utilisateur_id)
         }
         if (flag === -1) {
-            acc[ligneTableSQL.message_id]["nbrDislikes"] += 1
-            acc[ligneTableSQL.message_id]["listeDislikesData"].push(ligneTableSQL.utilisateur_id)
+            acc[ligneTableSQL.message_id]["nbrJadores"] += 1
+            acc[ligneTableSQL.message_id]["listeJadoreData"].push(ligneTableSQL.utilisateur_id)
         }
         return acc;
     }, {})
     // Convertion de l'objet en liste de ses valeurs (=> Object.values) et tri en fonction de l'ordre décroissant des dates (=> sort de la liste)
-    let listReducedMessageFromLike = Object.values(reducedMessageFromLike).sort((a, b) => {
+    let listReducedMessageFromAvis = Object.values(reducedMessageFromAvis).sort((a, b) => {
         return a.orderMessage - b.orderMessage;
     });
 
-    // Comparaison et mise à jour de la liste avec les informations sur les likes
-    if (listReducedMessageFromAll.length === listReducedMessageFromLike.length) {
-        return listReducedMessageFromLike;
+    // Comparaison et mise à jour de la liste avec les informations sur les avis
+    if (listReducedMessageFromAll.length === listReducedMessageFromAvis.length) {
+        return listReducedMessageFromAvis;
     } else {
         let listeMessageUpdated = []
         for (message of listReducedMessageFromAll) {
             let updated = false
-            for (messageWithLike of listReducedMessageFromLike) {
-                if (message._id === messageWithLike._id) {
-                    listeMessageUpdated.push({ ...messageWithLike });
+            for (messageWithAvis of listReducedMessageFromAvis) {
+                if (message._id === messageWithAvis._id) {
+                    listeMessageUpdated.push({ ...messageWithAvis });
                     updated = true
                     break;
                 };
@@ -312,8 +229,8 @@ Post.compareMessages = (resAll, resLike) => {
 };
 
 /* Traitement des datas pour obtention de la liste des messages avec like data */
-Post.updatedMessages = (allPostWithLikesData) => {
-    const updatedMessage = allPostWithLikesData.reduce( (acc, ligneTableSQL, index) => {
+Post.updatedMessages = (allPostWithAvisData) => {
+    const updatedMessage = allPostWithAvisData.reduce( (acc, ligneTableSQL, index) => {
         if (!acc.hasOwnProperty(ligneTableSQL.message_id)) {
             acc[ligneTableSQL.message_id] = {
                 orderMessage: index,
@@ -324,20 +241,20 @@ Post.updatedMessages = (allPostWithLikesData) => {
                 imageUrl: ligneTableSQL.imageUrl,
                 creationDate: ligneTableSQL.creationDate,
                 modificationDate: ligneTableSQL.creationDate,
-                nbrLikes: 0,
-                nbrDislikes: 0,
-                listeLikesData: [],
-                listeDislikesData: []
+                nbrJaimes: 0,
+                nbrJadores: 0,
+                listeJaimeData: [],
+                listeJadoreData: []
             }
         };
         let flag = ligneTableSQL.flag
         if (flag === 1) {
-            acc[ligneTableSQL.message_id]["nbrLikes"] += 1
-            acc[ligneTableSQL.message_id]["listeLikesData"].push(ligneTableSQL.utilisateur_id)
+            acc[ligneTableSQL.message_id]["nbrJaimes"] += 1
+            acc[ligneTableSQL.message_id]["listeJaimeData"].push(ligneTableSQL.utilisateur_id)
         }
         if (flag === -1) {
-            acc[ligneTableSQL.message_id]["nbrDislikes"] += 1
-            acc[ligneTableSQL.message_id]["listeDislikesData"].push(ligneTableSQL.utilisateur_id)
+            acc[ligneTableSQL.message_id]["nbrJadores"] += 1
+            acc[ligneTableSQL.message_id]["listeJadoreData"].push(ligneTableSQL.utilisateur_id)
         }
         return acc;
     }, {})

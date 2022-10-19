@@ -138,6 +138,9 @@ exports.modify = (req, res) => {
                 if (utilisateur.data._id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
                     res.status(403).json({ message: 'Requête non autorisée !' });
                 } else {
+                    if (req.auth.isAdmin === 1) { // c'est le compte admin pas de modification possible
+                        res.status(403).json({ message: 'Requête non autorisée !' });
+                    }
                     // Gestion du cas particulier si modification du mot de passe
                     const modifiedUtilisateur = {...req.body};
                     if (modifiedUtilisateur.hasOwnProperty('motDePasse')) {
@@ -225,6 +228,9 @@ exports.delete = (req, res) => {
                 if (utilisateur.data._id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
                     res.status(403).json({ message: 'Requête non autorisée !' });
                 } else {
+                    if (req.auth.isAdmin === 1) { // c'est le compte admin pas de suppression possible
+                        res.status(403).json({ message: 'Requête non autorisée !' });
+                    }
                     // utilisation de la méthode Utilisateur 'remove' de notre objet utilisateur 
                     Utilisateur.remove(req.auth.utilisateur_Id, (err, utilisateur) => {
                         if (err) {

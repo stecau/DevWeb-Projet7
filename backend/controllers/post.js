@@ -38,69 +38,69 @@ exports.createPost = (req, res) => {
     };
 };
 
-/* Création de la requête Post (création) d'un like sur un 'post' */
-exports.likePost = (req, res) => {
+/* Création de la requête Post (création) d'un avis sur un 'post' */
+exports.avisPost = (req, res) => {
     // Vérification si la requête a bien un body correct et un param id au format numérique
-    const bodyValider = bodyValide(req.body, 'likePost');
+    const bodyValider = bodyValide(req.body, 'avisPost');
     if (!bodyValider[0]) {
         res.status(400).json({message: bodyValider[1]});
     } else if (isNaN(req.params.id)) {
         res.status(400).json({message: "Erreur dans l'url !"});
     } else {
-        const like = req.body.like;
+        const avis = req.body.avis;
         const utilisateur_id = req.auth.utilisateur_Id;
         // Utilisation de la méthode Post 'findBy' de notre object Post
         Post.findBy( {"key": "_id", "value": req.params.id} , (err, post) => {
             if (err) {
                 if (!err.hasOwnProperty('erreurType')) {
                     res.status(500).json({
-                        message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
+                        message: err.code || "Une erreur a eu lieu au moment de l'affectation de l'avis sur le post"
                     });
                 } else {
                     res.status(400).json({ message: "Erreur d'url"});
                 };
             } else {
-                const listeUtilisateursLike = post.data[0].listeLikesData;
-                const listeUtilisateursDislike = post.data[0].listeDislikesData;
-                // Vérification qu'il n'y a pas de like ou dislike de l'utilisateur pour le message
-                if ((like === 1 || like === -1) && 
-                     listeUtilisateursLike.indexOf(utilisateur_id) === -1 &&
-                     listeUtilisateursDislike.indexOf(utilisateur_id) === -1) {
+                const listeUtilisateursJaime = post.data[0].listeJaimeData;
+                const listeUtilisateursJadore = post.data[0].listeJadoreData;
+                // Vérification qu'il n'y a pas de Jaime ou Jadore de l'utilisateur pour le message
+                if ((avis === 1 || avis === -1) && 
+                     listeUtilisateursJaime.indexOf(utilisateur_id) === -1 &&
+                     listeUtilisateursJadore.indexOf(utilisateur_id) === -1) {
                     // Rajout de la ligne pour message_id et utilisateur_id avec valeur 1
-                    const likeObject = {
-                        "flag": like,
+                    const avisObject = {
+                        "flag": avis,
                         "message_id": req.params.id,
                         "utilisateur_id": utilisateur_id
                     };
-                    Post.rajoutUtilisateurLikeMessage(likeObject, (err, likeData) => {
+                    Post.rajoutUtilisateurAvisMessage(avisObject, (err, avisData) => {
                         if (err) {
                             res.status(500).json({
-                                message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
+                                message: err.code || "Une erreur a eu lieu au moment de l'affectation de l'avis sur le post"
                             });
                         } else {
-                            console.log(likeData.message, likeData.data);
-                            res.status(201).json({ message: likeData.message});
+                            console.log(avisData.message, avisData.data);
+                            res.status(201).json({ message: avisData.message});
                         };
                     });
-                } else if (like === 0 && (listeUtilisateursLike.indexOf(utilisateur_id) != -1 ||
-                           listeUtilisateursDislike.indexOf(utilisateur_id) != -1)) {
+                } else if (avis === 0 && (listeUtilisateursJaime.indexOf(utilisateur_id) != -1 ||
+                           listeUtilisateursJadore.indexOf(utilisateur_id) != -1)) {
                     // Suppression de la ligne pour message_id et utilisateur_id
-                    Post.suppressionUtilisateurLikeMessage(req.params.id, utilisateur_id, (err, likeData) => {
+                    Post.suppressionUtilisateurAvisMessage(req.params.id, utilisateur_id, (err, avisData) => {
                         if (err) {
                             if (!err.hasOwnProperty('erreurType')) {
                                 res.status(500).json({
-                                    message: err.code || "Une erreur a eu lieu au moment de l'affectation du like sur le post"
+                                    message: err.code || "Une erreur a eu lieu au moment de l'affectation de l'avis sur le post"
                                 });
                             } else {
-                                res.status(400).json({ message: "Like absent"});
+                                res.status(400).json({ message: "Avis absent"});
                             };
                         } else {
-                            console.log(likeData.message);
-                            res.status(200).json({ message: likeData.message});
+                            console.log(avisData.message);
+                            res.status(200).json({ message: avisData.message});
                         };
                     });
                 } else {
-                    res.status(400).json({ message: "Condition de changement de like inadéquate"});
+                    res.status(400).json({ message: "Condition de changement d'avis inadéquate"});
                 };
             };
         });
@@ -236,10 +236,10 @@ exports.getAllPosts = (req, res) => {
         if (err) {
             if (!err.hasOwnProperty('erreurType')) {
                 res.status(500).json({
-                    message: err.code || "Une erreur a eu lieu au moment de la consultation des likes des posts"
+                    message: err.code || "Une erreur a eu lieu au moment de la consultation des posts"
                 });
             } else {
-                res.status(401).json({ message: "Erreur sur la consultation des likes, dislikes et liste d'utilisateurs likant ou dislikant des posts"});
+                res.status(401).json({ message: "Erreur sur la consultation des posts"});
             }
         } else {
             if (Object.keys(req.query).length) { // Requête avec un ou des params query
@@ -340,9 +340,9 @@ const bodyValide = (bodyObject, reqType) => {
                     return [true, null]; 
                 };
                 break;
-            case 'likePost':
-                if (bodyObject.hasOwnProperty('like')) {
-                    if (typeof bodyObject.like === 'number') {
+            case 'avisPost':
+                if (bodyObject.hasOwnProperty('avis')) {
+                    if (typeof bodyObject.avis === 'number') {
                         return [true, null]; 
                     };
                 };

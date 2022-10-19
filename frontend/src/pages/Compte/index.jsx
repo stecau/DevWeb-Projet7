@@ -7,15 +7,15 @@ import { useEffect } from "react";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
-import colors from "../../utils/style/colors";
+import couleurs from "../../utils/style/couleurs";
 
 /* Importation de notre Hook 'useTheme' */
 import { useTheme, useIdentification } from "../../utils/hooks";
 
 /* Impotation de notre composant 'CompteDefault' */
-import CompteInfo from "../../components/Comptes/CompteInfo";
+import CompteInfo from "../../components/Compte/CompteInfo";
 /* Impotation de notre composant 'CompteShow' */
-import CompteShow from "../../components/Comptes/CompteShow";
+import CompteShow from "../../components/Compte/CompteShow";
 
 const CompteWrapper = styled.article`
     display: flex;
@@ -25,7 +25,9 @@ const CompteWrapper = styled.article`
 const CompteContainer = styled.section`
     margin: 30px;
     background-color: ${({ theme }) =>
-        theme === "light" ? colors.backgroundLight : colors.backgroundDark};
+        theme === "clair"
+            ? couleurs.backgroundClair
+            : couleurs.backgroundSombre};
     padding: 60px 90px;
     display: flex;
     flex-direction: column;
@@ -36,13 +38,12 @@ const StyledTitleH1 = styled.h1`
     max-width: 600px;
     line-height: 50px;
     color: ${({ theme }) =>
-        theme === "light" ? colors.primary : colors.secondary};
+        theme === "clair" ? couleurs.primaire : couleurs.secondaire};
 `;
 
 const Compte = () => {
     const { theme } = useTheme();
-    const { identificationType, updateIdentificationType } =
-        useIdentification();
+    const { identificationType, majIdentificationType } = useIdentification();
 
     // UseEffect de récupération des infos de session au chargement de la page
     useEffect(() => {
@@ -56,11 +57,11 @@ const Compte = () => {
                     " => récupération infos depuis localStorage (pour restaurer la session)"
                 );
                 // Generation d'un token falcifié pour le localStorage
-                updateIdentificationType(
+                majIdentificationType(
                     window.localStorage.getItem("groupomania"),
                     true
                 );
-                // const tokenObject = generateurFalseToken(
+                // const tokenObject = generateurFauxToken(
                 //     window.localStorage.getItem("groupomania"),
                 //     "reverse"
                 // );

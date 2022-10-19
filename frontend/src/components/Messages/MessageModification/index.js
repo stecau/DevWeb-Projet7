@@ -1,23 +1,24 @@
 /*----------------------------------------------------------------------------------------------------*/
-/* Définition du composant 'MessageCreation' pour notre application React 'app' pour notre FrontEnd : */
+/* Définition du composant 'MessageModification' pour notre application React 'app' pour notre FrontEnd : */
 /*----------------------------------------------------------------------------------------------------*/
 
-/* Importation des modules de React */
-import React from "react";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
-import colors from "../../utils/style/colors";
+import couleurs from "../../../utils/style/couleurs";
 /* Importation de notre style spécifique de lien */
-import { StyledButton, Loader } from "../../utils/style/Atoms";
+import { StyleButton } from "../../../utils/style/Atomes";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+/* Importation de notre composant 'Chargement' */
+import Chargement from "../../Chargement";
 
 /* importation du hook 'useContext' de React */
 import { useState, useEffect } from "react";
 
 /* Importation de notre Hook 'useTheme' */
-import { useTheme, useFetch, useIdentification } from "../../utils/hooks";
+import { useTheme, useFetch, useIdentification } from "../../../utils/hooks";
 
 const MessageForm = styled.form`
     display: flex;
@@ -25,8 +26,7 @@ const MessageForm = styled.form`
     justify-content: center;
     margin: 0;
     padding: 10px;
-    color: ${({ theme }) =>
-        theme === "light" ? colors.tertiary : colors.secondary};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.tertiaire : couleurs.secondaire)};
 `;
 
 const MessageFieldset = styled.fieldset`
@@ -36,14 +36,12 @@ const MessageFieldset = styled.fieldset`
 `;
 
 const StyledLegend = styled.legend`
-    border-color: ${({ theme }) =>
-        theme === "light" ? colors.tertiary : colors.secondary};
+    border-color: ${({ theme }) => (theme === "clair" ? couleurs.tertiaire : couleurs.secondaire)};
 `;
 
 const StyledTitle = styled.h1`
     margin: 10px 0;
-    color: ${({ theme }) =>
-        theme === "light" ? colors.primary : colors.secondary};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
 
 const ButtonContainer = styled.div`
@@ -58,28 +56,15 @@ const ButtonTexte = styled.span`
     padding-left: 5px;
 `;
 
-const LoaderWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-`;
-
 const AlertText = styled.p`
     color: red;
     font-size: 0.8em;
     margin: 0;
     padding: 0 0 5px 0;
-    display: ${(props) =>
-        (props.titreValide && props.type === "titre") ||
-        (props.texteValide && props.type) === "texte"
-            ? "none"
-            : "block"};
+    display: ${(props) => ((props.titreValide && props.type === "titre") || (props.texteValide && props.type) === "texte" ? "none" : "block")};
 `;
 
-const MessageModification = ({
-    appMessage,
-    setAppMessage,
-    setIsModificationActive,
-}) => {
+const MessageModification = ({ appMessage, obtenirAppMessage, definirModificationMessageActive }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
     const { identificationType } = useIdentification();
@@ -97,25 +82,21 @@ const MessageModification = ({
     const [showButtonContainer, setShowButtonContainer] = useState(false);
 
     // UseState de l'url pour les requêtes Fetch
-    const [url, setUrl] = useState("");
+    const [url, definirUrl] = useState("");
     // UseState de l'objet init pour les requêtes Fetch
-    const [fetchParamObjet, setFetchParamObjet] = useState({});
+    const [fetchParamObjet, definirFetchParamObjet] = useState({});
     // UseState pour le déclenchement de la création d'un message
-    const [dataModificationMessage, setDataModificationMessage] = useState({});
+    const [donneesModificationMessage, definirDonneesModificationMessage] = useState({});
     // UseState des informations sur la requête
-    const [infoFetch, setInfoFetch] = useState({
+    const [infoFetch, definirInfoFetch] = useState({
         typeFetch: {},
-        dataMessage: "",
-        alertMessage: "",
+        donneesMessage: "",
+        alerteMessage: "",
         erreurMessage: "",
     });
 
     // Hook personnalisé pour effectuer les requêtes fetch
-    const { data, isLoading, error } = useFetch(
-        url,
-        fetchParamObjet,
-        infoFetch
-    );
+    const { donnees, enChargement, erreur } = useFetch(url, fetchParamObjet, infoFetch);
 
     // Déclenchement de l'affichage des informations du message (initial)
     useEffect(() => {
@@ -133,36 +114,34 @@ const MessageModification = ({
     useEffect(() => {
         if (titreValide && texteValide) {
             if (
-                dataModificationMessage.hasOwnProperty("titre") &&
-                dataModificationMessage.hasOwnProperty("content") &&
-                dataModificationMessage.hasOwnProperty("imageUrl")
+                donneesModificationMessage.hasOwnProperty("titre") &&
+                donneesModificationMessage.hasOwnProperty("content") &&
+                donneesModificationMessage.hasOwnProperty("imageUrl") &&
+                donneesModificationMessage.imageUrl !== undefined
             ) {
                 // Récupération du token
                 const token = identificationType.token;
-                // Modification de la valeur de imageUrl si undefined
-                if (dataModificationMessage.imageUrl === undefined) {
-                    dataModificationMessage.imageUrl = null;
-                }
-                setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
+                // // Modification de la valeur de imageUrl si undefined
+                // if (donneesModificationMessage.imageUrl === undefined) {
+                //     donneesModificationMessage.imageUrl = null;
+                // }
+                definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
                 // Gestion si creation avec un fichier image ou pas (multiform ou json)
-                console.log(dataModificationMessage.imageUrl);
-                console.log(typeof dataModificationMessage.imageUrl);
-                if (
-                    typeof dataModificationMessage.imageUrl === "object" &&
-                    dataModificationMessage.imageUrl != null
-                ) {
+                console.log(donneesModificationMessage.imageUrl);
+                console.log(typeof donneesModificationMessage.imageUrl);
+                if (typeof donneesModificationMessage.imageUrl === "object" && donneesModificationMessage.imageUrl != null) {
                     console.log("Avec Image");
                     // Creation du 'init' avec multipart/form-data 'formData' pour le Content-type
                     const formData = new FormData();
-                    formData.append("image", dataModificationMessage.imageUrl);
+                    formData.append("image", donneesModificationMessage.imageUrl);
                     formData.append(
                         "post",
                         JSON.stringify({
-                            titre: dataModificationMessage.titre,
-                            content: dataModificationMessage.content,
+                            titre: donneesModificationMessage.titre,
+                            content: donneesModificationMessage.content,
                         })
                     );
-                    setFetchParamObjet({
+                    definirFetchParamObjet({
                         method: "PUT",
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -172,75 +151,74 @@ const MessageModification = ({
                 } else {
                     console.log("Sans Image");
                     // Création du 'init' avec JSON (Content-Type": "application/json" et body JSON.stringify)
-                    setFetchParamObjet({
+                    definirFetchParamObjet({
                         method: "PUT",
                         headers: {
                             Accept: "application/json",
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${token}`,
                         },
-                        body: JSON.stringify(dataModificationMessage),
+                        body: JSON.stringify(donneesModificationMessage),
                     });
                 }
-                setInfoFetch({
+                definirInfoFetch({
                     typeFetch: {
                         type: "MessageModification",
                     },
-                    dataMessage: "Modification du message terminée",
-                    alertMessage: "Modification du message : ",
-                    erreurMessage:
-                        "Erreur pour la modification du message : [ ",
+                    donneesMessage: "Modification du message terminée",
+                    alerteMessage: "Modification du message : ",
+                    erreurMessage: "Erreur pour la modification du message : [ ",
                 });
+            } else {
+                alert("Image absente du message !");
             }
         } else {
-            alert("Contenu des champs Titre et/ou Texte inadéquat !");
+            alert("Contenu des champs Titre, Texte et/ou image inadéquat !");
         }
-    }, [dataModificationMessage]);
+    }, [donneesModificationMessage]);
 
     // Récupération lors d'une requête Fetch
     useEffect(() => {
         // Fetch de modification
-        if (data.hasOwnProperty("message")) {
-            if (data.message === "Message modifié") {
+        if (donnees.hasOwnProperty("message")) {
+            if (donnees.message === "Message modifié") {
                 // Fetch pour actualisation du message
                 // Mise à jour de appMessage avec une requête get le message
                 const token = identificationType.token;
-                setUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
-                setFetchParamObjet({
+                definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
+                definirFetchParamObjet({
                     method: "GET",
                     headers: {
                         "Content-type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setInfoFetch({
+                definirInfoFetch({
                     typeFetch: {
                         type: "getMessage",
                     },
-                    dataMessage: "Récupération du message terminée",
-                    alertMessage: "Consultation du message : ",
-                    erreurMessage:
-                        "Erreur pour la consultation du message : [ ",
+                    donneesMessage: "Récupération du message terminée",
+                    alerteMessage: "Consultation du message : ",
+                    erreurMessage: "Erreur pour la consultation du message : [ ",
                 });
             }
         }
         // Fetch de modification
-        if (data.hasOwnProperty("_id")) {
-            setAppMessage(data);
-            setIsModificationActive(0);
+        if (donnees.hasOwnProperty("_id")) {
+            obtenirAppMessage(donnees);
+            definirModificationMessageActive(0);
         }
-    }, [data]);
+    }, [donnees]);
 
     // Erreur lors d'une requête Fetch
-    if (error) {
+    if (erreur) {
         return <span>Oups il y a eu un problème</span>;
     }
 
     // Déclaration de la fonction pour vérifier les inputs (titre et texte)
     const verifierInput = (value, type, setValide, setValue) => {
         if (
-            ((type === "titre" && value.length > 0) ||
-                (type === "texte" && value.length > 0)) &&
+            ((type === "titre" && value.length > 0) || (type === "texte" && value.length > 0)) &&
             value.indexOf("<script>") === -1 &&
             value.indexOf("select *") === -1 &&
             value.indexOf("or 1=1") === -1 &&
@@ -255,10 +233,8 @@ const MessageModification = ({
         }
     };
 
-    return isLoading ? (
-        <LoaderWrapper>
-            <Loader />
-        </LoaderWrapper>
+    return enChargement ? (
+        <Chargement />
     ) : (
         <MessageForm theme={theme}>
             <StyledTitle theme={theme}>Modification d'un message</StyledTitle>
@@ -272,12 +248,7 @@ const MessageModification = ({
                     placeholder="Votre titre ici"
                     required
                     onChange={(e) => {
-                        verifierInput(
-                            e.target.value,
-                            "titre",
-                            setTitreValide,
-                            setTitreValue
-                        );
+                        verifierInput(e.target.value, "titre", setTitreValide, setTitreValue);
                     }}
                 ></input>
                 <AlertText titreValide={titreValide} type="titre">
@@ -291,12 +262,7 @@ const MessageModification = ({
                     placeholder="Votre texte ici"
                     required
                     onChange={(e) => {
-                        verifierInput(
-                            e.target.value,
-                            "texte",
-                            setTexteValide,
-                            setTexteValue
-                        );
+                        verifierInput(e.target.value, "texte", setTexteValide, setTexteValue);
                     }}
                 ></textarea>
                 <AlertText texteValide={texteValide} type="texte">
@@ -307,44 +273,29 @@ const MessageModification = ({
                 <StyledLegend theme={theme}>Illustration :</StyledLegend>
                 {showButtonContainer && typeof imageValue === "string" && (
                     <div>
-                        <label htmlFor="suppression">
-                            Supprimer l'image du message uniquement :
-                        </label>
+                        <label htmlFor="suppression">Supprimer l'image du message uniquement :</label>
                         <ButtonContainer $width="100%">
-                            <p>
-                                {imageValue !== undefined &&
-                                typeof imageValue === "string"
-                                    ? imageValue.split("/images/")[1]
-                                    : imageValue.name}
-                            </p>
-                            <StyledButton
+                            <p>{imageValue !== undefined && typeof imageValue === "string" ? imageValue.split("/images/")[1] : imageValue.name}</p>
+                            <StyleButton
                                 theme={theme}
-                                $isCard
-                                $isFlex
+                                $estMessage
+                                $estFlex
                                 onClick={(e) => {
                                     e.preventDefault();
                                     setImageValue(undefined);
-                                    const inputSelectionFile =
-                                        document.getElementById("image");
+                                    const inputSelectionFile = document.getElementById("image");
                                     inputSelectionFile.type = "text";
                                     inputSelectionFile.type = "file";
                                     setShowButtonContainer(false);
                                 }}
                             >
-                                <FontAwesomeIcon
-                                    className={"normalIconRed"}
-                                    icon="fa-regular fa-circle-xmark"
-                                />
-                            </StyledButton>
+                                <FontAwesomeIcon className={"normalIconRed"} icon="fa-regular fa-circle-xmark" />
+                            </StyleButton>
                         </ButtonContainer>
                         <p>----- OU -----</p>
                     </div>
                 )}
-                <label htmlFor="image">
-                    Choisir une image pour{" "}
-                    {showButtonContainer && "un remplacement d'image dans"} le
-                    message (facultatif) :
-                </label>
+                <label htmlFor="image">Choisir une image pour {showButtonContainer && "un remplacement d'image dans"} le message (facultatif) :</label>
                 <input
                     type="file"
                     id="image"
@@ -355,42 +306,36 @@ const MessageModification = ({
                 ></input>
             </MessageFieldset>
             <ButtonContainer $width="100%">
-                <StyledButton
+                <StyleButton
                     theme={theme}
-                    $isCard
-                    $isFlex
-                    $isLike
+                    $estMessage
+                    $estFlex
+                    $estJaime
                     onClick={(e) => {
                         e.preventDefault();
-                        setDataModificationMessage({
+                        definirDonneesModificationMessage({
                             titre: titreValue,
                             content: texteValue,
                             imageUrl: imageValue,
                         });
                     }}
                 >
-                    <FontAwesomeIcon
-                        className={"normalIcon"}
-                        icon="fa-solid fa-envelope-circle-check"
-                    />
+                    <FontAwesomeIcon className={"normalIcon"} icon="fa-solid fa-envelope-circle-check" />
                     <ButtonTexte>Modifier</ButtonTexte>
-                </StyledButton>
-                <StyledButton
+                </StyleButton>
+                <StyleButton
                     theme={theme}
-                    $isCard
-                    $isFlex
-                    $isLike
+                    $estMessage
+                    $estFlex
+                    $estJaime
                     onClick={(e) => {
                         e.preventDefault();
-                        setIsModificationActive(0);
+                        definirModificationMessageActive(0);
                     }}
                 >
-                    <FontAwesomeIcon
-                        className={"normalIcon"}
-                        icon="fa-regular fa-circle-left"
-                    />
+                    <FontAwesomeIcon className={"normalIcon"} icon="fa-regular fa-circle-left" />
                     <ButtonTexte>Annuler</ButtonTexte>
-                </StyledButton>
+                </StyleButton>
             </ButtonContainer>
         </MessageForm>
     );
