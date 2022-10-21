@@ -7,6 +7,7 @@ import styled from "styled-components";
 /* Importation de notre style spécifique de lien */
 import { StyleButton } from "../../../utils/style/Atomes";
 
+/* Importation des icones FontAwesome */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /* Importation de notre Hook 'useTheme' */
@@ -24,7 +25,12 @@ const ButtonTexte = styled.span`
     padding-left: 5px;
 `;
 
-const MessageButtons = ({ definirDonneesActionMessage, creationDonnees, definirCreationMessageActive = null, definirModificationMessageActive = null }) => {
+const MessageButtons = ({
+    definirDonneesActionMessage,
+    creationDonnees,
+    definirCreationMessageActive = null,
+    definirModificationMessageActive = null,
+}) => {
     // Récupération des valeurs de contexte grace aux hooks personnalisés
     const { theme } = useTheme();
 

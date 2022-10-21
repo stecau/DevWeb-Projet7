@@ -7,12 +7,8 @@ import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import couleurs from "../../utils/style/couleurs";
 
-/* Importation de nos Hooks 'useTheme', 'useIdentification' et 'useVerificationConnexion' */
-import {
-    useTheme,
-    useIdentification,
-    useVerificationConnexion,
-} from "../../utils/hooks";
+/* Importation de nos Hooks 'useTheme' et 'useVerificationConnexion' */
+import { useTheme, useVerificationConnexion } from "../../utils/hooks";
 
 /* Importation de notre composant 'FilActualites' */
 import FilActualites from "../../components/Accueil/FilActualites";
@@ -26,10 +22,7 @@ const AcceuilArticle = styled.article`
 
 const AccueilSection = styled.section`
     margin: 30px;
-    background-color: ${({ theme }) =>
-        theme === "clair"
-            ? couleurs.backgroundClair
-            : couleurs.backgroundSombre};
+    background-color: ${({ theme }) => (theme === "clair" ? couleurs.backgroundClair : couleurs.backgroundSombre)};
     padding: 60px 90px;
     display: flex;
     flex-direction: row;
@@ -40,20 +33,12 @@ const AccueilSection = styled.section`
 const Acceuil = () => {
     // Récupération des valeurs de contexte grace aux hooks personnalisés
     const { theme } = useTheme();
-    const { identificationType } = useIdentification();
-
-    // Récupération du statut de connexion au chargement de la page
-    useVerificationConnexion();
+    // Récupération du statut de connexion au chargement de la page grace aux hooks personnalisés
+    const { identificationType } = useVerificationConnexion();
 
     return (
         <AcceuilArticle>
-            <AccueilSection theme={theme}>
-                {identificationType.type !== "connecté" ? (
-                    <AcceuilDefaut />
-                ) : (
-                    <FilActualites />
-                )}
-            </AccueilSection>
+            <AccueilSection theme={theme}>{identificationType.type !== "connecté" ? <AcceuilDefaut /> : <FilActualites />}</AccueilSection>
         </AcceuilArticle>
     );
 };

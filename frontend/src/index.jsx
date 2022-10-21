@@ -3,7 +3,7 @@
 /*-----------------------------------------------------------------------------*/
 
 /* Importation des modules de React */
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -15,7 +15,7 @@ import Compte from "./pages/Compte";
 /* Importation des composants */
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Error from "./components/Error";
+import Erreur from "./components/Erreur";
 
 /* Importation des utilitaires (provider et style global) */
 // Provider
@@ -34,10 +34,7 @@ import {
     faCircleXmark,
 } from "@fortawesome/free-regular-svg-icons";
 
-import {
-    faEnvelopeCircleCheck,
-    faArrowRightFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEnvelopeCircleCheck, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
     faThumbsUp,
@@ -53,7 +50,7 @@ library.add(
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <React.StrictMode>
+    <StrictMode>
         <Router>
             <ThemeProvider>
                 <StyleGlobal />
@@ -63,11 +60,11 @@ root.render(
                         <Route path="/" element={<Accueil />} />
                         <Route path="/connexion" element={<Connexion />} />
                         <Route path="/compte" element={<Compte />} />
-                        <Route path="*" element={<Error />} />
+                        <Route path="*" element={<Erreur />} />
                     </Routes>
                     <Footer />
                 </ConnexionProvider>
             </ThemeProvider>
         </Router>
-    </React.StrictMode>
+    </StrictMode>
 );

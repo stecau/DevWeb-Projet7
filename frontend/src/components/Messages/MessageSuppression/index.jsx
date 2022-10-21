@@ -1,18 +1,19 @@
-/*--------------------------------------------------------------------------------------------*/
-/* Définition du composant 'Message' pour notre application React 'app' pour notre FrontEnd : */
-/*--------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------*/
+/* Définition du composant 'MessageSuppression' pour notre application React 'app' pour notre FrontEnd : */
+/*-------------------------------------------------------------------------------------------------------*/
 
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
-/* Importation de notre style spécifique de lien */
+/* Importation de notre style spécifique de 'button' */
 import { StyleButton } from "../../../utils/style/Atomes";
 
+/* Importation des icones FontAwesome */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /* Importation de notre composant 'Chargement' */
 import Chargement from "../../Chargement";
 
-/* importation du hook 'useContext' de React */
+/* importation des hooks 'useContext', 'useState' et 'useEffect' de React */
 import { useContext, useState, useEffect } from "react";
 
 /* Importation de nos Hooks 'useTheme' et 'useFetch' */
@@ -26,7 +27,8 @@ const ButtonTexte = styled.span`
     padding-left: 5px;
 `;
 
-const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargementSuppression }) => {
+// Définition du composant fonction 'MessageSuppression'
+const MessageSuppression = ({ appMessage, definirListeMessages }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
     // Identification pour l'utilisation du token
@@ -38,7 +40,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargem
     const [fetchParamObjet, definirFetchParamObjet] = useState({});
     // UseState des informations sur la requête
     const [infoFetch, definirInfoFetch] = useState({
-        typeFetch: {},
+        typeFetch: "",
         donneesMessage: "",
         alerteMessage: "",
         erreurMessage: "",
@@ -52,6 +54,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargem
     // Déclanchement de la requête pour une suppression de message
     useEffect(() => {
         if (suppressionMessage) {
+            console.log("<----- SUPPRESSION MESSAGE ----->");
             const token = identificationType.token;
             definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
             definirFetchParamObjet({
@@ -62,9 +65,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargem
                 },
             });
             definirInfoFetch({
-                typeFetch: {
-                    type: "deleteMessage",
-                },
+                typeFetch: "deleteMessage",
                 donneesMessage: "Suppression du message terminée",
                 alerteMessage: "Suppression du message : ",
                 erreurMessage: "Erreur pour la suppression du message : [ ",
@@ -77,6 +78,8 @@ const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargem
         // Fetch sur la suppression d'un message avec son id
         if (donnees.hasOwnProperty("message")) {
             if (donnees.message === "Message supprimé") {
+                console.log("<----- FIN SUPPRESSION MESSAGE ----->");
+                console.log("<----- ACTUALISATION DES MESSAGES ----->");
                 // Mise à jour de listeMessages avec une requête get sur tous les messages
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts`);
@@ -88,9 +91,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargem
                     },
                 });
                 definirInfoFetch({
-                    typeFetch: {
-                        type: "getAllMessage",
-                    },
+                    typeFetch: "getAllMessage",
                     donneesMessage: "Récupération de tous les messages terminée",
                     alerteMessage: "Consultation de tous les messages : ",
                     erreurMessage: "Erreur pour la consultation de tous les messages : [ ",
@@ -99,6 +100,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages, definirEnChargem
         }
         // Fetch sur récupération de tous les messages
         if (donnees.length) {
+            console.log("<----- FIN ACTUALISATION DES MESSAGES ----->");
             // Envoi de la nouvelle liste grace au State
             definirListeMessages(donnees);
         }

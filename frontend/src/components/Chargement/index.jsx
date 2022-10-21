@@ -4,7 +4,7 @@
 
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
-/* Importation de notre style spécifique de lien */
+/* Importation de notre style spécifique (niveau atome) de l'indicateur de chargement */
 import { IndicateurChargement } from "../../utils/style/Atomes";
 
 const ConteneurIndicateurChargement = styled.div`

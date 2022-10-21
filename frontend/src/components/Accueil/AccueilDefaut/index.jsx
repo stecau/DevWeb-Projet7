@@ -8,7 +8,7 @@ import styled from "styled-components";
 import couleurs from "../../../utils/style/couleurs";
 import { StyleLink } from "../../../utils/style/Atomes";
 
-/* Importation de nos Hooks 'useTheme', 'useIdentification' et 'useVerificationConnexion' */
+/* Importation de notre Hooks 'useTheme' */
 import { useTheme } from "../../../utils/hooks";
 
 /* Importation de l'image jpeg pour la page d'accueil */
@@ -34,16 +34,14 @@ const StyleTitreH1 = styled.h1`
     padding: 0 5px 0 0;
     max-width: 280px;
     line-height: 50px;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.primaire : couleurs.secondaire};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
 
 const StyleTitreH2 = styled.h2`
     padding: 0 5px 30px 0;
     max-width: 280px;
     line-height: 50px;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 
 const Illustration = styled.img`
@@ -64,21 +62,15 @@ const AcceuilDefaut = () => {
     return (
         <AcceuilFigure>
             <AccueilFigCaption>
-                <StyleTitreH1 theme={theme}>
-                    Bienvenue sur le réseau social interne du groupe !
-                </StyleTitreH1>
+                <StyleTitreH1 theme={theme}>Bienvenue sur le réseau social interne du groupe !</StyleTitreH1>
                 <StyleTitreH2 theme={theme}>
-                    Rencontrez vos collègues de manières conviviales et
-                    apprennez à mieux les connaitre.
+                    Rencontrez vos collègues de manières conviviales et apprennez à mieux les connaitre.
                 </StyleTitreH2>
                 <StyleLink to="/connexion" $estActive theme={theme}>
                     Connectez-vous !
                 </StyleLink>
             </AccueilFigCaption>
-            <Illustration
-                src={AccueilIllustration}
-                alt="Accueil illustration"
-            />
+            <Illustration src={AccueilIllustration} alt="Illustration d'accueil" />
         </AcceuilFigure>
     );
 };

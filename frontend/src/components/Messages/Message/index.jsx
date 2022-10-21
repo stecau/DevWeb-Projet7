@@ -6,29 +6,29 @@
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import couleurs from "../../../utils/style/couleurs";
-/* Importation de notre style spécifique de lien */
+/* Importation de notre style spécifique de 'button' */
 import { StyleButton } from "../../../utils/style/Atomes";
 
+/* Importation des icones FontAwesome */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-/* importation de notre conposant 'MessageModification' */
+/* importation de notre composant 'ButtonAvis' */
 import ButtonAvis from "../ButtonAvis";
-/* importation de notre conposant 'MessageModification' */
-//import MessageModification from "../MessageModification";
+/* importation de notre composant 'MessageForm' */
 import MessageForm from "../MessageForm";
-/* importation de notre conposant 'MessageSuppression' */
+/* importation de notre composant 'MessageSuppression' */
 import MessageSuppression from "../MessageSuppression";
 
-/* importation du hook 'useContext' de React */
+/* importation des hooks 'useContext', 'useState' et 'useEffect' de React */
 import { useContext, useState, useEffect } from "react";
 
-/* Importation de nos Hooks 'useTheme' */
+/* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../../utils/hooks";
 
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../../utils/context";
 
-const PostFigure = styled.figure`
+const MessageFigure = styled.figure`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -42,12 +42,12 @@ const FigureCaption = styled.figcaption`
     justify-content: center;
 `;
 
-const StyledTitle = styled.h1`
+const StyleTitre = styled.h1`
     margin: 18px 0 0 0;
     color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
 
-const StyledContent = styled.p`
+const StyleContenu = styled.p`
     margin: 16px 0;
     color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
     white-space: pre-wrap;
@@ -64,7 +64,7 @@ const Illustration = styled.img`
         width: 50%;`};
 `;
 
-const ButtonContainer = styled.div`
+const ButtonConteneur = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -76,10 +76,11 @@ const ButtonTexte = styled.span`
     padding-left: 5px;
 `;
 
+// Définition du composant fonction 'Message'
 const Message = ({ message, definirListeMessages, modificationMessageActive, definirModificationMessageActive }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
-    // Identification pour la gestion du statut de connexion et de l'email + id de l'utilisateur connecté
+    // Identification pour la récupération de l'id de l'utilisateur connecté
     const { identificationType } = useContext(ConnexionContext);
 
     // UseState du retour de la requête sur un message avec son id
@@ -94,65 +95,54 @@ const Message = ({ message, definirListeMessages, modificationMessageActive, def
     // Déclenchement de l'affichage du message (initial)
     useEffect(() => {
         obtenirAppMessage(message);
-        definirEstUtilisateur(() => {
-            let donneesMessage = {};
-            if (message.listeJaimeData.indexOf(identificationType.id) !== -1) {
-                donneesMessage.aime = true;
-            } else {
-                donneesMessage.aime = false;
-            }
-            if (message.listeJadoreData.indexOf(identificationType.id) !== -1) {
-                donneesMessage.adore = true;
-            } else {
-                donneesMessage.adore = false;
-            }
-            if (message._id === identificationType.id) {
-                donneesMessage.createur = true;
-            } else {
-                donneesMessage.createur = false;
-            }
-            return donneesMessage;
-        });
+        definirEstUtilisateur(creationUtilisateurStatuts(message));
     }, [message]);
 
     // Déclenchement de l'affichage du message (après modification)
     useEffect(() => {
         if (appMessage.hasOwnProperty("_id") && !modificationMessageActive) {
             obtenirAppMessage(appMessage);
-            definirEstUtilisateur(() => {
-                let donneesMessage = {};
-                if (appMessage.listeJaimeData.indexOf(identificationType.id) !== -1) {
-                    donneesMessage.aime = true;
-                } else {
-                    donneesMessage.aime = false;
-                }
-                if (appMessage.listeJadoreData.indexOf(identificationType.id) !== -1) {
-                    donneesMessage.adore = true;
-                } else {
-                    donneesMessage.adore = false;
-                }
-                if (appMessage.createur_id === identificationType.id) {
-                    donneesMessage.createur = true;
-                } else {
-                    donneesMessage.createur = false;
-                }
-                return donneesMessage;
-            });
+            definirEstUtilisateur(creationUtilisateurStatuts(appMessage));
         }
     }, [appMessage, modificationMessageActive]);
 
+    // Fonction pour définir le statut de l'utilisateur par rapport aux 'Jaime', 'Jadore' et le 'createur' du message
+    const creationUtilisateurStatuts = (donnees) => {
+        let donneesMessage = {};
+        if (donnees.listeJaimeData.indexOf(identificationType.id) !== -1) {
+            donneesMessage.aime = true;
+        } else {
+            donneesMessage.aime = false;
+        }
+        if (donnees.listeJadoreData.indexOf(identificationType.id) !== -1) {
+            donneesMessage.adore = true;
+        } else {
+            donneesMessage.adore = false;
+        }
+        if (donnees.createur_id === identificationType.id) {
+            donneesMessage.createur = true;
+        } else {
+            donneesMessage.createur = false;
+        }
+        return donneesMessage;
+    };
+
     return modificationMessageActive === appMessage._id ? (
-        <MessageForm appMessage={appMessage} obtenirAppMessage={obtenirAppMessage} definirModificationMessageActive={definirModificationMessageActive} />
+        <MessageForm
+            appMessage={appMessage}
+            obtenirAppMessage={obtenirAppMessage}
+            definirModificationMessageActive={definirModificationMessageActive}
+        />
     ) : (
-        <PostFigure>
+        <MessageFigure>
             <Illustration isMessage src={appMessage.imageUrl} alt="Illustration du message" />
             <FigureCaption>
-                <StyledTitle theme={theme}>{appMessage.titre}</StyledTitle>
-                <StyledContent theme={theme}>{appMessage.content}</StyledContent>
-                <ButtonContainer $width="100%">
+                <StyleTitre theme={theme}>{appMessage.titre}</StyleTitre>
+                <StyleContenu theme={theme}>{appMessage.content}</StyleContenu>
+                <ButtonConteneur $width="100%">
                     <ButtonAvis appMessage={appMessage} estUtilisateur={estUtilisateur} definirEstUtilisateur={definirEstUtilisateur} />
                     {(estUtilisateur.createur || identificationType.isAdmin === 1) && (
-                        <ButtonContainer $width="50%">
+                        <ButtonConteneur $width="50%">
                             <StyleButton
                                 theme={theme}
                                 $estMessage
@@ -166,11 +156,11 @@ const Message = ({ message, definirListeMessages, modificationMessageActive, def
                                 <ButtonTexte>Modifier</ButtonTexte>
                             </StyleButton>
                             <MessageSuppression appMessage={appMessage} definirListeMessages={definirListeMessages} />
-                        </ButtonContainer>
+                        </ButtonConteneur>
                     )}
-                </ButtonContainer>
+                </ButtonConteneur>
             </FigureCaption>
-        </PostFigure>
+        </MessageFigure>
     );
 };
 

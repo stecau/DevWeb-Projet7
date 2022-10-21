@@ -1,3 +1,5 @@
+/* REMPLACER PAR MessageForm qui combine création et modification d'un message */
+
 /*----------------------------------------------------------------------------------------------------*/
 /* Définition du composant 'MessageCreation' pour notre application React 'app' pour notre FrontEnd : */
 /*----------------------------------------------------------------------------------------------------*/
@@ -64,7 +66,7 @@ const MessageCreation = ({ definirCreationMessageActive, definirListeMessages })
     const [donneesCreationMessage, definirDonneesCreationMessage] = useState({});
     // UseState des informations sur la requête
     const [infoFetch, definirInfoFetch] = useState({
-        typeFetch: {},
+        typeFetch: "",
         donneesMessage: "",
         alerteMessage: "",
         erreurMessage: "",
@@ -111,9 +113,7 @@ const MessageCreation = ({ definirCreationMessageActive, definirListeMessages })
                 });
 
                 definirInfoFetch({
-                    typeFetch: {
-                        type: "MessageCreation",
-                    },
+                    typeFetch: "MessageCreation",
                     donneesMessage: "Création du message terminée",
                     alerteMessage: "Création du message : ",
                     erreurMessage: "Erreur pour la création du message : [ ",
@@ -139,9 +139,7 @@ const MessageCreation = ({ definirCreationMessageActive, definirListeMessages })
                 },
             });
             definirInfoFetch({
-                typeFetch: {
-                    type: "getAllMessage",
-                },
+                typeFetch: "getAllMessage",
                 donneesMessage: "Récupération de tous les messages terminée",
                 alerteMessage: "Consultation de tous les messages : ",
                 erreurMessage: "Erreur pour la consultation de tous les messages : [ ",

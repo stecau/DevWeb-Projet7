@@ -7,10 +7,10 @@ import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import couleurs from "../../../utils/style/couleurs";
 
-/* importation du hook 'useContext' de React */
+/* importation des hooks 'useState' et 'useEffect' de React */
 import { useState, useEffect } from "react";
 
-/* Importation de notre Hook 'useTheme' */
+/* Importation de nos Hooks personnalisés 'useTheme', 'useFetch' et 'useIdentification' */
 import { useTheme, useFetch, useIdentification } from "../../../utils/hooks";
 
 /* Importation de notre composant 'Chargement' */
@@ -70,7 +70,7 @@ const MessageForm = ({
     const [donneesActionMessage, definirDonneesActionMessage] = useState({});
     // UseState des informations sur la requête
     const [infoFetch, definirInfoFetch] = useState({
-        typeFetch: {},
+        typeFetch: "",
         donneesMessage: "",
         alerteMessage: "",
         erreurMessage: "",
@@ -96,7 +96,7 @@ const MessageForm = ({
         }
     }, []);
 
-    // Déclanchement de la requête pour la création d'un message
+    // Déclanchement de la requête pour la création ou la modification d'un message
     useEffect(() => {
         if (titre.valide && texte.valide && image.valide) {
             // Condition pour lancement de la requête
@@ -113,6 +113,7 @@ const MessageForm = ({
                 const token = identificationType.token;
 
                 if (modification) {
+                    console.log("<----- MODIFICATION MESSAGE ----->");
                     // Définition d'une requête de modification
                     definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
 
@@ -149,15 +150,14 @@ const MessageForm = ({
                     }
 
                     definirInfoFetch({
-                        typeFetch: {
-                            type: "MessageModification",
-                        },
+                        typeFetch: "MessageModification",
                         donneesMessage: "Modification du message terminée",
                         alerteMessage: "Modification du message : ",
                         erreurMessage: "Erreur pour la modification du message : [ ",
                     });
                 } else {
-                    // Définition d'une requête de modification
+                    console.log("<----- CREATION MESSAGE ----->");
+                    // Définition d'une requête de création
                     definirUrl(`http://localhost:4000/api/posts`);
 
                     // Creation du 'init' avec multipart/form-data 'formData' pour le Content-type
@@ -180,9 +180,7 @@ const MessageForm = ({
                     });
 
                     definirInfoFetch({
-                        typeFetch: {
-                            type: "MessageCreation",
-                        },
+                        typeFetch: "MessageCreation",
                         donneesMessage: "Création du message terminée",
                         alerteMessage: "Création du message : ",
                         erreurMessage: "Erreur pour la création du message : [ ",
@@ -196,11 +194,14 @@ const MessageForm = ({
 
     // Récupération lors d'une requête Fetch
     useEffect(() => {
-        // Fetch de création
+        // Fetch de modification ou création
         if (donnees.hasOwnProperty("message")) {
+            // Fetch de modification
             if (donnees.message === "Message modifié") {
+                console.log("<----- FIN MODIFICATION MESSAGE ----->");
+                console.log("<----- ACTUALISATION MESSAGE MODIFIE ----->");
                 // Fetch pour actualisation du message
-                // Mise à jour de appMessage avec une requête get le message
+                // Mise à jour de appMessage avec une requête get sur le message
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
                 definirFetchParamObjet({
@@ -211,15 +212,16 @@ const MessageForm = ({
                     },
                 });
                 definirInfoFetch({
-                    typeFetch: {
-                        type: "getMessage",
-                    },
+                    typeFetch: "getMessage",
                     donneesMessage: "Récupération du message terminée",
                     alerteMessage: "Consultation du message : ",
                     erreurMessage: "Erreur pour la consultation du message : [ ",
                 });
             }
+            // Fetch de création
             if (donnees.message === "Nouveau message enregistré") {
+                console.log("<----- FIN CREATION MESSAGE ----->");
+                console.log("<----- ACTUALISATION DES MESSAGES ----->");
                 // Mise à jour de listeMessages avec une requête get sur tous les messages
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts`);
@@ -231,22 +233,22 @@ const MessageForm = ({
                     },
                 });
                 definirInfoFetch({
-                    typeFetch: {
-                        type: "getAllMessage",
-                    },
+                    typeFetch: "getAllMessage",
                     donneesMessage: "Récupération de tous les messages terminée",
                     alerteMessage: "Consultation de tous les messages : ",
                     erreurMessage: "Erreur pour la consultation de tous les messages : [ ",
                 });
             }
         }
-        // Fetch de modification
+        // Retour de Fetch après modification
         if (donnees.hasOwnProperty("_id")) {
+            console.log("<----- FIN ACTUALISATION MESSAGE MODIFIE ----->");
             obtenirAppMessage(donnees);
             definirModificationMessageActive(0);
         }
-        // Fetch de getAllMessages
+        // Retour de Fetch après getAllMessages
         if (donnees.length > 0) {
+            console.log("<----- FIN ACTUALISATION DES MESSAGES ----->");
             definirListeMessages(donnees);
             definirCreationMessageActive(false);
         }
@@ -257,6 +259,7 @@ const MessageForm = ({
         return <span>Oups il y a eu un problème</span>;
     }
 
+    // Récupération des données de création ou modifications pour moins de code et plus de lisibilité
     const { titre, texte, image } = creationDonnees;
 
     return enChargement ? (

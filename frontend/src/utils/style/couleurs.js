@@ -1,3 +1,7 @@
+/*-----------------------------------------------------------------------------------------------*/
+/* Définition de la variable 'couleurs' pour notre application React 'app' pour notre FrontEnd : */
+/*-----------------------------------------------------------------------------------------------*/
+
 const couleurs = {
     primaire: "#FD2D01",
     secondaire: "#FFD7D7",

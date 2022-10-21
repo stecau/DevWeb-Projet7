@@ -4,15 +4,16 @@
 
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
-/* Importation de notre style spécifique de lien */
+/* Importation de notre style spécifique de 'button' */
 import { StyleButton } from "../../../utils/style/Atomes";
 
+/* Importation des icones FontAwesome */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /* Importation de notre composant 'Chargement' */
 import Chargement from "../../Chargement";
 
-/* importation du hook 'useContext' de React */
+/* importation des hooks 'useContext', 'useState' et 'useEffect' de React */
 import { useContext, useState, useEffect } from "react";
 
 /* Importation de nos Hooks 'useTheme' et 'useFetch' */
@@ -21,7 +22,7 @@ import { useTheme, useFetch } from "../../../utils/hooks";
 /* Importation de notre connexion context */
 import { ConnexionContext } from "../../../utils/context";
 
-const ButtonContainer = styled.div`
+const ButtonConteneur = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -33,6 +34,7 @@ const ButtonTexte = styled.span`
     padding-left: 5px;
 `;
 
+// Définition du composant fonction 'ButtonAvis'
 const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
@@ -87,6 +89,7 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
     // Déclanchement de la requête pour un Jaime/Jadore ou annulation sur message
     useEffect(() => {
         if (avisPourMessage.hasOwnProperty("id")) {
+            console.log("<----- AFFECTATION AVIS MESSAGE ----->");
             const token = identificationType.token;
             definirUrl(`http://localhost:4000/api/posts/${avisPourMessage.id}/avis`);
             definirFetchParamObjet({
@@ -116,6 +119,8 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
         // Fetch de avis
         if (donnees.hasOwnProperty("message")) {
             if (donnees.message === "Nouveau avis enregistré" || donnees.message === "Avis supprimé") {
+                console.log("<----- FIN AFFECTATION AVIS MESSAGE ----->");
+                console.log("<----- ACTUALISATION MESSAGE MODIFIE ----->");
                 // Mise à jour des avis avec une requête get sur le message
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
@@ -140,6 +145,7 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
         }
         // Fetch sur un message avec son id après émission d'un avis
         if (donnees.hasOwnProperty("_id")) {
+            console.log("<----- FIN ACTUALISATION MESSAGE MODIFIE ----->");
             if (infoFetch.typeFetch.type === "getMessageAvecIdPourAvis") {
                 if (infoFetch.typeFetch.button === "Jaime") {
                     obtenirMessageAvis((ancienMessageAvis) => {
@@ -235,13 +241,13 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
         }
     };
 
-    // Récupération des valeurs Jaime et Jadore pour moins de code et clarté
+    // Récupération des valeurs Jaime et Jadore pour moins de code et plus de lisibilité
     const { Jaime, Jadore } = messageAvis;
 
     return enChargement ? (
         <Chargement />
     ) : (
-        <ButtonContainer $width="50%">
+        <ButtonConteneur $width="50%">
             <StyleButton
                 theme={theme}
                 $estMessage
@@ -266,7 +272,7 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
                 <FontAwesomeIcon className={estUtilisateur.adore ? "adoré" : "normalJadore"} icon="fa-regular fa-heart" />
                 <ButtonTexte>J'adore : {Jadore.nbr}</ButtonTexte>
             </StyleButton>
-        </ButtonContainer>
+        </ButtonConteneur>
     );
 };
 

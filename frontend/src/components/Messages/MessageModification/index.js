@@ -1,3 +1,5 @@
+/* REMPLACER PAR MessageForm qui combine création et modification d'un message */
+
 /*----------------------------------------------------------------------------------------------------*/
 /* Définition du composant 'MessageModification' pour notre application React 'app' pour notre FrontEnd : */
 /*----------------------------------------------------------------------------------------------------*/
@@ -61,7 +63,8 @@ const AlertText = styled.p`
     font-size: 0.8em;
     margin: 0;
     padding: 0 0 5px 0;
-    display: ${(props) => ((props.titreValide && props.type === "titre") || (props.texteValide && props.type) === "texte" ? "none" : "block")};
+    display: ${(props) =>
+        (props.titreValide && props.type === "titre") || (props.texteValide && props.type) === "texte" ? "none" : "block"};
 `;
 
 const MessageModification = ({ appMessage, obtenirAppMessage, definirModificationMessageActive }) => {
@@ -89,7 +92,7 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
     const [donneesModificationMessage, definirDonneesModificationMessage] = useState({});
     // UseState des informations sur la requête
     const [infoFetch, definirInfoFetch] = useState({
-        typeFetch: {},
+        typeFetch: "",
         donneesMessage: "",
         alerteMessage: "",
         erreurMessage: "",
@@ -162,9 +165,7 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
                     });
                 }
                 definirInfoFetch({
-                    typeFetch: {
-                        type: "MessageModification",
-                    },
+                    typeFetch: "MessageModification",
                     donneesMessage: "Modification du message terminée",
                     alerteMessage: "Modification du message : ",
                     erreurMessage: "Erreur pour la modification du message : [ ",
@@ -194,9 +195,7 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
                     },
                 });
                 definirInfoFetch({
-                    typeFetch: {
-                        type: "getMessage",
-                    },
+                    typeFetch: "getMessage",
                     donneesMessage: "Récupération du message terminée",
                     alerteMessage: "Consultation du message : ",
                     erreurMessage: "Erreur pour la consultation du message : [ ",
@@ -275,7 +274,11 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
                     <div>
                         <label htmlFor="suppression">Supprimer l'image du message uniquement :</label>
                         <ButtonContainer $width="100%">
-                            <p>{imageValue !== undefined && typeof imageValue === "string" ? imageValue.split("/images/")[1] : imageValue.name}</p>
+                            <p>
+                                {imageValue !== undefined && typeof imageValue === "string"
+                                    ? imageValue.split("/images/")[1]
+                                    : imageValue.name}
+                            </p>
                             <StyleButton
                                 theme={theme}
                                 $estMessage
@@ -295,7 +298,9 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
                         <p>----- OU -----</p>
                     </div>
                 )}
-                <label htmlFor="image">Choisir une image pour {showButtonContainer && "un remplacement d'image dans"} le message (facultatif) :</label>
+                <label htmlFor="image">
+                    Choisir une image pour {showButtonContainer && "un remplacement d'image dans"} le message (facultatif) :
+                </label>
                 <input
                     type="file"
                     id="image"

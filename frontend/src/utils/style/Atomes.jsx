@@ -1,6 +1,14 @@
+/*------------------------------------------------------------------------------------------------------*/
+/* Définition du niveau 'Atome' de notre style pour notre application React 'app' pour notre FrontEnd : */
+/*------------------------------------------------------------------------------------------------------*/
+
+/* Importation du composant 'Link' de React Router DOM */
 import { Link } from "react-router-dom";
-import couleurs from "./couleurs";
+
+/* Importation du module 'styled' et 'keyframes' de 'styled-components' */
 import styled, { keyframes } from "styled-components";
+/* Importation des couleurs de notre style */
+import couleurs from "./couleurs";
 
 const rotation = keyframes`
   from {
@@ -24,8 +32,7 @@ export const IndicateurChargement = styled.div`
 export const StyleLink = styled(Link)`
     margin: 5px;
     padding: 10px 15px;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
     text-decoration: none;
     font-size: 18px;
     text-align: center;
@@ -36,31 +43,22 @@ export const StyleLink = styled(Link)`
         background-color: ${couleurs.primaire};`};
     ${(props) =>
         props.$styleCreation &&
-        `color: ${
-            props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire
-        };
+        `color: ${props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire};
         padding: 5px 10px;
         font-size: 13px;
         border-radius: 5px; 
-        background-color: ${
-            props.theme === "clair" ? couleurs.tertiaire : couleurs.secondaire
-        };`};
+        background-color: ${props.theme === "clair" ? couleurs.tertiaire : couleurs.secondaire};`};
     ${(props) =>
         props.$estMessage &&
-        `color: ${
-            props.theme === "clair" ? couleurs.fontClair : couleurs.fontSombre
-        };
+        `color: ${props.theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
         padding: 0px;
-        background-color: ${
-            props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire
-        };`};
+        background-color: ${props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire};`};
 `;
 
 export const StyleButton = styled.button`
     margin: 5px;
     padding: 10px 15px;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
     text-decoration: none;
     font-size: 18px;
     text-align: center;
@@ -73,29 +71,17 @@ export const StyleButton = styled.button`
         background-color: ${couleurs.primaire};`};
     ${(props) =>
         props.$styleCreation &&
-        `color: ${
-            props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire
-        };
+        `color: ${props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire};
         padding: 5px 10px;
         font-size: 13px;
         border-radius: 5px; 
-        background-color: ${
-            props.theme === "clair" ? couleurs.tertiaire : couleurs.secondaire
-        };`};
+        background-color: ${props.theme === "clair" ? couleurs.tertiaire : couleurs.secondaire};`};
     ${(props) =>
         props.$estMessage &&
-        `color: ${
-            props.theme === "clair" ? couleurs.fontClair : couleurs.fontSombre
-        };
+        `color: ${props.theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
         padding: 0px;
-        background-color: ${
-            props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire
-        };`};
-    ${(props) =>
-        props.$estJaime &&
-        `color: ${
-            props.theme === "clair" ? couleurs.tertiaire : couleurs.secondaire
-        };`};
+        background-color: ${props.theme === "clair" ? couleurs.secondaire : couleurs.tertiaire};`};
+    ${(props) => props.$estJaime && `color: ${props.theme === "clair" ? couleurs.tertiaire : couleurs.secondaire};`};
     ${(props) =>
         props.$estFlex &&
         `display: flex;

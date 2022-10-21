@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------------------*/
-/* Définition du composant Footer pour notre application React 'app' pour notre FrontEnd : */
+/* Définition du composant Header pour notre application React 'app' pour notre FrontEnd : */
 /*-----------------------------------------------------------------------------------------*/
 
 /* importation du hook 'useContext' de React */
@@ -23,22 +23,22 @@ import { ConnexionContext } from "../../utils/context";
 import logoNoir from "../../assets/icon-left-font-monochrome-black.svg";
 import logoBlanc from "../../assets/icon-left-font-monochrome-white.svg";
 
-const HomeLogo = styled.img`
+const LogoAccueil = styled.img`
     height: 50px;
 `;
 
-const HeaderContainer = styled.header`
+const HeaderConteneur = styled.header`
     padding: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 `;
 
+// Définition du composant (fonction) 'Header'
 const Header = () => {
     const { theme } = useTheme();
     const location = useLocation();
-    const { identificationType, setIdentificationType } =
-        useContext(ConnexionContext);
+    const { identificationType, setIdentificationType } = useContext(ConnexionContext);
 
     const deconnection = () => {
         if (window.localStorage.getItem("groupomania")) {
@@ -52,48 +52,28 @@ const Header = () => {
     };
 
     return (
-        <HeaderContainer>
+        <HeaderConteneur>
             <Link to="/">
-                <HomeLogo
-                    src={theme === "clair" ? logoNoir : logoBlanc}
-                    alt="Logo Groupomania"
-                />
+                <LogoAccueil src={theme === "clair" ? logoNoir : logoBlanc} alt="Logo Groupomania" />
             </Link>
             <nav>
-                <StyleLink
-                    to="/"
-                    $estActive={location.pathname === "/" && 1}
-                    theme={theme}
-                >
+                <StyleLink to="/" $estActive={location.pathname === "/" && 1} theme={theme}>
                     Acceuil
                 </StyleLink>
-                <StyleLink
-                    to="/compte"
-                    $estActive={location.pathname === "/compte" && 1}
-                    theme={theme}
-                >
+                <StyleLink to="/compte" $estActive={location.pathname === "/compte" && 1} theme={theme}>
                     Mon compte
                 </StyleLink>
                 {identificationType.type !== "connecté" ? (
-                    <StyleLink
-                        to="/connexion"
-                        $estActive={location.pathname === "/connexion" && 1}
-                        theme={theme}
-                    >
+                    <StyleLink to="/connexion" $estActive={location.pathname === "/connexion" && 1} theme={theme}>
                         Connexion
                     </StyleLink>
                 ) : (
-                    <StyleLink
-                        to="/connexion"
-                        $estActive={location.pathname === "/deconnexion" && 1}
-                        theme={theme}
-                        onClick={deconnection}
-                    >
+                    <StyleLink to="/connexion" $estActive={location.pathname === "/deconnexion" && 1} theme={theme} onClick={deconnection}>
                         Déconnexion
                     </StyleLink>
                 )}
             </nav>
-        </HeaderContainer>
+        </HeaderConteneur>
     );
 };
 

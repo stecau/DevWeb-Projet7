@@ -6,11 +6,15 @@
 import { useState, useEffect, useContext } from "react";
 /* importation du hook 'useNavigate' de 'react-router-dom' */
 import { useNavigate } from "react-router-dom";
-/* Importation de notre methode 'ThemeContext' depuis le dossier 'Context' */
-import { ThemeContext } from "../context";
-/* Importation de notre methode 'ConnexionContext' depuis le dossier 'Context' */
-import { ConnexionContext } from "../context";
 
+/* Importation de notre composant context 'ThemeContext' depuis le dossier 'Context' */
+import { ThemeContext } from "../context";
+/* Importation de notre composant context 'ConnexionContext' depuis le dossier 'Context' */
+import { ConnexionContext } from "../context";
+/* Importation de notre composant context 'CompteContext' depuis le dossier 'Context' */
+import { CompteContext } from "../context";
+
+/*---------------------------------------------------------------------------------------------*/
 // Déclaration de notre Hook pour l'utilisation du Thème 'Clair' ou 'Sombre'
 export function useTheme() {
     // Récupération du contexte de 'ThemeContext'
@@ -18,7 +22,9 @@ export function useTheme() {
     // Retourne la valeur de theme et la fonction basculement d'état du thème contenu dans l'objet 'ThemeContext'
     return { theme, changeTheme };
 }
+/*---------------------------------------------------------------------------------------------*/
 
+/*---------------------------------------------------------------------------------------------*/
 // Déclaration de notre Hook pour l'utilisation de l'identification
 export function useIdentification() {
     // Récupération du contexte de 'ConnexionContext'
@@ -26,7 +32,9 @@ export function useIdentification() {
     // Retourne les données d'identification et la fonction de mise à jour des données contenu dans l'objet 'ConnexionContext'
     return { identificationType, majIdentificationType };
 }
+/*---------------------------------------------------------------------------------------------*/
 
+/*---------------------------------------------------------------------------------------------*/
 // Déclaration de notre Hook pour récupérer les données d'identification au chargement initial d'une page
 export function useVerificationConnexion(connexionPage = false) {
     // Récupération du contexte de 'ConnexionContext'
@@ -56,34 +64,98 @@ export function useVerificationConnexion(connexionPage = false) {
     useEffect(() => {
         if (typeof window !== "undefined") {
             if (window.localStorage.getItem("groupomania") && identificationType.type === "connecté" && modifierTitreDocument) {
-                console.log("toto");
+                console.log(" => mise à jour du titre de l'onglet de navigation");
                 document.title = `Groupomania / Utilisateur ${identificationType.email}`;
                 majModifierTitreDocument(false);
                 if (connexionPage) {
+                    console.log(" => redirection vers la page 'Fil d'actualités'");
                     allerA("/");
                 }
+                console.log("<----- FIN HOOK : useVerificationConnexion ----->");
             }
         }
     }, [identificationType, modifierTitreDocument]);
 
     // Retourne les données d'identification et la fonction de mise à jour des données contenu dans l'objet 'ConnexionContext'
-    return "Récupération des données d'identification";
+    return { identificationType, majIdentificationType };
 }
+/*---------------------------------------------------------------------------------------------*/
 
+/*---------------------------------------------------------------------------------------------*/
+// Déclaration de notre Hook pour remplir le formulaire d'un comptes (au chargement de la page, au refresh, à la modification)
+export function useRemplirFormulaireCompte(donnees = {}, refresh = false, setRefresh = null) {
+    // Récupération du contexte de 'CompteContext'
+    const { utilisateur, utilisateurDonnees, definirUtilisateurDonnees } = useContext(CompteContext);
+
+    // Fonction pour changer l'affichage dans les inputs des valeurs par défaut
+    const changeDefautValeur = (valeur, defautValeur = null, nouvelleValeur = "") => {
+        if (valeur === defautValeur) {
+            return nouvelleValeur;
+        } else {
+            return valeur;
+        }
+    };
+
+    // Fonction pour mettre à jour les valeurs dans le formulaire
+    const updateFormValeur = (objetData) => {
+        definirUtilisateurDonnees((ancienUtilisateur) => {
+            return {
+                ...ancienUtilisateur,
+                email: { valeur: objetData.email, valide: true },
+                ancienMDP: { valeur: "", valide: true },
+                nouveauMDP1: { valeur: "", valide: true },
+                nouveauMDP2: { valeur: "", valide: true },
+                nom: { valeur: changeDefautValeur(objetData.nom, "Ici votre nom"), valide: true },
+                prenom: { valeur: changeDefautValeur(objetData.prenom, "Ici votre prénom"), valide: true },
+                poste: { valeur: changeDefautValeur(objetData.poste), valide: true },
+            };
+        });
+        console.log("update form", objetData);
+    };
+
+    useEffect(() => {
+        if (refresh) {
+            console.log("Passe par le Hook REFRESH", donnees, refresh, utilisateur);
+            updateFormValeur(utilisateur);
+            setRefresh(false);
+            console.log("<----- FIN COMPTE REFRESH ----->");
+        } else if (donnees.hasOwnProperty("_id")) {
+            console.log("Passe par le Hook GET avec ID", donnees, refresh, utilisateur);
+            updateFormValeur(donnees);
+        } else if (donnees.message === "Utilisateur modifié") {
+            console.log("Passe par le Hook MODIF UTILISATEUR", donnees.utilisateur, refresh, utilisateur);
+            updateFormValeur(donnees.utilisateur);
+        }
+    }, [donnees, refresh]);
+
+    return { utilisateurDonnees, definirUtilisateurDonnees };
+}
+/*---------------------------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------------------------*/
+// Déclaration de notre Hook pour mettre à jour le compte de l'utilisateur
+export function useUtilisateurInfo() {
+    // Récupération du contexte de 'CompteContext'
+    const { utilisateur, genererUtilisateur } = useContext(CompteContext);
+    // Retourne la valeur de utilisateur et la fonction de changement de valeur genererUtilisateur
+    return { utilisateur, genererUtilisateur };
+}
+/*---------------------------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------------------------*/
 // Déclaration de notre Hook pour permettre ou non la modification du mot de passe
 export function useChangeMDP() {
-    // Déclaration du boolean 'changeMDP' avec le 'state' pour les conserver
-    const [changeMDP, definirChangeMDP] = useState(false);
-    // Déclaration d'une fonction pour changer d'état le 'changeMDP' (interrupteur on/off)
-    const afficherChangeMDP = () => {
-        definirChangeMDP(changeMDP ? false : true);
-    };
+    // Récupération du contexte de 'CompteContext'
+    const { changeMDP, afficherChangeMDP } = useContext(CompteContext);
     // Retourne la valeur de changeMDP et la fonction basculement d'état du afficherChangeMDP
     return { changeMDP, afficherChangeMDP };
 }
+/*---------------------------------------------------------------------------------------------*/
 
+/*---------------------------------------------------------------------------------------------*/
+// Déclaration de notre Hook pour permettre la réalisation de requêtes Fetch
 export function useFetch(url, fetchParamObjet, definirInfoFetch) {
-    // Déclaration des données 'donnees' renvoyé par la requête avec le 'state' pour les conserver
+    // Déclaration des données 'donnees' renvoyées par la requête avec le 'state' pour les conserver
     const [donnees, definirDonnees] = useState({});
     // Déclaration du status du 'IndicateurChargement' en attendant la fin de la requête avec le 'state'
     const [enChargement, definirChargement] = useState(false);
@@ -103,12 +175,12 @@ export function useFetch(url, fetchParamObjet, definirInfoFetch) {
                 // Parse de la réponse de la requête (fonction 'json' asynchrone => await)
                 const donnees = await reponse.json();
                 if (reponse.ok) {
-                    // Appel de la fonction du useState pour la sauvegarde de 'data' dans le 'state'
+                    // Appel de la fonction du useState pour la sauvegarde des 'donnees' dans le 'state'
                     console.log(`${definirInfoFetch.donneesMessage}`, donnees);
                     definirDonnees(donnees);
                 } else {
                     if (donnees.message === "ER_DUP_ENTRY") {
-                        // Erreur car compte existant => message un peu flou
+                        // Erreur car compte existant => correction du message avec un message un peu flou
                         donnees.message = "Veuillez choisir une autre paire identifiant/mot de passe";
                     }
                     alert(`${definirInfoFetch.alerteMessage}${donnees.message}`);
@@ -124,7 +196,7 @@ export function useFetch(url, fetchParamObjet, definirInfoFetch) {
         }
         // Début de la requête, changement du status pour le IndicateurChargement
         definirChargement(true);
-        // Appel de la fonction asynchrone 'fetchData' déclarée dans le useEffect
+        // Appel de la fonction asynchrone 'fetchData' déclarée dans le useEffect (utilisation de setTimeout pour simuler un délai)
         setTimeout(() => {
             fetchData();
         }, 500);
@@ -133,3 +205,4 @@ export function useFetch(url, fetchParamObjet, definirInfoFetch) {
     // La fonction retourne le status du IndicateurChargement, les données, et le status d'une éventuelle erreur
     return { enChargement, donnees, erreur };
 }
+/*---------------------------------------------------------------------------------------------*/

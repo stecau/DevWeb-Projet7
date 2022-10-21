@@ -17,8 +17,7 @@ const ToutLeStyleGlobal = createGlobalStyle`
 
 body {
     /* Utilisation du contexte pour le thème du style Golbal (ligth or Sombre) */
-    background-color: ${(props) =>
-        props.estModeSombre ? couleurs.sombre : couleurs.clair};
+    background-color: ${(props) => (props.modeSombre ? couleurs.sombre : couleurs.clair)};
     margin: 0;  
 }
 
@@ -35,8 +34,7 @@ p {
 }
 
 .normalIcon {
-    color: ${(props) =>
-        props.estModeSombre ? couleurs.secondaire : couleurs.tertiaire};
+    color: ${(props) => (props.modeSombre ? couleurs.secondaire : couleurs.tertiaire)};
     font-size: 20px;
     padding: 5px 5px 5px 5px;
 }
@@ -48,34 +46,31 @@ p {
 }
 
 .normalIconInverse {
-    color: ${(props) =>
-        props.estModeSombre ? couleurs.tertiaire : couleurs.secondaire};
+    color: ${(props) => (props.modeSombre ? couleurs.tertiaire : couleurs.secondaire)};
     font-size: 20px;
     padding: 5px 5px 5px 5px;
 }
 
 .normalJaime {
-    color: ${(props) =>
-        props.estModeSombre ? couleurs.secondaire : couleurs.tertiaire};
+    color: ${(props) => (props.modeSombre ? couleurs.secondaire : couleurs.tertiaire)};
     font-size: 20px;
     padding: 5px 5px 7px 7px;
 }
 
 .normalJadore {
-    color: ${(props) =>
-        props.estModeSombre ? couleurs.secondaire : couleurs.tertiaire};
+    color: ${(props) => (props.modeSombre ? couleurs.secondaire : couleurs.tertiaire)};
     font-size: 20px;
     padding: 7px 7px 5px 5px;
 }
 
 .aimé {
-    color: ${(props) => (props.estModeSombre ? "#00FF00" : "#0000FF")};
+    color: ${(props) => (props.modeSombre ? "#00FF00" : "#0000FF")};
     font-size: 20px;
     padding: 5px 5px 7px 7px;
 }
 
 .adoré {
-    color: ${(props) => (props.estModeSombre ? "#FF0000" : "#FF0000")};
+    color: ${(props) => (props.modeSombre ? "#FF0000" : "#FF0000")};
     font-size: 20px;
     padding: 7px 7px 5px 5px;
 }
@@ -105,7 +100,7 @@ textarea {
 const StyleGlobal = () => {
     const { theme } = useTheme();
 
-    return <ToutLeStyleGlobal estModeSombre={theme === "sombre"} />;
+    return <ToutLeStyleGlobal modeSombre={theme === "sombre"} />;
 };
 
 export default StyleGlobal;

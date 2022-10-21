@@ -15,8 +15,7 @@ import { useTheme, useIdentification } from "../../../utils/hooks";
 const StyleTitreH2 = styled.h2`
     max-width: 350px;
     line-height: 50px;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 
 const BasculementCreation = styled.div`
@@ -40,15 +39,15 @@ const CreationOuConnexion = () => {
             type = "connexion";
         }
         console.log("<----- CONNEXION ----->");
-        console.log(
-            " => Click sur bouton pour affichage création commpte ou affichage connexion"
-        );
+        console.log(" => Click sur bouton pour affichage création commpte ou affichage connexion");
         majIdentificationType(
             {
                 type: type,
             },
             true
         );
+        console.log(" => Mise à jour du type de connexion (création ou connexion) terminée");
+        console.log("<----- FIN CONNEXION ----->");
     };
 
     // Affichage du texte du titre en fonction du type de connexion
@@ -72,12 +71,7 @@ const CreationOuConnexion = () => {
     return (
         <BasculementCreation>
             <StyleTitreH2 theme={theme}>{TexteTitreH2()}</StyleTitreH2>
-            <StyleLink
-                to="/connexion"
-                $styleCreation
-                theme={theme}
-                onClick={gestionClickLien}
-            >
+            <StyleLink to="/connexion" $styleCreation theme={theme} onClick={gestionClickLien}>
                 {TexteLien()}
             </StyleLink>
         </BasculementCreation>

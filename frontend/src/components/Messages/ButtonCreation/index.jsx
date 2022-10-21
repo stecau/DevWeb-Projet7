@@ -6,16 +6,16 @@
 import styled from "styled-components";
 /* Importation des couleurs de notre style */
 import couleurs from "../../../utils/style/couleurs";
-/* Importation de notre style spécifique de lien */
+/* Importation de notre style spécifique de button */
 import { StyleButton } from "../../../utils/style/Atomes";
 
-/* Importation de notre composant 'MessageCreation' */
+/* Importation de notre composant 'MessageForm' */
 import MessageForm from "../MessageForm";
 
 /* Importation des icones FontAwesome */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-/* Importation des hooks 'useState' et 'useEffect' de React */
+/* Importation du hook 'useState' de React */
 import { useState } from "react";
 
 /* Importation de notre Hook 'useTheme' */
@@ -43,12 +43,12 @@ const ButtonTexte = styled.span`
     padding-left: 5px;
 `;
 
-// Définition du composant fonction 'FilActualites'
+// Définition du composant fonction 'ButtonCreation'
 const ButtonCreation = ({ definirListeMessages }) => {
     // Theme pour la gestion du mode jour et nuit
     const { theme } = useTheme();
 
-    // UseState pour la creation d'un message
+    // UseState pour l'affichage de la creation d'un message
     const [creationMessageActive, definirCreationMessageActive] = useState(false);
 
     return (

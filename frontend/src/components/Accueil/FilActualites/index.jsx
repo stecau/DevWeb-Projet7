@@ -17,7 +17,7 @@ import ButtonCreation from "../../Messages/ButtonCreation";
 /* Importation des hooks 'useState' et 'useEffect' de React */
 import { useState, useEffect } from "react";
 
-/* Importation de notre Hook 'useTheme' */
+/* Importation de nos Hook personnalisés 'useTheme', 'useFetch' et 'useIdentification' */
 import { useTheme, useFetch, useIdentification } from "../../../utils/hooks";
 
 const FilActualitesContainer = styled.ul`
@@ -47,7 +47,7 @@ const FilActualites = () => {
     const { identificationType } = useIdentification();
 
     // UseState pour la modification d'un message
-    const [modificationMessageActive, definirModificationMessageActive] = useState(0);
+    const [modificationMessageActive, definirModificationMessageActive] = useState(false);
 
     // UseState de l'url pour les requêtes Fetch
     const [url, definirUrl] = useState("");
@@ -69,6 +69,7 @@ const FilActualites = () => {
     // Déclanchement initial de la requête pour obtenir les informations de tous les message
     useEffect(() => {
         if (url === "") {
+            console.log("<----- FIL D'ACTUALITES ----->");
             const token = identificationType.token;
             definirUrl("http://localhost:4000/api/posts");
             definirFetchParamObjet({
@@ -90,6 +91,8 @@ const FilActualites = () => {
     // Récupération lors d'une requête Fetch
     useEffect(() => {
         if (donnees.length) {
+            console.log(" => récupération des messages terminée");
+            console.log("<----- FIN FIL D'ACTUALITES ----->");
             definirListeMessages(donnees);
         }
     }, [donnees]);

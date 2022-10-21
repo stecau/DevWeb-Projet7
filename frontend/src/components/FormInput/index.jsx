@@ -2,8 +2,8 @@
 /* Définition d'un composant FormInput pour notre application React 'app' pour notre FrontEnd : */
 /*----------------------------------------------------------------------------------------------*/
 
-/* Importation des modules de React */
-import React from "react";
+/* Importation du modules 'Fragment' de React */
+import { Fragment } from "react";
 
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
@@ -17,8 +17,9 @@ const AlerteTexte = styled.p`
 `;
 
 // Définition du composant (fonction) 'FormInput'
-const FormInput = ({ id, state, majState, modification }) => {
+const FormInput = ({ id, state, majState, modification, admin }) => {
     // Définition des variables en fonction de l'id de l'input
+    let disabled = false;
     let labelTexte = "";
     let type = "";
     let inputObjet = {};
@@ -26,6 +27,7 @@ const FormInput = ({ id, state, majState, modification }) => {
     let alerteTexte = "";
     switch (id) {
         case "email":
+            if (admin) disabled = true;
             labelTexte = "Email";
             type = "mail";
             inputObjet = state.email;
@@ -58,6 +60,7 @@ const FormInput = ({ id, state, majState, modification }) => {
             break;
 
         case "image":
+            if (admin) disabled = true;
             if (modification) {
                 labelTexte = "Image (si vous souhaitez la modifier) :";
             } else {
@@ -65,8 +68,58 @@ const FormInput = ({ id, state, majState, modification }) => {
             }
             type = "file";
             inputObjet = state.image;
-            placeholder = "";
             alerteTexte = "Veuillez sélectionner une image";
+            break;
+
+        case "ancienMDP":
+            labelTexte = "Mot de passe actuel :";
+            type = "text";
+            inputObjet = state.ancienMDP;
+            placeholder = "Mot de passe actuel";
+            alerteTexte = "Veuillez choisir un mot de passe avec au minimum 6 caractère";
+            break;
+
+        case "nouveauMDP1":
+            labelTexte = "Nouveau mot de passe :";
+            type = "password";
+            inputObjet = state.nouveauMDP1;
+            placeholder = "Nouveau mot de passe";
+            alerteTexte = "Veuillez choisir un mot de passe avec au minimum 6 caractère";
+            break;
+
+        case "nouveauMDP2":
+            labelTexte = "Nouveau mot de passe (vérification) :";
+            type = "password";
+            inputObjet = state.nouveauMDP2;
+            placeholder = "Nouveau mot de passe";
+            alerteTexte = "Les deux nouveaux mots de passe ne sont pas identiques";
+            break;
+
+        case "nom":
+            if (admin) disabled = true;
+            labelTexte = "Nom :";
+            type = "text";
+            inputObjet = state.nom;
+            placeholder = "Votre nom ici";
+            alerteTexte = "Veuillez renseigner correctement le champs Nom";
+            break;
+
+        case "prenom":
+            if (admin) disabled = true;
+            labelTexte = "Prénom :";
+            type = "text";
+            inputObjet = state.prenom;
+            placeholder = "Votre prénom ici";
+            alerteTexte = "Veuillez renseigner correctement le champs Prénom";
+            break;
+
+        case "poste":
+            if (admin) disabled = true;
+            labelTexte = "Poste :";
+            type = "text";
+            inputObjet = state.poste;
+            placeholder = "Votre poste ici";
+            alerteTexte = "Veuillez renseigner correctement le champs Poste";
             break;
 
         default:
@@ -80,6 +133,10 @@ const FormInput = ({ id, state, majState, modification }) => {
         if (
             (id === "email" && estEmailValide(value, regexpEmail)) ||
             (id === "motDePasse" && value.length >= 6) ||
+            (id === "ancienMDP" && value.length >= 6) ||
+            (id === "nom" && value.length >= 0) ||
+            (id === "prenom" && value.length >= 0) ||
+            (id === "poste" && value.length >= 0) ||
             (((id === "titre" && value.length > 0) || (id === "texte" && value.length > 0)) &&
                 value.indexOf("<script>") === -1 &&
                 value.indexOf("select *") === -1 &&
@@ -103,6 +160,59 @@ const FormInput = ({ id, state, majState, modification }) => {
                         ...ancienneDonnees,
                         [id]: {
                             valeur: files[0],
+                            valide: true,
+                        },
+                    };
+                });
+            }
+        } else if (id === "nouveauMDP2" && state.nouveauMDP1.valeur === value) {
+            majState((ancienneDonnees) => {
+                return {
+                    ...ancienneDonnees,
+                    [id]: {
+                        valeur: value,
+                        valide: true,
+                    },
+                };
+            });
+        } else if (id === "nouveauMDP1") {
+            if (value.length >= 6) {
+                majState((ancienneDonnees) => {
+                    return {
+                        ...ancienneDonnees,
+                        [id]: {
+                            valeur: value,
+                            valide: true,
+                        },
+                    };
+                });
+            } else {
+                majState((ancienneDonnees) => {
+                    return {
+                        ...ancienneDonnees,
+                        [id]: {
+                            valeur: value,
+                            valide: false,
+                        },
+                    };
+                });
+            }
+            if (value !== state.nouveauMDP2.valeur) {
+                majState((ancienneDonnees) => {
+                    return {
+                        ...ancienneDonnees,
+                        nouveauMDP2: {
+                            valeur: ancienneDonnees.nouveauMDP2.valeur,
+                            valide: false,
+                        },
+                    };
+                });
+            } else {
+                majState((ancienneDonnees) => {
+                    return {
+                        ...ancienneDonnees,
+                        nouveauMDP2: {
+                            valeur: ancienneDonnees.nouveauMDP2.valeur,
                             valide: true,
                         },
                     };
@@ -133,31 +243,35 @@ const FormInput = ({ id, state, majState, modification }) => {
         return false;
     };
 
-    if (id !== "texte" && id !== "image") {
-        return (
-            <React.Fragment>
-                <label htmlFor={id}>{labelTexte}</label>
-                <input type={type} id={id} value={inputObjet.valeur} placeholder={placeholder} required onChange={gestionInput}></input>
-                <AlerteTexte inputValide={inputObjet.valide}>{alerteTexte}</AlerteTexte>
-            </React.Fragment>
-        );
-    } else if (id === "texte") {
-        return (
-            <React.Fragment>
-                <label htmlFor={id}>{labelTexte}</label>
-                <textarea type={type} id={id} value={inputObjet.valeur} placeholder={placeholder} required onChange={gestionInput}></textarea>
-                <AlerteTexte inputValide={inputObjet.valide}>{alerteTexte}</AlerteTexte>
-            </React.Fragment>
-        );
-    } else if (id === "image") {
-        return (
-            <React.Fragment>
-                <label htmlFor={id}>{labelTexte}</label>
-                <input type="file" id={id} name="image" required onChange={gestionInput}></input>
-                <AlerteTexte inputValide={inputObjet.valide}>{alerteTexte}</AlerteTexte>
-            </React.Fragment>
-        );
-    }
+    return (
+        <Fragment>
+            <label htmlFor={id}>{labelTexte}</label>
+            {id === "texte" ? (
+                <textarea
+                    type={type}
+                    id={id}
+                    value={inputObjet.valeur}
+                    placeholder={placeholder}
+                    required
+                    disabled={disabled}
+                    onChange={gestionInput}
+                ></textarea>
+            ) : id === "image" ? (
+                <input type="file" id={id} name="image" required disabled={disabled} onChange={gestionInput}></input>
+            ) : (
+                <input
+                    type={type}
+                    id={id}
+                    value={inputObjet.valeur}
+                    placeholder={placeholder}
+                    required
+                    disabled={disabled}
+                    onChange={gestionInput}
+                ></input>
+            )}
+            <AlerteTexte inputValide={inputObjet.valide}>{alerteTexte}</AlerteTexte>
+        </Fragment>
+    );
 };
 
 export default FormInput;

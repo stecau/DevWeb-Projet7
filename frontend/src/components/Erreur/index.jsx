@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------------------*/
-/* Définition du composant Error pour notre application React 'app' pour notre FrontEnd : */
+/* Définition du composant Erreur pour notre application React 'app' pour notre FrontEnd : */
 /*----------------------------------------------------------------------------------------*/
 
 /* Importation du module 'styled' de 'styled-components' */
@@ -11,44 +11,37 @@ import { useTheme } from "../../utils/hooks";
 /* Importation de l'image svg pour l'erreur */
 import Svg404 from "../../assets/404.svg";
 
-const ErrorWrapper = styled.div`
+const ErreurArticle = styled.article`
     margin: 30px;
     display: flex;
     flex-direction: column;
-    background-color: ${({ theme }) =>
-        theme === "clair"
-            ? couleurs.backgroundClair
-            : couleurs.backgroundSombre};
+    background-color: ${({ theme }) => (theme === "clair" ? couleurs.backgroundClair : couleurs.backgroundSombre)};
     align-items: center;
 `;
 
-const ErrorTitle = styled.h1`
+const ErreurTitre = styled.h1`
     font-weight: 300;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 
-const ErrorSubtitle = styled.h2`
+const ErreurSousTitre = styled.h2`
     font-weight: 300;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.tertiaire : couleurs.secondaire};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.tertiaire : couleurs.secondaire)};
 `;
 
 const Illustration = styled.img`
     max-width: 800px;
 `;
 
-function Error() {
+function Erreur() {
     const { theme } = useTheme();
     return (
-        <ErrorWrapper theme={theme}>
-            <ErrorTitle theme={theme}>Oups...</ErrorTitle>
+        <ErreurArticle theme={theme}>
+            <ErreurTitre theme={theme}>Oups...</ErreurTitre>
             <Illustration src={Svg404} alt="Erreur 404" />
-            <ErrorSubtitle theme={theme}>
-                Il semblerait que la page que vous cherchez n’existe pas
-            </ErrorSubtitle>
-        </ErrorWrapper>
+            <ErreurSousTitre theme={theme}>Il semblerait que la page que vous cherchez n’existe pas</ErreurSousTitre>
+        </ErreurArticle>
     );
 }
 
-export default Error;
+export default Erreur;

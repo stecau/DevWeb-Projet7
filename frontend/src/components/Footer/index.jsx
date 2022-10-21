@@ -12,13 +12,12 @@ import { useIdentification, useTheme } from "../../utils/hooks";
 import logoNoir from "../../assets/icon-left-font-monochrome-black.svg";
 import logoBlanc from "../../assets/icon-left-font-monochrome-white.svg";
 
-const FooterContainer = styled.footer`
+const FooterConteneur = styled.footer`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.logoNoir : couleurs.logoBlanc};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.logoNoir : couleurs.logoBlanc)};
     padding: 30px;
 `;
 
@@ -30,11 +29,10 @@ const FooterDescription = styled.div`
     padding: 30px;
 `;
 
-const FooterText = styled.span`
+const FooterTexte = styled.span`
     padding-top: 15px;
     font-size: 20px;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 
 const ImgLogo = styled.img`
@@ -45,10 +43,10 @@ const ModeNuitButton = styled.button`
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: ${({ theme }) =>
-        theme === "clair" ? couleurs.fontClair : couleurs.fontSombre};
+    color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 
+// Définition du composant (fonction) 'Footer'
 function Footer() {
     const { changeTheme, theme } = useTheme();
     const { identificationType } = useIdentification();
@@ -62,21 +60,15 @@ function Footer() {
     };
 
     return (
-        <FooterContainer theme={theme}>
+        <FooterConteneur theme={theme}>
             <FooterDescription>
-                <ImgLogo
-                    src={theme === "clair" ? logoNoir : logoBlanc}
-                    alt="Logo Groupomania"
-                />
-                <FooterText theme={theme}>
-                    Réseau Social d'entreprise / Utilisateur :{" "}
-                    {TextePiedDePage()}
-                </FooterText>
+                <ImgLogo src={theme === "clair" ? logoNoir : logoBlanc} alt="Logo Groupomania" />
+                <FooterTexte theme={theme}>Réseau Social d'entreprise / Utilisateur : {TextePiedDePage()}</FooterTexte>
             </FooterDescription>
             <ModeNuitButton onClick={changeTheme} theme={theme}>
                 Changer de mode : {theme === "clair" ? "☀️" : "🌙"}
             </ModeNuitButton>
-        </FooterContainer>
+        </FooterConteneur>
     );
 }
 
