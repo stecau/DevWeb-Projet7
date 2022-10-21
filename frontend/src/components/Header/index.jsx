@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------------------*/
-/* Définition du composant Footer pour notre application React 'app' pour notre FrontEnd : */
+/* Définition du composant Header pour notre application React 'app' pour notre FrontEnd : */
 /*-----------------------------------------------------------------------------------------*/
 
 /* importation du hook 'useContext' de React */
@@ -10,8 +10,11 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 /* Importation du module 'styled' de 'styled-components' */
 import styled from "styled-components";
-/* Importation des utilitaires de style (StyledLink) */
-import { StyledLink } from "../../utils/style/Atoms";
+/* Importation des utilitaires de style (StyleLink) */
+import { StyleLink } from "../../utils/style/Atomes";
+
+/* Importation des icones FontAwesome */
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
@@ -19,26 +22,39 @@ import { useTheme } from "../../utils/hooks";
 /* Importation de notre context 'ConnexionContext' */
 import { ConnexionContext } from "../../utils/context";
 
-/* Importation des logos 'ligth' et 'dark' */
-import logoLigth from "../../assets/icon-left-font-monochrome-black.svg";
-import logoDark from "../../assets/icon-left-font-monochrome-white.svg";
+/* Importation des logos 'Clair' et 'Sombre' */
+import logoNoir from "../../assets/icon-left-font-monochrome-black.svg";
+import logoBlanc from "../../assets/icon-left-font-monochrome-white.svg";
 
-const HomeLogo = styled.img`
+const LogoAccueil = styled.img`
     height: 50px;
 `;
 
-const HeaderContainer = styled.header`
+const HeaderConteneur = styled.header`
     padding: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 `;
 
+const HeaderNav = styled.nav`
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+`;
+
+const HeaderSpan = styled.span`
+    padding: 0 5px 0 5px;
+`;
+
+// Définition du composant (fonction) 'Header'
 const Header = () => {
     const { theme } = useTheme();
     const location = useLocation();
-    const { identificationType, setIdentificationType } =
-        useContext(ConnexionContext);
+    const { identificationType, setIdentificationType } = useContext(ConnexionContext);
 
     const deconnection = () => {
         if (window.localStorage.getItem("groupomania")) {
@@ -52,48 +68,32 @@ const Header = () => {
     };
 
     return (
-        <HeaderContainer>
+        <HeaderConteneur>
             <Link to="/">
-                <HomeLogo
-                    src={theme === "light" ? logoLigth : logoDark}
-                    alt="Logo Groupomania"
-                />
+                <LogoAccueil src={theme === "clair" ? logoNoir : logoBlanc} alt="Logo Groupomania" />
             </Link>
-            <nav>
-                <StyledLink
-                    to="/"
-                    $isActivated={location.pathname === "/" && 1}
-                    theme={theme}
-                >
-                    Acceuil
-                </StyledLink>
-                <StyledLink
-                    to="/compte"
-                    $isActivated={location.pathname === "/compte" && 1}
-                    theme={theme}
-                >
-                    Mon compte
-                </StyledLink>
+            <HeaderNav>
+                <StyleLink to="/" $estActive={location.pathname === "/" && 1} theme={theme}>
+                    <FontAwesomeIcon icon="fa-solid fa-house" />
+                    <HeaderSpan className={"icon"}>Acceuil</HeaderSpan>
+                </StyleLink>
+                <StyleLink to="/compte" $estActive={location.pathname === "/compte" && 1} theme={theme}>
+                    <FontAwesomeIcon icon="fa-solid fa-address-card" />
+                    <HeaderSpan className={"icon"}>Mon compte</HeaderSpan>
+                </StyleLink>
                 {identificationType.type !== "connecté" ? (
-                    <StyledLink
-                        to="/connexion"
-                        $isActivated={location.pathname === "/connexion" && 1}
-                        theme={theme}
-                    >
-                        Connexion
-                    </StyledLink>
+                    <StyleLink to="/connexion" $estActive={location.pathname === "/connexion" && 1} theme={theme}>
+                        <FontAwesomeIcon icon="fa-solid fa-right-to-bracket" />
+                        <HeaderSpan className={"icon"}>Connexion</HeaderSpan>
+                    </StyleLink>
                 ) : (
-                    <StyledLink
-                        to="/connexion"
-                        $isActivated={location.pathname === "/deconnexion" && 1}
-                        theme={theme}
-                        onClick={deconnection}
-                    >
-                        Déconnexion
-                    </StyledLink>
+                    <StyleLink to="/connexion" $estActive={location.pathname === "/deconnexion" && 1} theme={theme} onClick={deconnection}>
+                        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" />
+                        <HeaderSpan className={"icon"}>Déconnexion</HeaderSpan>
+                    </StyleLink>
                 )}
-            </nav>
-        </HeaderContainer>
+            </HeaderNav>
+        </HeaderConteneur>
     );
 };
 

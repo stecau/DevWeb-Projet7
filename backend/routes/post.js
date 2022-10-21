@@ -18,8 +18,8 @@ const postCtrl = require('../controllers/post');
 /* Création de la requête Post (création) d'un objet 'message' */
 router.post('/', auth, multer, postCtrl.createPost);
 
-/* Création de la requête Post (création) d'un like sur une message */
-router.post('/:id/like', auth, postCtrl.likePost);
+/* Création de la requête Post (création) d'un avis sur une message */
+router.post('/:id/avis', auth, postCtrl.avisPost);
 
 /* Création de la requête Put (modification) sur un objet message avec son id */
 router.put('/:id', auth, multer, postCtrl.modifyPost);

@@ -138,65 +138,69 @@ exports.modify = (req, res) => {
                 if (utilisateur.data._id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
                     res.status(403).json({ message: 'Requête non autorisée !' });
                 } else {
-                    // Gestion du cas particulier si modification du mot de passe
-                    const modifiedUtilisateur = {...req.body};
-                    if (modifiedUtilisateur.hasOwnProperty('motDePasse')) {
-                        // Vérification de l'ancien mot de passe
-                        bcrypt.compare(modifiedUtilisateur.motDePasse, utilisateur.data.motDePasse)
-                            .then(valid => {
-                                if (!valid) { // Mot de passe incorrect
-                                    // code erreur 401 Unauthorized : manque des informations d'authentification valides pour la ressource
-                                    res.status(401).json({ message: 'Mot de passe actuel incorrect' }); // Message flou car pas de divulgation si utilisateur ou pas dans la base
-                                } else { // Mot de passe valid
-                                    // remplacement du mot de passe avec le nouveau
-                                    modifiedUtilisateur.motDePasse = modifiedUtilisateur.newMotDePasse
-                                    // suppression du champs 'newMotDePasse
-                                    delete modifiedUtilisateur.newMotDePasse
-                                    // Hashage du mot de passe
-                                    bcrypt.hash(modifiedUtilisateur.motDePasse, 10) // Bouclage 10 fois sur l'algo de cryptage
-                                    .then(hash => {
-                                        modifiedUtilisateur.motDePasse = hash;
-                                        // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
-                                        Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
-                                            if (err) {
-                                                if (!err.hasOwnProperty('erreurType')) {
-                                                    res.status(500).json({
-                                                        message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
-                                                    });
-                                                } else {
-                                                    res.status(400).json({ message: "Erreur d'url" });
-                                                }
-                                            } else {
-                                                console.log(utilisateur.message, utilisateur.data);
-                                                // delete utilisateur.data.motDePasse;
-                                                utilisateur.data.motDePasse = "";
-                                                res.status(200).json({ message: utilisateur.message, utilisateur: utilisateur.data});
-                                            };
-                                        });
-                                    })
-                                    .catch(error => res.status(500).json({ error })); // erreur code 500 pour une erreur serveur
-                                }})
-                            .catch(error => res.status(500).json({ error }));
+                    if (req.auth.isAdmin === 1) { // c'est le compte admin pas de modification possible
+                        res.status(403).json({ message: 'Requête non autorisée !' });
                     } else {
-                        // On conserve l'ancien mot de passe
-                        modifiedUtilisateur.motDePasse = utilisateur.data.motDePasse;
-                        // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
-                        Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
-                            if (err) {
-                                if (!err.hasOwnProperty('erreurType')) {
-                                    res.status(500).json({
-                                        message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
-                                    });
+                        // Gestion du cas particulier si modification du mot de passe
+                        const modifiedUtilisateur = {...req.body};
+                        if (modifiedUtilisateur.hasOwnProperty('motDePasse')) {
+                            // Vérification de l'ancien mot de passe
+                            bcrypt.compare(modifiedUtilisateur.motDePasse, utilisateur.data.motDePasse)
+                                .then(valid => {
+                                    if (!valid) { // Mot de passe incorrect
+                                        // code erreur 401 Unauthorized : manque des informations d'authentification valides pour la ressource
+                                        res.status(401).json({ message: 'Mot de passe actuel incorrect' }); // Message flou car pas de divulgation si utilisateur ou pas dans la base
+                                    } else { // Mot de passe valid
+                                        // remplacement du mot de passe avec le nouveau
+                                        modifiedUtilisateur.motDePasse = modifiedUtilisateur.newMotDePasse
+                                        // suppression du champs 'newMotDePasse
+                                        delete modifiedUtilisateur.newMotDePasse
+                                        // Hashage du mot de passe
+                                        bcrypt.hash(modifiedUtilisateur.motDePasse, 10) // Bouclage 10 fois sur l'algo de cryptage
+                                        .then(hash => {
+                                            modifiedUtilisateur.motDePasse = hash;
+                                            // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
+                                            Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
+                                                if (err) {
+                                                    if (!err.hasOwnProperty('erreurType')) {
+                                                        res.status(500).json({
+                                                            message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
+                                                        });
+                                                    } else {
+                                                        res.status(400).json({ message: "Erreur d'url" });
+                                                    }
+                                                } else {
+                                                    console.log(utilisateur.message, utilisateur.data);
+                                                    // delete utilisateur.data.motDePasse;
+                                                    utilisateur.data.motDePasse = "";
+                                                    res.status(200).json({ message: utilisateur.message, utilisateur: utilisateur.data});
+                                                };
+                                            });
+                                        })
+                                        .catch(error => res.status(500).json({ error })); // erreur code 500 pour une erreur serveur
+                                    }})
+                                .catch(error => res.status(500).json({ error }));
+                        } else {
+                            // On conserve l'ancien mot de passe
+                            modifiedUtilisateur.motDePasse = utilisateur.data.motDePasse;
+                            // utilisation de la méthode Utilisateur 'modify' de notre objet utilisateur
+                            Utilisateur.modify(req.auth.utilisateur_Id, modifiedUtilisateur, (err, utilisateur) => {
+                                if (err) {
+                                    if (!err.hasOwnProperty('erreurType')) {
+                                        res.status(500).json({
+                                            message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
+                                        });
+                                    } else {
+                                        res.status(400).json({ message: "Erreur d'url" });
+                                    }
                                 } else {
-                                    res.status(400).json({ message: "Erreur d'url" });
-                                }
-                            } else {
-                                console.log(utilisateur.message, utilisateur.data)
-                                // delete utilisateur.data.motDePasse;
-                                utilisateur.data.motDePasse = "";
-                                res.status(200).json({ message: utilisateur.message, utilisateur: utilisateur.data});
-                            };
-                        });
+                                    console.log(utilisateur.message, utilisateur.data)
+                                    // delete utilisateur.data.motDePasse;
+                                    utilisateur.data.motDePasse = "";
+                                    res.status(200).json({ message: utilisateur.message, utilisateur: utilisateur.data});
+                                };
+                            });
+                        };
                     };
                 };
             };
@@ -225,21 +229,25 @@ exports.delete = (req, res) => {
                 if (utilisateur.data._id != req.auth.utilisateur_Id) { // ce n'est pas le même utilisateur
                     res.status(403).json({ message: 'Requête non autorisée !' });
                 } else {
-                    // utilisation de la méthode Utilisateur 'remove' de notre objet utilisateur 
-                    Utilisateur.remove(req.auth.utilisateur_Id, (err, utilisateur) => {
-                        if (err) {
-                            if (!err.hasOwnProperty('erreurType')) {
-                                res.status(500).json({
-                                    message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
-                                });
+                    if (req.auth.isAdmin === 1) { // c'est le compte admin pas de suppression possible
+                        res.status(403).json({ message: 'Requête non autorisée !' });
+                    } else {
+                        // utilisation de la méthode Utilisateur 'remove' de notre objet utilisateur 
+                        Utilisateur.remove(req.auth.utilisateur_Id, (err, utilisateur) => {
+                            if (err) {
+                                if (!err.hasOwnProperty('erreurType')) {
+                                    res.status(500).json({
+                                        message: err.code || "Une erreur a eu lieu au moment de la connexion de l'utilisateur"
+                                    });
+                                } else {
+                                    res.status(400).json({ message: "Erreur d'url" });
+                                }
                             } else {
-                                res.status(400).json({ message: "Erreur d'url" });
-                            }
-                        } else {
-                            console.log(utilisateur.message, utilisateur.data)
-                            res.status(200).json({ message: utilisateur.message});
-                        };
-                    });
+                                console.log(utilisateur.message, utilisateur.data)
+                                res.status(200).json({ message: utilisateur.message});
+                            };
+                        });
+                    }
                 };
             };
         });
