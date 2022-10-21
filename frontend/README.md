@@ -8,15 +8,15 @@ L'API frontend a été développé sur une architecture React avec node.js.
 
 ## L'API
 
-L'API s'appuie sur une structure de 4 routes/pages (React-router), des composants React et des utilitaires (style CSS, Hook personnalisé et context provider).
-Elle est structurée avec une arborescence séparée dans le dossier '/src' pour les routes/pages (/pages), les utilitaires (/utils), et les composants (/components). Il y a également les images dans le dossier '/assets' et à la racine le fichier de rendu de l'ensemble 'index.jsx'.
+L'API s'appuie sur une structure de 4 routes/pages (React-router), des composants React et des utilitaires (style CSS, Hook personnalisé et context provider).\
+Elle est structurée avec une arborescence séparée dans le dossier '/src' pour les routes/pages (/pages), les utilitaires (/utils), et les composants (/components). Il y a également les images dans le dossier '/assets' et à la racine le fichier de rendu de l'ensemble 'index.jsx'.\
 Le dossier '/public' contient la page html et les favicons globalement.
 
 ## Installation du frontend et lancement de l'API
 
-1-Copier/Cloner le repo github du frontend
-2-Installer npm (si pas d'installation) et lancer le projet API GROUPOMANIA avec 'npm install' ou 'npm i'
-3-Récupérer la base de données et le backend si ce n'est pas fait
+1-Copier/Cloner le repo github du frontend\
+2-Installer npm (si pas d'installation) et lancer le projet API GROUPOMANIA avec 'npm install' ou 'npm i'\
+3-Récupérer la base de données et le backend si ce n'est pas fait\
 4-Lancer le serveur local avec 'npm start'
 
 ### En complément :
