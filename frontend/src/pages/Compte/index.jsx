@@ -22,9 +22,7 @@ const CompteArticle = styled.article`
 `;
 
 const CompteSection = styled.section`
-    margin: 30px;
     background-color: ${({ theme }) => (theme === "clair" ? couleurs.backgroundClair : couleurs.backgroundSombre)};
-    padding: 60px 90px;
     display: flex;
     flex-direction: column;
     max-width: 1200px;
@@ -32,7 +30,6 @@ const CompteSection = styled.section`
 
 const StyleTitreH1 = styled.h1`
     max-width: 600px;
-    line-height: 50px;
     color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
 

@@ -21,6 +21,10 @@ const ChangeMDPConteneur = styled.div`
     max-width: 458px;
 `;
 
+const InputBloc = styled.div`
+    ${({ $margin }) => $margin && "margin: " + $margin}
+`;
+
 // Définition du composant fonction 'CompteMDP'
 const CompteMDP = () => {
     // Theme pour la gestion du mode jour et nuit
@@ -52,12 +56,20 @@ const CompteMDP = () => {
             <legend>Mot de passe :</legend>
             {changeMDP ? (
                 <ChangeMDPConteneur>
-                    <FormInput id="ancienMDP" state={utilisateurDonnees} majState={definirUtilisateurDonnees} />
-                    <FormInput id="nouveauMDP1" state={utilisateurDonnees} majState={definirUtilisateurDonnees} />
-                    <FormInput id="nouveauMDP2" state={utilisateurDonnees} majState={definirUtilisateurDonnees} />
-                    <StyleButton $styleCreation theme={theme} onClick={() => gestionnaireChangeMDP()}>
-                        Annuler le changement de mot de passe
-                    </StyleButton>
+                    <InputBloc>
+                        <FormInput id="ancienMDP" state={utilisateurDonnees} majState={definirUtilisateurDonnees} />
+                    </InputBloc>
+                    <InputBloc>
+                        <FormInput id="nouveauMDP1" state={utilisateurDonnees} majState={definirUtilisateurDonnees} />
+                    </InputBloc>
+                    <InputBloc>
+                        <FormInput id="nouveauMDP2" state={utilisateurDonnees} majState={definirUtilisateurDonnees} />
+                    </InputBloc>
+                    <InputBloc $margin={"auto"}>
+                        <StyleButton $styleCreation theme={theme} onClick={() => gestionnaireChangeMDP()}>
+                            Annuler le changement de mot de passe
+                        </StyleButton>
+                    </InputBloc>
                 </ChangeMDPConteneur>
             ) : (
                 <StyleButton $styleCreation theme={theme} onClick={() => afficherChangeMDP()}>

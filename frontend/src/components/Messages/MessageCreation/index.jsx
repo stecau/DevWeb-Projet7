@@ -139,14 +139,14 @@ const MessageCreation = ({ definirCreationMessageActive, definirListeMessages })
                 },
             });
             definirInfoFetch({
-                typeFetch: "getAllMessage",
+                typeFetch: "getAllMessages",
                 donneesMessage: "Récupération de tous les messages terminée",
                 alerteMessage: "Consultation de tous les messages : ",
                 erreurMessage: "Erreur pour la consultation de tous les messages : [ ",
             });
         }
         // Fetch de getAllMessages
-        if (donnees.length > 0) {
+        if (donnees !== 0 && infoFetch.typeFetch === "getAllMessages") {
             definirListeMessages(donnees);
             definirCreationMessageActive(false);
         }

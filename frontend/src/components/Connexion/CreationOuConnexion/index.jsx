@@ -14,7 +14,6 @@ import { useTheme, useIdentification } from "../../../utils/hooks";
 
 const StyleTitreH2 = styled.h2`
     max-width: 350px;
-    line-height: 50px;
     color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 
@@ -46,7 +45,7 @@ const CreationOuConnexion = () => {
             },
             true
         );
-        console.log(" => Mise à jour du type de connexion (création ou connexion) terminée");
+        //console.log(" => Mise à jour du type de connexion (création ou connexion) terminée");
         console.log("<----- FIN CONNEXION ----->");
     };
 

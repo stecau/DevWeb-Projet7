@@ -22,7 +22,6 @@ const CompteMain = styled.main`
 
 const StyledTitleH2 = styled.h2`
     max-width: 600px;
-    line-height: 50px;
     color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 

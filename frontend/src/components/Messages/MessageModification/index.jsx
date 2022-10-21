@@ -130,10 +130,10 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
                 // }
                 definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
                 // Gestion si creation avec un fichier image ou pas (multiform ou json)
-                console.log(donneesModificationMessage.imageUrl);
-                console.log(typeof donneesModificationMessage.imageUrl);
+                //console.log(donneesModificationMessage.imageUrl);
+                //console.log(typeof donneesModificationMessage.imageUrl);
                 if (typeof donneesModificationMessage.imageUrl === "object" && donneesModificationMessage.imageUrl != null) {
-                    console.log("Avec Image");
+                    //console.log("Avec Image");
                     // Creation du 'init' avec multipart/form-data 'formData' pour le Content-type
                     const formData = new FormData();
                     formData.append("image", donneesModificationMessage.imageUrl);
@@ -152,7 +152,7 @@ const MessageModification = ({ appMessage, obtenirAppMessage, definirModificatio
                         body: formData,
                     });
                 } else {
-                    console.log("Sans Image");
+                    //console.log("Sans Image");
                     // Création du 'init' avec JSON (Content-Type": "application/json" et body JSON.stringify)
                     definirFetchParamObjet({
                         method: "PUT",

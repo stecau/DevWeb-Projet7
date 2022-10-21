@@ -44,7 +44,7 @@ const CompteSuppression = ({ admin }) => {
     useEffect(() => {
         if (suppression) {
             console.log("<----- COMPTE SUPPRESSION ----->");
-            console.log(" => utilisation 'identificationType.token' et 'identificationType.id'");
+            //console.log(" => utilisation 'identificationType.token' et 'identificationType.id'");
             let isConfirmed = window.confirm(
                 "Etes-vous sur de vouloir supprimer votre compte et tous vos messages associés ainsi que vos votes ?"
             );
@@ -79,7 +79,7 @@ const CompteSuppression = ({ admin }) => {
             setSuppression(false);
             if (donnees.message === "Utilisateur supprimé") {
                 console.log("<----- FIN COMPTE SUPPRESSION ----->");
-                console.log(" => suppression du compte -> déconnexion");
+                //console.log(" => suppression du compte -> déconnexion");
                 setDeconnexion(true);
             }
         }

@@ -42,7 +42,7 @@ const FigureCaption = styled.figcaption`
     justify-content: center;
 `;
 
-const StyleTitre = styled.h1`
+const StyleTitre = styled.h2`
     margin: 18px 0 0 0;
     color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
@@ -54,7 +54,7 @@ const StyleContenu = styled.p`
 `;
 
 const Illustration = styled.img`
-    max-height: 500px;
+    /*max-height: 500px;*/
     width: 100%;
     object-fit: contain;
     border-radius: 15px;

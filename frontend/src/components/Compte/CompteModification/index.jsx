@@ -54,10 +54,10 @@ const CompteModification = () => {
     useEffect(() => {
         // Réalisation de la requête si il y a une modification du useState utilisateurModification et qu'il contient le mail (=pas objet vide)
         if (utilisateurModification.email) {
-            console.log(" => utilisation 'identificationType.token' et 'identificationType.id'");
+            //console.log(" => utilisation 'identificationType.token' et 'identificationType.id'");
             const token = identificationType.token;
             const id = identificationType.id;
-            console.log(" => ainsi que l'utilisateur modifié : ", utilisateurModification);
+            //console.log(" => ainsi que l'utilisateur modifié : ", utilisateurModification);
 
             definirUrl(`http://localhost:4000/api/auth/${id}`);
             // Création du 'init' avec JSON (Content-Type": "application/json" et Authorization)
@@ -164,7 +164,14 @@ const CompteModification = () => {
                     alertTexte = ["Veuillez vérifier les champs mot de passe !"];
                 }
                 alert(alertTexte.join("\n"));
+                console.log("<----- FIN COMPTE MODIF ----->");
             }
+        }
+        // Absence du mail => alert message
+        if (email.valeur === "") {
+            sauvegarde = false;
+            alert("Veuillez renseigner un email !");
+            console.log("<----- FIN COMPTE MODIF ----->");
         }
         if (sauvegarde) {
             // Création de l'objet newutilisateur avec nouveau mot de passe
@@ -184,7 +191,7 @@ const CompteModification = () => {
             // Modification du useState utilisateurDonnees pour lancement de la requête Fetch de modification
             console.log(" => création 'nouveau compte objet' pour le lancement Fetch pour modification du compte");
             definirUtilisateurModification({ ...newutilisateur });
-            console.log("utilisateurDonnees", newutilisateur);
+            //console.log("utilisateurDonnees", newutilisateur);
         }
     };
 

@@ -16,7 +16,6 @@ import AccueilIllustration from "../../../assets/home-illustration.jpeg";
 
 const AcceuilFigure = styled.figure`
     display: flex;
-    flex-direction: row;
     margin: 0;
 `;
 
@@ -33,14 +32,12 @@ const AccueilFigCaption = styled.figcaption`
 const StyleTitreH1 = styled.h1`
     padding: 0 5px 0 0;
     max-width: 280px;
-    line-height: 50px;
     color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
 
 const StyleTitreH2 = styled.h2`
     padding: 0 5px 30px 0;
     max-width: 280px;
-    line-height: 50px;
     color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
 `;
 

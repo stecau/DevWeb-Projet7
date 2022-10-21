@@ -233,7 +233,7 @@ const MessageForm = ({
                     },
                 });
                 definirInfoFetch({
-                    typeFetch: "getAllMessage",
+                    typeFetch: "getAllMessages",
                     donneesMessage: "Récupération de tous les messages terminée",
                     alerteMessage: "Consultation de tous les messages : ",
                     erreurMessage: "Erreur pour la consultation de tous les messages : [ ",
@@ -247,7 +247,7 @@ const MessageForm = ({
             definirModificationMessageActive(0);
         }
         // Retour de Fetch après getAllMessages
-        if (donnees.length > 0) {
+        if (donnees !== 0 && infoFetch.typeFetch === "getAllMessages") {
             console.log("<----- FIN ACTUALISATION DES MESSAGES ----->");
             definirListeMessages(donnees);
             definirCreationMessageActive(false);

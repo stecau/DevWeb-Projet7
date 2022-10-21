@@ -13,6 +13,9 @@ import styled from "styled-components";
 /* Importation des utilitaires de style (StyleLink) */
 import { StyleLink } from "../../utils/style/Atomes";
 
+/* Importation des icones FontAwesome */
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 /* Importation de notre Hook 'useTheme' */
 import { useTheme } from "../../utils/hooks";
 
@@ -32,6 +35,19 @@ const HeaderConteneur = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+`;
+
+const HeaderNav = styled.nav`
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+`;
+
+const HeaderSpan = styled.span`
+    padding: 0 5px 0 5px;
 `;
 
 // Définition du composant (fonction) 'Header'
@@ -56,23 +72,27 @@ const Header = () => {
             <Link to="/">
                 <LogoAccueil src={theme === "clair" ? logoNoir : logoBlanc} alt="Logo Groupomania" />
             </Link>
-            <nav>
+            <HeaderNav>
                 <StyleLink to="/" $estActive={location.pathname === "/" && 1} theme={theme}>
-                    Acceuil
+                    <FontAwesomeIcon icon="fa-solid fa-house" />
+                    <HeaderSpan className={"icon"}>Acceuil</HeaderSpan>
                 </StyleLink>
                 <StyleLink to="/compte" $estActive={location.pathname === "/compte" && 1} theme={theme}>
-                    Mon compte
+                    <FontAwesomeIcon icon="fa-solid fa-address-card" />
+                    <HeaderSpan className={"icon"}>Mon compte</HeaderSpan>
                 </StyleLink>
                 {identificationType.type !== "connecté" ? (
                     <StyleLink to="/connexion" $estActive={location.pathname === "/connexion" && 1} theme={theme}>
-                        Connexion
+                        <FontAwesomeIcon icon="fa-solid fa-right-to-bracket" />
+                        <HeaderSpan className={"icon"}>Connexion</HeaderSpan>
                     </StyleLink>
                 ) : (
                     <StyleLink to="/connexion" $estActive={location.pathname === "/deconnexion" && 1} theme={theme} onClick={deconnection}>
-                        Déconnexion
+                        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" />
+                        <HeaderSpan className={"icon"}>Déconnexion</HeaderSpan>
                     </StyleLink>
                 )}
-            </nav>
+            </HeaderNav>
         </HeaderConteneur>
     );
 };

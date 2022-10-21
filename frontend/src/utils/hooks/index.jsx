@@ -110,20 +110,20 @@ export function useRemplirFormulaireCompte(donnees = {}, refresh = false, setRef
                 poste: { valeur: changeDefautValeur(objetData.poste), valide: true },
             };
         });
-        console.log("update form", objetData);
+        //console.log("update form", objetData);
     };
 
     useEffect(() => {
         if (refresh) {
-            console.log("Passe par le Hook REFRESH", donnees, refresh, utilisateur);
+            //console.log("Passe par le Hook REFRESH", donnees, refresh, utilisateur);
             updateFormValeur(utilisateur);
             setRefresh(false);
             console.log("<----- FIN COMPTE REFRESH ----->");
         } else if (donnees.hasOwnProperty("_id")) {
-            console.log("Passe par le Hook GET avec ID", donnees, refresh, utilisateur);
+            //console.log("Passe par le Hook GET avec ID", donnees, refresh, utilisateur);
             updateFormValeur(donnees);
         } else if (donnees.message === "Utilisateur modifié") {
-            console.log("Passe par le Hook MODIF UTILISATEUR", donnees.utilisateur, refresh, utilisateur);
+            //console.log("Passe par le Hook MODIF UTILISATEUR", donnees.utilisateur, refresh, utilisateur);
             updateFormValeur(donnees.utilisateur);
         }
     }, [donnees, refresh]);
@@ -156,7 +156,7 @@ export function useChangeMDP() {
 // Déclaration de notre Hook pour permettre la réalisation de requêtes Fetch
 export function useFetch(url, fetchParamObjet, definirInfoFetch) {
     // Déclaration des données 'donnees' renvoyées par la requête avec le 'state' pour les conserver
-    const [donnees, definirDonnees] = useState({});
+    const [donnees, definirDonnees] = useState(0);
     // Déclaration du status du 'IndicateurChargement' en attendant la fin de la requête avec le 'state'
     const [enChargement, definirChargement] = useState(false);
     // Déclaration du status d'une éventuelle erreur pendant la requête avec le 'state'
@@ -176,7 +176,8 @@ export function useFetch(url, fetchParamObjet, definirInfoFetch) {
                 const donnees = await reponse.json();
                 if (reponse.ok) {
                     // Appel de la fonction du useState pour la sauvegarde des 'donnees' dans le 'state'
-                    console.log(`${definirInfoFetch.donneesMessage}`, donnees);
+                    //console.log(`${definirInfoFetch.donneesMessage}`, donnees);
+                    console.log(definirInfoFetch.donneesMessage);
                     definirDonnees(donnees);
                 } else {
                     if (donnees.message === "ER_DUP_ENTRY") {

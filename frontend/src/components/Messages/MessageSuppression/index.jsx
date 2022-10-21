@@ -91,7 +91,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages }) => {
                     },
                 });
                 definirInfoFetch({
-                    typeFetch: "getAllMessage",
+                    typeFetch: "getAllMessages",
                     donneesMessage: "Récupération de tous les messages terminée",
                     alerteMessage: "Consultation de tous les messages : ",
                     erreurMessage: "Erreur pour la consultation de tous les messages : [ ",
@@ -99,7 +99,7 @@ const MessageSuppression = ({ appMessage, definirListeMessages }) => {
             }
         }
         // Fetch sur récupération de tous les messages
-        if (donnees.length) {
+        if (donnees && infoFetch.typeFetch === "getAllMessages") {
             console.log("<----- FIN ACTUALISATION DES MESSAGES ----->");
             // Envoi de la nouvelle liste grace au State
             definirListeMessages(donnees);

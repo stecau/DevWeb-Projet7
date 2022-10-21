@@ -31,7 +31,6 @@ const ModificationConteneur = styled.main`
 `;
 const StyleTitreH2 = styled.h2`
     max-width: 600px;
-    line-height: 50px;
     padding: 0;
     margin: 0;
     color: ${({ theme }) => (theme === "clair" ? couleurs.fontClair : couleurs.fontSombre)};
@@ -100,7 +99,7 @@ const CompteShow = () => {
     useEffect(() => {
         // Fetch de get sur utilisateur avec id
         if (donnees.hasOwnProperty("_id")) {
-            console.log(" => mise à jour de l'utilisateur");
+            //console.log(" => mise à jour de l'utilisateur");
             genererUtilisateur(donnees);
             console.log("<----- FIN COMPTE UTILISATEUR ----->");
         }
@@ -116,7 +115,7 @@ const CompteShow = () => {
             <StyleTitreH2 theme={theme}>Mes informations</StyleTitreH2>
             {enChargement ? <Chargement /> : <CompteForm />}
             <StyleTitreH2 theme={theme}>Mes options</StyleTitreH2>
-            <ButtonConteneur>
+            <ButtonConteneur className="optionsCompte">
                 <CompteRefresh admin={utilisateur.isAdmin} />
                 <CompteModification />
                 <CompteSuppression admin={utilisateur.isAdmin} />

@@ -23,10 +23,12 @@ body {
 
 h1 {
     font-size: 2em;
+    line-height: 50px;
 }
 
 h2 {
     font-size: 1.5em;
+    line-height: 50px;
 }
 
 p {
@@ -93,6 +95,102 @@ textarea {
     padding: 5px;
     margin-bottom: 5px;
     height: 150px;
+}
+
+section {
+    margin: 30px;
+    padding: 60px 90px;
+}
+
+@media screen and (max-width: 764px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+    nav span {
+        display: none
+    }
+
+    footer span {
+        text-align: center;
+    }
+
+    section {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    figure {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 1.25em;
+        line-height: 25px;
+    }
+
+    h2 {
+        font-size: 1em;
+        line-height: 25px;
+    }
+
+    p {
+        font-size: 0.8em;
+    }
+
+    figcaption button span {
+        display: none
+    }
+
+    label {
+        font-size: 0.8em;
+    }
+
+    input {
+        font-size: 0.8em;
+    }
+
+    .optionsCompte {
+        flex-direction: column;
+    }
+
+    figcaption {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 765px) and (max-width: 900px) {
+    nav span {
+        display: none
+    }
+
+    section {
+        margin: 25px;
+        padding: 40px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        line-height: 30px;
+    }
+
+    h2 {
+        font-size: 1.25em;
+        line-height: 30px;
+    }
+
+    footer span {
+        text-align: center;
+    }
+
+    label {
+        font-size: 0.8em;
+    }
+
+    input {
+        font-size: 0.8em;
+    }
 }
 `;
 

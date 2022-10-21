@@ -90,8 +90,8 @@ const FilActualites = () => {
 
     // Récupération lors d'une requête Fetch
     useEffect(() => {
-        if (donnees.length) {
-            console.log(" => récupération des messages terminée");
+        if (donnees !== 0 && infoFetch.typeFetch === "getAllMessages") {
+            //console.log(" => récupération des messages terminée");
             console.log("<----- FIN FIL D'ACTUALITES ----->");
             definirListeMessages(donnees);
         }

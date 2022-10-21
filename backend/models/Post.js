@@ -92,16 +92,14 @@ Post.findAll = (result) => {
                     result(err, null);
                     return;
                 };
-                if (resAvis.length) {
-                    // traitement des messages sans avis avec mise en jour pour les messages avec avis
-                    const listUpdatedMessage = Post.compareMessages(resAll, resAvis);
-                    result(null, { message: "Liste de tous les messages", data: listUpdatedMessage } );
-                    return;
-                };
-                // Post avec l'id pas trouvé
-                result({ erreurType: "Message absent" }, null);
+                // traitement des messages sans avis avec mise en jour pour les messages avec avis
+                const listUpdatedMessage = Post.compareMessages(resAll, resAvis);
+                result(null, { message: "Liste de tous les messages", data: listUpdatedMessage } );
             });
-        }
+        } else {
+            // Pas de message dans la base => renvoie liste vide
+            result(null, { message: "Liste de tous les messages", data: [] });
+        };
     });
 };
 

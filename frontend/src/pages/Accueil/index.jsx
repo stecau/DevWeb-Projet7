@@ -21,11 +21,8 @@ const AcceuilArticle = styled.article`
 `;
 
 const AccueilSection = styled.section`
-    margin: 30px;
     background-color: ${({ theme }) => (theme === "clair" ? couleurs.backgroundClair : couleurs.backgroundSombre)};
-    padding: 60px 90px;
     display: flex;
-    flex-direction: row;
     max-width: 1200px;
 `;
 

@@ -30,9 +30,7 @@ const ConnexionArticle = styled.article`
 `;
 
 const ConnexionSection = styled.section`
-    margin: 30px;
     background-color: ${({ theme }) => (theme === "clair" ? couleurs.backgroundClair : couleurs.backgroundSombre)};
-    padding: 60px 90px;
     display: flex;
     flex-direction: column;
     max-width: 1200px;
@@ -48,7 +46,6 @@ const ConnexionFrom = styled.form`
 
 const StyleTitreH1 = styled.h1`
     max-width: 350px;
-    line-height: 50px;
     color: ${({ theme }) => (theme === "clair" ? couleurs.primaire : couleurs.secondaire)};
 `;
 
@@ -130,7 +127,7 @@ const Connexion = () => {
                 );
                 if (typeof window !== "undefined") {
                     // Generation d'un token falcifié pour le localStorage  (utilisation du hook useIdentification)
-                    console.log(" => login effectué : génération du token falcifié pour localStorage");
+                    console.log(" => login effectué : génération du token pour localStorage");
                     majIdentificationType({
                         type: "connecté",
                         email: email.valeur,
@@ -210,7 +207,7 @@ const Connexion = () => {
             }
         } else {
             // Email et/ou Mot de passe 'vide'' dans le formulaire
-            console.log("<----- CONNEXION OU CREATION ----->");
+            console.log("<----- FIN CONNEXION OU CREATION ----->");
             if (email.valeur.length === 0) {
                 definirConnexionDonnees((ancienneDonnees) => {
                     return {
