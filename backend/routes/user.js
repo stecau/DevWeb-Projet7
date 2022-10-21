@@ -18,11 +18,14 @@ router.post('/signup', userCtrl.signup);
 /* Création de la requête Post (connexion) sur un objet 'user' */
 router.post('/login', userCtrl.login);
 
-/* Rajout de la route de modification d'un utilisateur à prévoir */
+/* Rajout de la route de modification d'un utilisateur */
 router.put('/:id', auth, userCtrl.modify);
 
-/* Rajout de la route de suppression d'un utilisateur à prévoir (RGPD) */
+/* Rajout de la route de suppression d'un utilisateur (RGPD) */
 router.delete('/:id', auth, userCtrl.delete);
+
+/* Rajout de la route de récupération d'un utilisateur */
+router.get('/:id', auth, userCtrl.getOneUserById);
 
 /* Exportation de notre router express */
 module.exports = router;

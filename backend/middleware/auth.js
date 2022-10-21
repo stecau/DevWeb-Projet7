@@ -16,10 +16,13 @@ module.exports = (req, res, next) => {
         const RANDOM_TOKEN_SECRET = process.env.RANDOM_TOKEN_SECRET;
         const decodedToken = jwt.verify(token, RANDOM_TOKEN_SECRET);
         // récupération du utilisateur_id de l'objet decodedToken avec la key de l'objet 'utilisateur_Id'
-        const utilisateur_id = decodedToken.utilisateur_Id; 
+        const utilisateur_id = decodedToken.utilisateur_Id;
+        // récupération du statut isAdmin de l'objet decodedToken avec la key de l'objet 'isAdmin'
+        const isAdmin = decodedToken.isAdmin; 
         // Rajout d'un objet d'authentification dans l'entête de la requête
         req.auth = {
-            utilisateur_Id: utilisateur_id
+            utilisateur_Id: utilisateur_id,
+            isAdmin: isAdmin
         };
         next(); // pour continuer la route (routage)
     } catch(error) {
