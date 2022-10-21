@@ -22,12 +22,25 @@ Cloner le repository github : https://github.com/stecau/DevWeb-Projet7 (branche 
 
 Pour pouvoir utiliser l'API frontend, après avoir récupéré l'ensemble des fichiers de dépôt github, vous devez avoir le gestionnaire de package npm de node.js.
 
-1. Déplacez-vous dans le dossier 'frontend' : dans un terminal 'cd frontend'
-2. Executez dans le même terminal la commande suivante : 'npm install'
+1. Déplacez-vous dans le dossier 'frontend' : dans un terminal
+```
+cd frontend
+```
+2. Executez dans le même terminal la commande suivante :
+ ```
+npm install
+```
 3. Normalement, l'installation des dépendences de l'application frontend doit se lancer
-4. Et ensuite, pour lancer l'application en elle-même, utilsez la commande 'npm start'
+4. Et ensuite, pour lancer l'application en elle-même, utilsez la commande 
+```
+npm start
+```
 
-Par la suite, il suffira de se déplacer dans le dossier frontend et de lancer la commande 'npm start'. L'instllation étant déjà réalisée, l'application se lancera immédiatement (un peu plus d'information avec le fichier readme.md dans le dossier frontend)
+Par la suite, il suffira de se déplacer dans le dossier frontend et de lancer la commande 
+```
+npm start
+```
+L'instllation étant déjà réalisée, l'application se lancera immédiatement (un peu plus d'information avec le fichier readme.md dans le dossier frontend)
 
 ### Installation de l'API backend
 
@@ -35,12 +48,25 @@ Pour pouvoir faire communiquer le navigateur avec la base de données, vous deve
 
 Pour cela :
 
-1. Déplacez-vous dans le dossier 'backend' : dans un terminal 'cd backend'
-2. Executez dans le même terminal la commande suivante : 'npm install'
+1. Déplacez-vous dans le dossier 'backend' : dans un terminal 
+```
+cd backend
+```
+2. Executez dans le même terminal la commande suivante : 
+```
+npm install
+```
 3. Normalement, l'installation des dépendences de l'application backend doit se lancer
-4. Et ensuite, pour lancer l'application en elle-même, utilsez la commande 'npm start'
+4. Et ensuite, pour lancer l'application en elle-même, utilsez la commande 
+```
+npm start
+```
 
-Par la suite, il suffira de se déplacer dans le dossier backend et de lancer la commande 'npm start'. L'instllation étant déjà réalisée, l'application se lancera immédiatement (un peu plus d'information avec le fichier readme.md dans le dossier backend).
+Par la suite, il suffira de se déplacer dans le dossier backend et de lancer la commande 
+```
+npm start
+```
+L'instllation étant déjà réalisée, l'application se lancera immédiatement (un peu plus d'information avec le fichier readme.md dans le dossier backend).
 
 ### Connexion à la base de données et autres options (TOKEN et port d'écoute du serveur backend)
 
