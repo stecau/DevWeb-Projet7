@@ -1,0 +1,5 @@
+node_modules
+.env
+images/*
+!images/README.md
+!images/home-illustration1666386534746.jpg
