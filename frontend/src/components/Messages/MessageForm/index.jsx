@@ -113,7 +113,6 @@ const MessageForm = ({
                 const token = identificationType.token;
 
                 if (modification) {
-                    console.log("<----- MODIFICATION MESSAGE ----->");
                     // Définition d'une requête de modification
                     definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
 
@@ -156,7 +155,6 @@ const MessageForm = ({
                         erreurMessage: "Erreur pour la modification du message : [ ",
                     });
                 } else {
-                    console.log("<----- CREATION MESSAGE ----->");
                     // Définition d'une requête de création
                     definirUrl(`http://localhost:4000/api/posts`);
 
@@ -198,8 +196,6 @@ const MessageForm = ({
         if (donnees.hasOwnProperty("message")) {
             // Fetch de modification
             if (donnees.message === "Message modifié") {
-                console.log("<----- FIN MODIFICATION MESSAGE ----->");
-                console.log("<----- ACTUALISATION MESSAGE MODIFIE ----->");
                 // Fetch pour actualisation du message
                 // Mise à jour de appMessage avec une requête get sur le message
                 const token = identificationType.token;
@@ -220,8 +216,6 @@ const MessageForm = ({
             }
             // Fetch de création
             if (donnees.message === "Nouveau message enregistré") {
-                console.log("<----- FIN CREATION MESSAGE ----->");
-                console.log("<----- ACTUALISATION DES MESSAGES ----->");
                 // Mise à jour de listeMessages avec une requête get sur tous les messages
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts`);
@@ -242,13 +236,11 @@ const MessageForm = ({
         }
         // Retour de Fetch après modification
         if (donnees.hasOwnProperty("_id")) {
-            console.log("<----- FIN ACTUALISATION MESSAGE MODIFIE ----->");
             obtenirAppMessage(donnees);
             definirModificationMessageActive(0);
         }
         // Retour de Fetch après getAllMessages
         if (donnees !== 0 && infoFetch.typeFetch === "getAllMessages") {
-            console.log("<----- FIN ACTUALISATION DES MESSAGES ----->");
             definirListeMessages(donnees);
             definirCreationMessageActive(false);
         }

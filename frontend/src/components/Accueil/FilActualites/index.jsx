@@ -69,7 +69,6 @@ const FilActualites = () => {
     // Déclanchement initial de la requête pour obtenir les informations de tous les message
     useEffect(() => {
         if (url === "") {
-            console.log("<----- FIL D'ACTUALITES ----->");
             const token = identificationType.token;
             definirUrl("http://localhost:4000/api/posts");
             definirFetchParamObjet({
@@ -91,8 +90,6 @@ const FilActualites = () => {
     // Récupération lors d'une requête Fetch
     useEffect(() => {
         if (donnees !== 0 && infoFetch.typeFetch === "getAllMessages") {
-            //console.log(" => récupération des messages terminée");
-            console.log("<----- FIN FIL D'ACTUALITES ----->");
             definirListeMessages(donnees);
         }
     }, [donnees]);

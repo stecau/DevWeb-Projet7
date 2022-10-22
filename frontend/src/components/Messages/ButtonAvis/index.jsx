@@ -89,7 +89,6 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
     // Déclanchement de la requête pour un Jaime/Jadore ou annulation sur message
     useEffect(() => {
         if (avisPourMessage.hasOwnProperty("id")) {
-            console.log("<----- AFFECTATION AVIS MESSAGE ----->");
             const token = identificationType.token;
             definirUrl(`http://localhost:4000/api/posts/${avisPourMessage.id}/avis`);
             definirFetchParamObjet({
@@ -119,8 +118,6 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
         // Fetch de avis
         if (donnees.hasOwnProperty("message")) {
             if (donnees.message === "Nouveau avis enregistré" || donnees.message === "Avis supprimé") {
-                console.log("<----- FIN AFFECTATION AVIS MESSAGE ----->");
-                console.log("<----- ACTUALISATION MESSAGE MODIFIE ----->");
                 // Mise à jour des avis avec une requête get sur le message
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
@@ -145,7 +142,6 @@ const ButtonAvis = ({ appMessage, estUtilisateur, definirEstUtilisateur }) => {
         }
         // Fetch sur un message avec son id après émission d'un avis
         if (donnees.hasOwnProperty("_id")) {
-            console.log("<----- FIN ACTUALISATION MESSAGE MODIFIE ----->");
             if (infoFetch.typeFetch.type === "getMessageAvecIdPourAvis") {
                 if (infoFetch.typeFetch.button === "Jaime") {
                     obtenirMessageAvis((ancienMessageAvis) => {

@@ -86,9 +86,6 @@ const Connexion = () => {
         if (donnees.hasOwnProperty("message")) {
             if (donnees.message === infoFetch.donneesMessage && infoFetch.typeFetch === "CreationCompte") {
                 // Requête de connexion qui suit la création du compte en définissant l'url, l'init et les infos pour le hook useFetch()
-                console.log(" => création effectuée : nouveau compte généré, connexion sur le compte");
-                console.log("<----- FIN CREATION ----->");
-                console.log("<----- CONNEXION ----->");
                 definirUrl("http://localhost:4000/api/auth/login");
                 // Création du 'init' avec JSON (Content-Type": "application/json" et Authorization)
                 definirFetchParamObjet({
@@ -113,7 +110,6 @@ const Connexion = () => {
         // Fetch de login (connexion d'un compte)
         if (donnees.hasOwnProperty("message")) {
             if (donnees.message.indexOf(infoFetch.donneesMessage) !== -1 && infoFetch.typeFetch === "ConnexionCompte") {
-                console.log(" => login effectué : udpade de identificationType (statut connecté)");
                 // Mise à jour du type de connexion (utilisation du hook useIdentification)
                 majIdentificationType(
                     {
@@ -127,7 +123,6 @@ const Connexion = () => {
                 );
                 if (typeof window !== "undefined") {
                     // Generation d'un token falcifié pour le localStorage  (utilisation du hook useIdentification)
-                    console.log(" => login effectué : génération du token pour localStorage");
                     majIdentificationType({
                         type: "connecté",
                         email: email.valeur,
@@ -140,8 +135,6 @@ const Connexion = () => {
                 document.title = `Groupomania / Utilisateur ${email.valeur}`;
                 // Redirection vers le fil d'actualités
                 allerA("/");
-                console.log(" => connexion terminée : redirection vers la page 'Fil d'actualités'");
-                console.log("<----- FIN CONNEXION ----->");
             }
         }
     }, [donnees]);
@@ -158,7 +151,6 @@ const Connexion = () => {
             // Si création d'un compte
             if (identificationType.type === "creation") {
                 // Requête de création de compte en définissant l'url, l'init et les infos pour le hook useFetch()
-                console.log("<----- CREATION COMPTE ----->");
                 definirUrl("http://localhost:4000/api/auth/signup");
                 // Création du 'init' avec JSON (Content-Type": "application/json" et Authorization)
                 definirFetchParamObjet({
@@ -184,7 +176,6 @@ const Connexion = () => {
             // Si connexion d'un compte uniquement
             if (identificationType.type === "connexion") {
                 // Requête de connexion d'un compte en définissant l'url, l'init et les infos pour le hook useFetch()
-                console.log("<----- CONNEXION ----->");
                 definirUrl("http://localhost:4000/api/auth/login");
                 // Création du 'init' avec JSON (Content-Type": "application/json" et Authorization)
                 definirFetchParamObjet({
@@ -207,7 +198,6 @@ const Connexion = () => {
             }
         } else {
             // Email et/ou Mot de passe 'vide'' dans le formulaire
-            console.log("<----- FIN CONNEXION OU CREATION ----->");
             if (email.valeur.length === 0) {
                 definirConnexionDonnees((ancienneDonnees) => {
                     return {

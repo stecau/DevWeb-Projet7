@@ -43,8 +43,6 @@ const CompteSuppression = ({ admin }) => {
     // UseEffect pour le lancement de la requête Fetch de suppression d'un compte
     useEffect(() => {
         if (suppression) {
-            console.log("<----- COMPTE SUPPRESSION ----->");
-            //console.log(" => utilisation 'identificationType.token' et 'identificationType.id'");
             let isConfirmed = window.confirm(
                 "Etes-vous sur de vouloir supprimer votre compte et tous vos messages associés ainsi que vos votes ?"
             );
@@ -78,8 +76,6 @@ const CompteSuppression = ({ admin }) => {
         if (donnees.hasOwnProperty("message")) {
             setSuppression(false);
             if (donnees.message === "Utilisateur supprimé") {
-                console.log("<----- FIN COMPTE SUPPRESSION ----->");
-                //console.log(" => suppression du compte -> déconnexion");
                 setDeconnexion(true);
             }
         }
@@ -88,12 +84,9 @@ const CompteSuppression = ({ admin }) => {
     // UseEffect pour la déconnexion (suppression du localStorage)
     useEffect(() => {
         if (deconnexion) {
-            console.log("<----- COMPTE DECONNECT ----->");
-            console.log(" => déconnection du compte -> suppression localStorage data");
             if (window.localStorage.getItem("groupomania")) {
                 window.localStorage.removeItem("groupomania");
             }
-            console.log(" => déconnection du compte -> update identificationType statut");
             majIdentificationType(
                 {
                     type: "connexion",
@@ -102,7 +95,6 @@ const CompteSuppression = ({ admin }) => {
                 true
             );
             document.title = `Groupomania / utilisateur Inconnu`;
-            console.log("<----- FIN COMPTE DECONNECT ----->");
         }
     }, [deconnexion]);
 

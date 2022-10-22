@@ -54,7 +54,6 @@ const MessageSuppression = ({ appMessage, definirListeMessages }) => {
     // Déclanchement de la requête pour une suppression de message
     useEffect(() => {
         if (suppressionMessage) {
-            console.log("<----- SUPPRESSION MESSAGE ----->");
             const token = identificationType.token;
             definirUrl(`http://localhost:4000/api/posts/${appMessage._id}`);
             definirFetchParamObjet({
@@ -78,8 +77,6 @@ const MessageSuppression = ({ appMessage, definirListeMessages }) => {
         // Fetch sur la suppression d'un message avec son id
         if (donnees.hasOwnProperty("message")) {
             if (donnees.message === "Message supprimé") {
-                console.log("<----- FIN SUPPRESSION MESSAGE ----->");
-                console.log("<----- ACTUALISATION DES MESSAGES ----->");
                 // Mise à jour de listeMessages avec une requête get sur tous les messages
                 const token = identificationType.token;
                 definirUrl(`http://localhost:4000/api/posts`);
@@ -100,7 +97,6 @@ const MessageSuppression = ({ appMessage, definirListeMessages }) => {
         }
         // Fetch sur récupération de tous les messages
         if (donnees && infoFetch.typeFetch === "getAllMessages") {
-            console.log("<----- FIN ACTUALISATION DES MESSAGES ----->");
             // Envoi de la nouvelle liste grace au State
             definirListeMessages(donnees);
         }

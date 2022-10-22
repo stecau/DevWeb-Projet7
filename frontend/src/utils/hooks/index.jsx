@@ -50,8 +50,6 @@ export function useVerificationConnexion(connexionPage = false) {
     useEffect(() => {
         if (typeof window !== "undefined") {
             if (window.localStorage.getItem("groupomania") && identificationType.type !== "connecté") {
-                console.log("<----- HOOK : useVerificationConnexion ----->");
-                console.log(" => récupération infos depuis localStorage (pour restaurer la session)");
                 // Récupération du token falcifié du localStorage (utilisation du hook useIdentification)
                 majIdentificationType(window.localStorage.getItem("groupomania"), true);
                 // Titre du document à modifier
@@ -64,14 +62,11 @@ export function useVerificationConnexion(connexionPage = false) {
     useEffect(() => {
         if (typeof window !== "undefined") {
             if (window.localStorage.getItem("groupomania") && identificationType.type === "connecté" && modifierTitreDocument) {
-                console.log(" => mise à jour du titre de l'onglet de navigation");
                 document.title = `Groupomania / Utilisateur ${identificationType.email}`;
                 majModifierTitreDocument(false);
                 if (connexionPage) {
-                    console.log(" => redirection vers la page 'Fil d'actualités'");
                     allerA("/");
                 }
-                console.log("<----- FIN HOOK : useVerificationConnexion ----->");
             }
         }
     }, [identificationType, modifierTitreDocument]);
@@ -110,20 +105,15 @@ export function useRemplirFormulaireCompte(donnees = {}, refresh = false, setRef
                 poste: { valeur: changeDefautValeur(objetData.poste), valide: true },
             };
         });
-        //console.log("update form", objetData);
     };
 
     useEffect(() => {
         if (refresh) {
-            //console.log("Passe par le Hook REFRESH", donnees, refresh, utilisateur);
             updateFormValeur(utilisateur);
             setRefresh(false);
-            console.log("<----- FIN COMPTE REFRESH ----->");
         } else if (donnees.hasOwnProperty("_id")) {
-            //console.log("Passe par le Hook GET avec ID", donnees, refresh, utilisateur);
             updateFormValeur(donnees);
         } else if (donnees.message === "Utilisateur modifié") {
-            //console.log("Passe par le Hook MODIF UTILISATEUR", donnees.utilisateur, refresh, utilisateur);
             updateFormValeur(donnees.utilisateur);
         }
     }, [donnees, refresh]);
@@ -176,8 +166,6 @@ export function useFetch(url, fetchParamObjet, definirInfoFetch) {
                 const donnees = await reponse.json();
                 if (reponse.ok) {
                     // Appel de la fonction du useState pour la sauvegarde des 'donnees' dans le 'state'
-                    //console.log(`${definirInfoFetch.donneesMessage}`, donnees);
-                    console.log(definirInfoFetch.donneesMessage);
                     definirDonnees(donnees);
                 } else {
                     if (donnees.message === "ER_DUP_ENTRY") {

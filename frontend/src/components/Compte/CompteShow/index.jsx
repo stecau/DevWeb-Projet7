@@ -73,8 +73,6 @@ const CompteShow = () => {
     // UseEffect de lancement de la requête pour obtenir les informations utilisateur à la connexion
     useEffect(() => {
         if (utilisateur === "") {
-            console.log("<----- COMPTE UTILISATEUR ----->");
-            console.log(" => Lancement d'une requete GET USER");
             const token = identificationType.token;
 
             definirUrl(`http://localhost:4000/api/auth/${identificationType.id}`);
@@ -99,9 +97,7 @@ const CompteShow = () => {
     useEffect(() => {
         // Fetch de get sur utilisateur avec id
         if (donnees.hasOwnProperty("_id")) {
-            //console.log(" => mise à jour de l'utilisateur");
             genererUtilisateur(donnees);
-            console.log("<----- FIN COMPTE UTILISATEUR ----->");
         }
     }, [donnees]);
 

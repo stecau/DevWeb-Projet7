@@ -37,8 +37,6 @@ const CompteInfo = () => {
 
     // Gestionnaire pour la mise à jour du type de connexion (connexion ou création)
     const gestionModificationIdentificationType = (type) => {
-        console.log("<----- COMPTE DEFAULT ----->");
-        console.log(` => Click bouton pour faire une ${type}`);
         majIdentificationType(
             {
                 type: type,
@@ -46,7 +44,6 @@ const CompteInfo = () => {
             },
             true
         );
-        console.log("<----- FIN COMPTE DEFAULT ----->");
     };
 
     return (

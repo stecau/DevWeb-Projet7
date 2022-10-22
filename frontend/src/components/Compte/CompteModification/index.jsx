@@ -54,10 +54,8 @@ const CompteModification = () => {
     useEffect(() => {
         // Réalisation de la requête si il y a une modification du useState utilisateurModification et qu'il contient le mail (=pas objet vide)
         if (utilisateurModification.email) {
-            //console.log(" => utilisation 'identificationType.token' et 'identificationType.id'");
             const token = identificationType.token;
             const id = identificationType.id;
-            //console.log(" => ainsi que l'utilisateur modifié : ", utilisateurModification);
 
             definirUrl(`http://localhost:4000/api/auth/${id}`);
             // Création du 'init' avec JSON (Content-Type": "application/json" et Authorization)
@@ -88,7 +86,6 @@ const CompteModification = () => {
                 alert("Modification du compte effectuée !");
                 // Gestion changement du mail
                 if (donnees.utilisateur.email !== utilisateur.email) {
-                    console.log(" => changement du mail dans le titre du document et le footer");
                     // Changement du titre de l'onglet
                     document.title = `Groupomania / utilisateur ${donnees.utilisateur.email}`;
                     // Création de la nouvelle identification pour le mail dans le footer et le faux token
@@ -106,7 +103,6 @@ const CompteModification = () => {
             } else {
                 alert(donnees.message);
             }
-            console.log("<----- FIN COMPTE MODIF ----->");
         }
     }, [donnees]);
 
@@ -117,12 +113,9 @@ const CompteModification = () => {
 
     // Gestionnaire pour la vérification et la définition de 'utilisateurModification' pour la requête de modification du compte
     const gestionnaireModificationUtilisateur = () => {
-        console.log("<----- COMPTE MODIF ----->");
-        console.log(" => Vérification et définition avant lancement Fetch pour modification du compte");
         let ancien = "";
         let nouveau = "";
         let sauvegarde = true;
-        console.log(" => Changement de mot de passe actif ? -> ", changeMDP);
         if (changeMDP) {
             if (
                 ancienMDP.valeur !== "" &&
@@ -164,14 +157,12 @@ const CompteModification = () => {
                     alertTexte = ["Veuillez vérifier les champs mot de passe !"];
                 }
                 alert(alertTexte.join("\n"));
-                console.log("<----- FIN COMPTE MODIF ----->");
             }
         }
         // Absence du mail => alert message
         if (email.valeur === "" || !email.valide) {
             sauvegarde = false;
             alert("Veuillez renseigner un email !");
-            console.log("<----- FIN COMPTE MODIF ----->");
         }
         if (sauvegarde) {
             // Création de l'objet newutilisateur avec nouveau mot de passe
@@ -189,9 +180,7 @@ const CompteModification = () => {
                 delete newutilisateur.newMotDePasse;
             }
             // Modification du useState utilisateurDonnees pour lancement de la requête Fetch de modification
-            console.log(" => création 'nouveau compte objet' pour le lancement Fetch pour modification du compte");
             definirUtilisateurModification({ ...newutilisateur });
-            //console.log("utilisateurDonnees", newutilisateur);
         }
     };
 

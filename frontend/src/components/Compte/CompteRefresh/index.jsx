@@ -25,8 +25,6 @@ const CompteRefresh = ({ admin }) => {
     const gestionnaireRefresh = () => {
         if (!refresh) {
             setRefresh(true);
-            console.log("<----- COMPTE REFRESH ----->");
-            console.log(" => refresh du formulaire");
         }
     };
 
