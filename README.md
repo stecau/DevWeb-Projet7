@@ -76,7 +76,8 @@ Cependant pour des questions de sécurité, vous devez avoir les accès spécifi
 
 Ce fichier contient également le port d'écoute par défaut du serveur ainsi qu'une clé secrète utilisée pour générer les TOKENs de connexion des utilisateurs frontend (navigateur) afin d'établir le dialogue avec la base de données par l'intermédiaire du serveur.
 
-Si vous avez reçu le fichier .env, c'est que vous êtes un utilisateur validé.
+ATTENTION: Le serveur backend ne sera fonctionnel qu'avec le fichier .env dans le dossier backend.
+Vous pouvez créer ce fichier vous même, voir à la fin des explications pour un exemple de format.
 
 #### Installation de la base de données mySQL
 
@@ -84,24 +85,25 @@ Pour pouvoir utiliser la base de données en local, vous devez avoir mySQL d'ins
 
 Une fois mySQL installé si vous ne l'avais pas déjà, importez la base de données GROUPOMANIA tout simplement.
 
-Le fichier a importé est : 'groupomania.sql'
+Le fichier a importé est avec une extention '.sql' (exemple : 'groupomania_2022.sql')
 
 En ligne de commande dans un terminal cela donne normalement :
 
-    mysql -u [utilisateur] -p groupomania < groupomania.sql
+    mysql -u [utilisateur] -p groupomania < groupomania_2022.sql
     
-Comme vous le remarquez, il faut un utilisateur et le nom de la base de données (ici groupomania) mais également un mot de passe. Ces informations (utilisateur, normalement 'root' et le mot de passe) sont les votre. Il faudra cependant dansles mettre dans le fichier .env précédenment cité.
+Comme vous le remarquez, il faut un utilisateur et le nom de la base de données (ici groupomania) mais également un mot de passe. Ces informations (utilisateur, normalement 'root' + le mot de passe) sont les votre. Il faudra cependant les mettre dans le fichier .env précédenment cité.
 
 Le fichier .env est de la forme : 
 ```
 PORT=4000
 DB_CONFIG = '{
     "host": "127.0.0.1",
-    "user": "user name entre guillement",
-    "password": "mot de passe entre guillement",
+    "user": "votre user entre guillement",
+    "password": "votre mot de passe entre guillement",
     "database": "groupomania"
 }'
-RANDOM_TOKEN_SECRET=" la clé pour la génération des token"
+RANDOM_TOKEN_SECRET=" une clé assez longue pour la génération des token"
 ```
+unexemple de clé peut-être une chaine de caractère comme celle-ci : AsFJeUhu3R13$12:sd1gJaodGrDg2IU%
 
 BONNE NAVIGATION !!!

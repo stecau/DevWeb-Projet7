@@ -168,7 +168,7 @@ const CompteModification = () => {
             }
         }
         // Absence du mail => alert message
-        if (email.valeur === "") {
+        if (email.valeur === "" || !email.valide) {
             sauvegarde = false;
             alert("Veuillez renseigner un email !");
             console.log("<----- FIN COMPTE MODIF ----->");
