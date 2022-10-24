@@ -186,9 +186,7 @@ export function useFetch(url, fetchParamObjet, definirInfoFetch) {
         // Début de la requête, changement du status pour le IndicateurChargement
         definirChargement(true);
         // Appel de la fonction asynchrone 'fetchData' déclarée dans le useEffect (utilisation de setTimeout pour simuler un délai)
-        setTimeout(() => {
-            fetchData();
-        }, 500);
+        fetchData();
     }, [url, fetchParamObjet, definirInfoFetch]);
 
     // La fonction retourne le status du IndicateurChargement, les données, et le status d'une éventuelle erreur
