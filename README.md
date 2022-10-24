@@ -2,25 +2,25 @@
 
 API du réseau social interne du groupe GROUPOMANIA
 
-## GROUPOMANIA APIs
+## GROUPOMANIA API
 
-Cette API est un ensemble de deux APIs et d'une base de données.
+Cette API est une application frontend couplé à une API backend et une base de données.
 
-L'ensemble de l'API fait appel au langage JavaScript et à node.js
+L'ensemble de l'API fait appel au langage JavaScript et à node.js.
 
-L'API frontend est  basée sur le framework React disponible dans node.js.
+Le frontend est basé sur le framework React disponible dans node.js.
 
-L'API backend est un serveur node.js avec une app express.js
+L'API backend est un serveur node.js avec une app express.js.
 
 La base de données est une base de données relationnelle SQL qui est gérée par le serveur avec le module mySQL pour node.js.
 
-## Récupération de GROUPOMANIA APIs
+## Récupération de GROUPOMANIA API
 
 Cloner le repository github : https://github.com/stecau/DevWeb-Projet7 (branche main) ou copier un zip de la branche main.
 
-### Installation de l'API frontend
+### Installation du frontend
 
-Pour pouvoir utiliser l'API frontend, après avoir récupéré l'ensemble des fichiers de dépôt github, vous devez avoir le gestionnaire de package npm de node.js.
+Pour pouvoir utiliser le frontend, après avoir récupéré l'ensemble des fichiers de dépôt github, vous devez avoir le gestionnaire de package npm de node.js.
 
 1. Déplacez-vous dans le dossier 'frontend' : dans un terminal
 ```
